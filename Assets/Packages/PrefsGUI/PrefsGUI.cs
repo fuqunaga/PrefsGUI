@@ -139,6 +139,11 @@ namespace PrefsGUI
             return OnGUISlider(defaultMin, defaultMax, label);
         }
 
+        public bool OnGUISlider(OuterT min, OuterT max, string label = null, string[] elementLabels = null)
+        {
+            return OnGUISlider(ToInner(min), ToInner(max), label, elementLabels);
+        }
+
         protected bool OnGUISlider(InnerT min, InnerT max, string label = null, string[] elementLabels = null)
         {
             return OnGUIStrandardStyle((InnerT v, ref string unparsedStr) =>
@@ -167,7 +172,8 @@ namespace PrefsGUI
     }
 
 
-    public class PrefsParam<T> : PrefsParam<T, T> {
+    public class PrefsParam<T> : PrefsParam<T, T>
+    {
         public PrefsParam(string key, T defaultValue = default(T)) : base(key, defaultValue) { }
         protected override T ToOuter(T innerV) { return innerV; }
         protected override T ToInner(T TouterV) { return TouterV; }
@@ -178,7 +184,7 @@ namespace PrefsGUI
         [SerializeField]
         protected OuterT defaultValue;
 
-        public PrefsParam(string key, OuterT defaultValue = default(OuterT)): base(key)
+        public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key)
         {
             this.defaultValue = defaultValue;
         }
