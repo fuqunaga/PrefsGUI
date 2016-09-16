@@ -10,7 +10,7 @@ using PrefsGUI;
 public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
 {
     [SerializeField]
-    List<PrefsVector4> _colors = new List<PrefsVector4>();
+    List<PrefsColor> _colors = new List<PrefsColor>();
     [SerializeField]
     List<PrefsVector4> _vectors = new List<PrefsVector4>();
     [SerializeField]
@@ -53,7 +53,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
         _floats.RemoveAll ( f => !floatKeys.Contains  ( f.key )) ;
         _ranges.RemoveAll ( r => !rangeKeys.Contains  ( r.key )) ;
 
-        _colors.AddRange (colorKeys.Except (_colors.Select (c => c.key)).Select(n => new PrefsVector4(n, _material.GetColor(KeyToPropertyName(n)))));
+        _colors.AddRange (colorKeys.Except (_colors.Select (c => c.key)).Select(n => new PrefsColor(n, _material.GetColor(KeyToPropertyName(n)))));
         _vectors.AddRange(vectorKeys.Except(_vectors.Select(v => v.key)).Select(n => new PrefsVector4(n, _material.GetVector(KeyToPropertyName(n)))));
         _floats.AddRange (floatKeys.Except (_floats.Select (f => f.key)).Select(n => new PrefsFloat  (n, _material.GetFloat(KeyToPropertyName(n)))));
         _ranges.AddRange (rangeKeys.Except (_ranges.Select (r => r.key)).Select(n => new PrefsFloat  (n, _material.GetFloat(KeyToPropertyName(n)))));
