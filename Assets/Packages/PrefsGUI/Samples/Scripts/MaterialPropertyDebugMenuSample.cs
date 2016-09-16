@@ -3,7 +3,7 @@ using System.Collections;
 using PrefsGUI;
 using System;
 
-public class MaterialPropertyDebugMenuSample : GUISampleBase
+public class MaterialPropertyDebugMenuSample : PrefsGUISampleBase
 {
     MaterialPropertyDebugMenu _debugMenu;
 

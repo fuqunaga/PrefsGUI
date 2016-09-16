@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace PrefsGUI
 {
-    public class GUIUtilSample : GUISampleBase
+    public class GUIUtilSample : PrefsGUISampleBase
     {
         protected override float MinWidth { get { return 1000f; } }
 

@@ -4,7 +4,7 @@ using System.Collections;
 namespace PrefsGUI
 {
 
-    public class PrefsGUISample : GUISampleBase
+    public class PrefsGUISample : PrefsGUISampleBase
     {
         [System.Serializable]
         public class PrefsEnum : PrefsParam<EnumSample>
@@ -12,6 +12,7 @@ namespace PrefsGUI
             public PrefsEnum(string key, EnumSample defaultValue = default(EnumSample)) : base(key, defaultValue) { }
         }
 
+        // define PrefsParams with key.
         public PrefsEnum _prefsEnum = new PrefsEnum("PrefsEnum");
         public PrefsString _prefsString = new PrefsString("PrefsString");
         public PrefsInt _prefsInt = new PrefsInt("PrefsInt");
@@ -37,7 +38,14 @@ namespace PrefsGUI
             _prefsVector4.OnGUI();
             _prefsVector4.OnGUISlider();
             _prefsColor.OnGUI();
-            _prefsColor.OnGUISlider();
+
+            // return true if value was changed
+            if ( _prefsColor.OnGUISlider())
+            {
+                // use as native type
+                Color color = _prefsColor;
+                Debug.Log("Changed. " + color);
+            }
 
             if (GUILayout.Button("Save")) PlayerPrefs.Save();
             if (GUILayout.Button("DeleteAll")) PlayerPrefs.DeleteAll();

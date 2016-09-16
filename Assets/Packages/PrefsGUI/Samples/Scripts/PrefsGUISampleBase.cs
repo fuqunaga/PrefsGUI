@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace PrefsGUI
 {
-    public abstract class GUISampleBase : MonoBehaviour
+    public abstract class PrefsGUISampleBase : MonoBehaviour
     {
         public enum EnumSample
         {
