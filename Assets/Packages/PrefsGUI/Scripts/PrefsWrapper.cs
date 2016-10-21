@@ -67,18 +67,18 @@ namespace PrefsWrapper
             }
         }
 
-        static readonly Dictionary<Type, string> GetMethodTable = new Dictionary<Type, string>
+        static readonly Dictionary<Type, Func<string, object>> GetMethodTable = new Dictionary<Type, Func<string, object>>
             {
-                { typeof(int), "GetInt"}
-                ,{typeof(float), "GetFloat"}
-                ,{typeof(string), "GetString"}
+                { typeof(int), (key) => PlayerPrefs.GetInt(key) }
+                ,{typeof(float),  (key) => PlayerPrefs.GetFloat(key)}
+                ,{typeof(string), (key) => PlayerPrefs.GetString(key)}
             };
 
-        static readonly Dictionary<Type, string> SetMethodTable = new Dictionary<Type, string>
+        static readonly Dictionary<Type, Action<string, object>> SetMethodTable = new Dictionary<Type, Action<string, object>>
             {
-                { typeof(int), "SetInt"}
-                ,{typeof(float), "SetFloat"}
-                ,{typeof(string), "SetString"}
+                { typeof(int),    (key, o) => PlayerPrefs.SetInt   (key, (int)o) }
+                ,{typeof(float),  (key, o) => PlayerPrefs.SetFloat (key, (float)o) }
+                ,{typeof(string), (key, o) => PlayerPrefs.SetString(key, (string)o) }
             };
 
         public static bool HasKey(string key)
@@ -95,26 +95,32 @@ namespace PrefsWrapper
         {
             if (!HasKey(key)) Set(key, defaultValue);
 
-            MethodInfo info = typeof(PlayerPrefs).GetMethod(GetMethodTable[type], new[] { typeof(string) });
-            return typeof(T).IsEnum
-                ? (T)info.Invoke(null, new[] { key })
-                : (T)Convert.ChangeType(info.Invoke(null, new[] { key }), typeof(T));
+            var ret = GetMethodTable[type](key);
+            return (typeof(T).IsEnum ? (T)ret : Convert.ChangeType(ret, typeof(T)));
         }
 
         public static void Set(string key, object val)
         {
-            MethodInfo info = typeof(PlayerPrefs).GetMethod(SetMethodTable[type], new[] { typeof(string), type });
-            info.Invoke(null, new object[] { key, Convert.ChangeType(val, type) });
+            SetMethodTable[type](key, val);
         }
     }
 
 
     class PlayerPrefsVector<T>
     {
+        static Dictionary<string, List<string>> _keyCache = new Dictionary<string, List<string>>();
+
         static List<string> GenerateKeys(string key)
         {
-            var num = AbstractVector.GetElementNum<T>();
-            return Enumerable.Range(0, num).Select((i) => key + "_" + i + "_PlayerPrefsVector").ToList();
+            List<string> ret;
+            if (!_keyCache.TryGetValue(key, out ret))
+            {
+                var num = AbstractVector.GetElementNum<T>();
+                ret = Enumerable.Range(0, num).Select((i) => key + "_" + i + "_PlayerPrefsVector").ToList();
+                _keyCache[key] = ret;
+            }
+
+            return ret;
         }
 
         public static bool HasKey(string key)
@@ -135,7 +141,7 @@ namespace PrefsWrapper
             for (var i = 0; i < keys.Count; ++i)
             {
                 var elem = (float)PlayerPrefsStrandard<float>.Get(keys[i], AbstractVector.GetAtIdx<T>(defaultValue, i));
-                AbstractVector.SetAtIdx<T>(ret, i, elem);
+                ret = AbstractVector.SetAtIdx<T>(ret, i, elem);
             }
             return ret;
         }

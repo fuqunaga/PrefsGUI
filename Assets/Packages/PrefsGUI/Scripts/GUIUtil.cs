@@ -137,7 +137,7 @@ public static class GUIUtil
         for (var i = 0; i < elementNum; ++i)
         {
             var elem = Field(AbstractVector.GetAtIdx<T>(v,i), ref strs[i]);
-            AbstractVector.SetAtIdx<T>(v,i,elem);
+            v = AbstractVector.SetAtIdx<T>(v,i,elem);
         }
         unparsedStr = JoinUnparsedStr(strs);
         return v;
@@ -283,7 +283,7 @@ public static class GUIUtil
                     using (var h1 = new GUILayout.HorizontalScope())
                     {
                         var elem = Slider(AbstractVector.GetAtIdx<T>(v, i), AbstractVector.GetAtIdx<T>(min, i), AbstractVector.GetAtIdx<T>(max, i), ref strs[i], eLabels[i]);
-                        AbstractVector.SetAtIdx<T>(v, i, elem);
+                        v = AbstractVector.SetAtIdx<T>(v, i, elem);
                     }
                 }
                 unparsedStr = JoinUnparsedStr(strs);
