@@ -101,7 +101,7 @@ namespace PrefsWrapper
 
         public static void Set(string key, object val)
         {
-            SetMethodTable[type](key, val);
+            SetMethodTable[type](key, Convert.ChangeType(val, type));
         }
     }
 
