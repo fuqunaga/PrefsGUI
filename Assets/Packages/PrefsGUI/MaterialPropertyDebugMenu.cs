@@ -71,12 +71,12 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
     }
 
     public static Dictionary<string, System.Action<PrefsVector4, string>> customVectorGUI = new Dictionary<string, System.Action<PrefsVector4, string>>();
-    
-    public void DebugMenu()
+
+    public void DebugMenu(bool labelEnable = true)
     {
         if ((_material != null) && _propertySet.Any())
         {
-            GUILayout.Label(_material.name);
+            if (labelEnable) GUILayout.Label(_material.name);
             GUIUtil.Indent(() =>
             {
                 _colors.ForEach(c => c.OnGUISlider(KeyToPropertyName(c.key)));
