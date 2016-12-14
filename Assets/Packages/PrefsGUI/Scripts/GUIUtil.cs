@@ -23,17 +23,30 @@ public static class GUIUtil
         }
     }
 
-    public class Folds : Dictionary<string, Fold>
+    public class Folds
     {
+        Dictionary<string, Fold> _dic = new Dictionary<string, Fold>();
+        List<string> _order = new List<string>();
+
         public void Add(string name, Action action, bool enableFirst = false)
         {
             Fold fold;
-            if (TryGetValue(name, out fold))
+            if (_dic.TryGetValue(name, out fold))
             {
                 fold.Add(action);
             }
             else {
-                Add(name, new Fold(name, action, enableFirst));
+                _order.Add(name);
+                _dic.Add(name, new Fold(name, action, enableFirst));
+            }
+        }
+
+        public void Remove(string name)
+        {
+            if ( _dic.ContainsKey(name))
+            {
+                _dic.Remove(name);
+                _order.Remove(name);
             }
         }
 
@@ -41,7 +54,10 @@ public static class GUIUtil
         {
             using (var v = new GUILayout.VerticalScope())
             {
-                Values.ToList().ForEach(f => f.OnGUI());
+                _order.ForEach(name =>
+                {
+                    _dic[name].OnGUI();
+                });
             }
         }
     }
