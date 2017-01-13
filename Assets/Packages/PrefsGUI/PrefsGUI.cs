@@ -45,18 +45,28 @@ namespace PrefsGUI
     public class PrefsVector2 : PrefsVector<Vector2>
     {
         public PrefsVector2(string key, Vector2 defaultValue = default(Vector2)) : base(key, defaultValue) { }
+
+        public static implicit operator Vector3(PrefsVector2 v) { return v.Get(); }
+        public static implicit operator Vector4(PrefsVector2 v) { return v.Get(); }
     }
 
     [Serializable]
     public class PrefsVector3 : PrefsVector<Vector3>
     {
         public PrefsVector3(string key, Vector3 defaultValue = default(Vector3)) : base(key, defaultValue) { }
+
+        public static implicit operator Vector2(PrefsVector3 v) { return v.Get(); }
+        public static implicit operator Vector4(PrefsVector3 v) { return v.Get(); }
     }
 
     [Serializable]
     public class PrefsVector4 : PrefsVector<Vector4>
     {
         public PrefsVector4(string key, Vector4 defaultValue = default(Vector4)) : base(key, defaultValue) { }
+
+        public static implicit operator Vector2(PrefsVector4 v) { return v.Get(); }
+        public static implicit operator Vector3(PrefsVector4 v) { return v.Get(); }
+        public static implicit operator Color  (PrefsVector4 v) { return v.Get(); }
     }
 
     [Serializable]
@@ -98,6 +108,11 @@ namespace PrefsGUI
             Color.RGBToHSV(c, out v4.x, out v4.y, out v4.z);
             v4.w = c.a;
             return v4;
+        }
+
+        public static implicit operator Vector4(PrefsColor c)
+        {
+            return c.Get();
         }
     }
 

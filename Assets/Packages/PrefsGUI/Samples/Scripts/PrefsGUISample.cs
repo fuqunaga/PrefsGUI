@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#pragma warning disable 0219
+
+using UnityEngine;
 using System.Collections;
 
 namespace PrefsGUI
@@ -49,6 +51,33 @@ namespace PrefsGUI
 
             if (GUILayout.Button("Save")) PlayerPrefs.Save();
             if (GUILayout.Button("DeleteAll")) PlayerPrefs.DeleteAll();
+        }
+
+
+        void Update()
+        {
+            TestImplicit();
+        }
+
+        protected void TestImplicit()
+        {
+            EnumSample e = _prefsEnum;
+            string s     = _prefsString;
+            int i        = _prefsInt;
+            float f      = _prefsFloat;
+            bool b       = _prefsBool;
+            Vector2 v2   = _prefsVector2;
+            Vector3 v3   = _prefsVector2;
+            Vector4 v4   = _prefsVector2;
+            v2           = _prefsVector3;
+            v3           = _prefsVector3;
+            v4           = _prefsVector3;
+            v2           = _prefsVector4;
+            v3           = _prefsVector4;
+            v4           = _prefsVector4;
+            Color c      = _prefsVector4;
+            c            = _prefsColor;
+            v4           = _prefsColor;
         }
     }
 }
