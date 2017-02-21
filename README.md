@@ -1,6 +1,6 @@
 # PrefsGUI
 
- accessor like variable and GUI set for Unity PlayerPrefs
+ accessor like variable and GUI set for Unity PlayerPrefs / JSON file
 
 [Unity Package](PrefsGUI.unitypackage)
 
@@ -50,12 +50,21 @@ public class PrefsGUISample : PrefsGUISampleBase
             Debug.Log("Changed. " + color);
         }
 
-        if (GUILayout.Button("Save")) PlayerPrefs.Save();
-        if (GUILayout.Button("DeleteAll")) PlayerPrefs.DeleteAll();
+        if (GUILayout.Button("Save")) Prefs.Save();
+        if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
     }
 }
 ```
 
+# Switch PlayerPrefs / JSON
+
+Switch using at PrefsWrapper.cs
+https://github.com/fuqunaga/PrefsGUI/blob/master/Assets/Packages/PrefsGUI/Scripts/PrefsWrapper.cs#L5-L6
+
+## JSON file path
+```
+Application.persistentDataPath + "/Prefs.json"
+```
 
 
 # MaterialPropertyDebugMenu
