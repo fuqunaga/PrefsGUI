@@ -49,8 +49,8 @@ namespace PrefsGUI
                 Debug.Log("Changed. " + color);
             }
 
-            if (GUILayout.Button("Save")) PlayerPrefs.Save();
-            if (GUILayout.Button("DeleteAll")) PlayerPrefs.DeleteAll();
+            if (GUILayout.Button("Save")) Prefs.Save();
+            if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
         }
 
 

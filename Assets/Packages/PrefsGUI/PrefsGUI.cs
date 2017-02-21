@@ -7,6 +7,16 @@ using PrefsWrapper;
 
 namespace PrefsGUI
 {
+    #region static class
+    public class Prefs
+    {
+        public static void Save() { PrefsGlobal.Save(); }
+        public static void Load() { PrefsGlobal.Load(); }
+        public static void DeleteAll() { PrefsGlobal.DeleteAll(); }
+    }
+    #endregion
+
+
     [Serializable]
     public class PrefsString : PrefsParam<string>
     {
