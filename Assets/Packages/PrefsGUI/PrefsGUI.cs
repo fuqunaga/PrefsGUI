@@ -96,6 +96,11 @@ namespace PrefsGUI
             }
         }
 
+        protected override bool Compare(Color lhs, Color rhs)
+        {
+            return lhs == rhs;
+        }
+
         protected override void OnGUISliderRight(Vector4 v)
         {
             var c = ToOuter(v);
@@ -247,14 +252,17 @@ namespace PrefsGUI
             return OnGUIwithButton(() => OnGUIWithUnparsedStr(key, guiFunc));
         }
 
+        protected virtual bool Compare(OuterT lhs, OuterT rhs) { return lhs.Equals(rhs);  }
+
         protected bool OnGUIwithButton(Func<bool> onGUIFunc)
         {
             var changed = false;
             using (var h = new GUILayout.HorizontalScope())
             {
                 changed = onGUIFunc();
+                var label = Compare(Get(), defaultValue) ? "default" : "<color=red>default</color>" ;
 
-                if (GUILayout.Button("default", GUILayout.Width(60f)))
+                if (GUILayout.Button(label, GUILayout.Width(60f)))
                 {
                     Set(defaultValue);
                     changed = true;
