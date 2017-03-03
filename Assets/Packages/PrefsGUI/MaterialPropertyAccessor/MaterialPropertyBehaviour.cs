@@ -29,8 +29,9 @@ namespace MaterialPropertyAccessor
             public List<string> vectors = new List<string>();
             public List<string> floats = new List<string>();
             public List<RangeData> ranges = new List<RangeData>();
+            public List<string> texEnvs = new List<string>();
 
-            public bool Any() { return colors.Any() || vectors.Any() || floats.Any() || ranges.Any(); }
+            public bool Any() { return colors.Any() || vectors.Any() || floats.Any() || ranges.Any() || texEnvs.Any(); }
              
             public void Clear()
             {
@@ -38,12 +39,14 @@ namespace MaterialPropertyAccessor
                 vectors.Clear();
                 floats.Clear();
                 ranges.Clear();
+                texEnvs.Clear();
             }
         }
 
         #endregion
 
         public Material _material;
+        public bool _ignoreTexEnv = true;
         public List<string> _ignoreProperties;
         public PropertySet _propertySet = new PropertySet();
 
@@ -87,7 +90,14 @@ namespace MaterialPropertyAccessor
                                 }
                                 break;
 
-                                /* ignore texture */
+                            case ShaderUtil.ShaderPropertyType.TexEnv:
+                                {
+                                    if (!_ignoreTexEnv && _material.GetTexture(name) !=null)
+                                    {
+                                        _propertySet.texEnvs.Add(name);
+                                    }
+                                }
+                                break;
                         }
                     }
                 }

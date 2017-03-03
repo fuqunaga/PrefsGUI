@@ -68,6 +68,30 @@ namespace MaterialPropertyAccessor
 
                     _material.SetFloat(name, v);
                 });
+
+                _propertySet.texEnvs.ForEach(name =>
+                {
+                    var tiling = _material.GetTextureScale(name);
+                    var offset = _material.GetTextureOffset(name);
+
+                    GUILayout.Label(name);
+                    using (var h = new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("Tiling");
+                        tiling.x = float.Parse(GUILayout.TextField(tiling.x.ToString()));
+                        tiling.y = float.Parse(GUILayout.TextField(tiling.y.ToString()));
+                    }
+
+                    using (var h = new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("Offset");
+                        offset.x = float.Parse(GUILayout.TextField(offset.x.ToString()));
+                        offset.y = float.Parse(GUILayout.TextField(offset.y.ToString()));
+                    }
+
+                    _material.SetTextureScale(name, tiling);
+                    _material.SetTextureOffset(name, offset);
+                });
             }
         }
     }

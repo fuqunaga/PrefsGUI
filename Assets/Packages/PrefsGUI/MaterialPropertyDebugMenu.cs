@@ -9,6 +9,16 @@ using PrefsGUI;
 [ExecuteInEditMode]
 public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
 {
+    #region TypeDefine
+    [System.Serializable]
+    public class PrefsTexEnv : PrefsVector4
+    {
+        public PrefsTexEnv(string key, Vector2 tiling, Vector2 offset = default(Vector2)) : base(key, new Vector4(tiling.x, tiling.y, offset.x, offset.y)) { }
+        public Vector2 GetScale() { var v = Get();  return new Vector2(v.x, v.y); }
+        public Vector2 GetOffset() { var v = Get(); return new Vector2(v.z, v.w); }
+    }
+    #endregion
+
     [SerializeField]
     List<PrefsColor> _colors = new List<PrefsColor>();
     [SerializeField]
@@ -17,6 +27,9 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
     List<PrefsFloat> _floats = new List<PrefsFloat>();
     [SerializeField]
     List<PrefsFloat> _ranges = new List<PrefsFloat>();
+    [SerializeField]
+    List<PrefsTexEnv> _texEnvs = new List<PrefsTexEnv>();
+
 
     string keyPrefix { get
         {
@@ -47,16 +60,26 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
         var vectorKeys = _propertySet.vectors.Select(name => PropertyNameToKey(name)).ToList();
         var floatKeys  = _propertySet.floats.Select(name => PropertyNameToKey(name)).ToList();
         var rangeKeys  = _propertySet.ranges.Select(range => PropertyNameToKey(range.name)).ToList();
+        var texEnvKeys = _propertySet.texEnvs.Select(name => PropertyNameToKey(name)).ToList();
 
-        _colors.RemoveAll ( c => !colorKeys.Contains  ( c.key )) ;
-        _vectors.RemoveAll( v => !vectorKeys.Contains ( v.key )) ;
-        _floats.RemoveAll ( f => !floatKeys.Contains  ( f.key )) ;
-        _ranges.RemoveAll ( r => !rangeKeys.Contains  ( r.key )) ;
+
+        _colors.RemoveAll ( c => !colorKeys.Contains  ( c.key ));
+        _vectors.RemoveAll( v => !vectorKeys.Contains ( v.key ));
+        _floats.RemoveAll ( f => !floatKeys.Contains  ( f.key ));
+        _ranges.RemoveAll ( r => !rangeKeys.Contains  ( r.key ));
+        _texEnvs.RemoveAll( t => !texEnvKeys.Contains(t.key));
 
         _colors.AddRange (colorKeys.Except (_colors.Select (c => c.key)).Select(n => new PrefsColor(n, _material.GetColor(KeyToPropertyName(n)))));
         _vectors.AddRange(vectorKeys.Except(_vectors.Select(v => v.key)).Select(n => new PrefsVector4(n, _material.GetVector(KeyToPropertyName(n)))));
         _floats.AddRange (floatKeys.Except (_floats.Select (f => f.key)).Select(n => new PrefsFloat  (n, _material.GetFloat(KeyToPropertyName(n)))));
         _ranges.AddRange (rangeKeys.Except (_ranges.Select (r => r.key)).Select(n => new PrefsFloat  (n, _material.GetFloat(KeyToPropertyName(n)))));
+        _texEnvs.AddRange(texEnvKeys.Except(_texEnvs.Select(t => t.key)).Select(n =>
+        {
+            var pn = KeyToPropertyName(n);
+            var tiling = _material.GetTextureScale(pn);
+            var offset = _material.GetTextureOffset(pn);
+            return new PrefsTexEnv(n, tiling, offset);
+        }));
     }
 
     void UpdateMaterial()
@@ -67,6 +90,12 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
             _vectors.ForEach(v => _material.SetVector(KeyToPropertyName(v.key), v.Get()));
             _floats.ForEach(f => _material.SetFloat(KeyToPropertyName(f.key), f.Get()));
             _ranges.ForEach(r => _material.SetFloat(KeyToPropertyName(r.key), r.Get()));
+            _texEnvs.ForEach(t =>
+            {
+                var pn = KeyToPropertyName(t.key);
+                _material.SetTextureScale(pn, t.GetScale());
+                _material.SetTextureOffset(pn, t.GetOffset());
+            });
         }
     }
 
@@ -98,6 +127,12 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
                     var mr = _propertySet.ranges.Find(r => r.name == n);
 
                     range.OnGUISlider(mr.min, mr.max, n);
+                });
+
+                _texEnvs.ForEach(t =>
+                {
+                    var label = KeyToPropertyName(t.key);
+                    t.OnGUISlider(Vector4.zero, new Vector4(10, 10, 1, 1), label, new[] { "Tiling.x", "Tiling.y", "Offset.x", "Offset.y" });
                 });
             });
 
