@@ -503,17 +503,19 @@ namespace PrefsWrapperJson.MiniJSON
                 }
             }
 
+            string NewLine { get { return Environment.NewLine; } }
+
             void SerializeObject(IDictionary obj)
             {
                 bool first = true;
 
-                builder.Append('{');
+                builder.Append("{"+NewLine);
 
                 foreach (object e in obj.Keys)
                 {
                     if (!first)
                     {
-                        builder.Append(',');
+                        builder.Append(","+NewLine);
                     }
 
                     SerializeString(e.ToString());
@@ -524,12 +526,12 @@ namespace PrefsWrapperJson.MiniJSON
                     first = false;
                 }
 
-                builder.Append('}');
+                builder.Append(NewLine+"}");
             }
 
             void SerializeArray(IList anArray)
             {
-                builder.Append('[');
+                builder.Append("["+NewLine);
 
                 bool first = true;
 
@@ -537,7 +539,7 @@ namespace PrefsWrapperJson.MiniJSON
                 {
                     if (!first)
                     {
-                        builder.Append(',');
+                        builder.Append(","+NewLine);
                     }
 
                     SerializeValue(obj);
@@ -545,7 +547,7 @@ namespace PrefsWrapperJson.MiniJSON
                     first = false;
                 }
 
-                builder.Append(']');
+                builder.Append(NewLine+"]");
             }
 
             void SerializeString(string str)
