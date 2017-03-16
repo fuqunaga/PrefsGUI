@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -234,10 +237,15 @@ namespace PrefsGUI
 
         public virtual void Delete() { PlayerPrefs.DeleteKey(key); }
 
-        public bool OnGUI(string label = null)
+        #region override
+        public override bool OnGUI(string label = null)
         {
             return OnGUIStrandardStyle((InnerT v, ref string unparsedStr) => GUIUtil.Field<InnerT>(v, ref unparsedStr, label ?? key));
         }
+
+        public override bool IsDefault { get { return Compare(defaultValue, Get()); } }
+        public override void SetCurrentToDefault() { defaultValue = Get(); }
+        #endregion
 
 
         #region abstract
@@ -303,11 +311,32 @@ namespace PrefsGUI
         #endregion
     }
 
-    public abstract class _PrefsParam
+    public abstract class _PrefsParam : ISerializationCallbackReceiver
     {
+        #region RegistAllInstance
+        public static Dictionary<string, _PrefsParam> all = new Dictionary<string, _PrefsParam>();
+
+        public void OnBeforeSerialize() { }
+
+        public void OnAfterDeserialize() { Regist(); } // To Regist Array/List In Inspector. Constructor not called.
+
+        void Regist() { all[key] = this; }
+        #endregion
+
         public string key;
 
-        public _PrefsParam(string key) { this.key = key; }
+        public _PrefsParam(string key)
+        {
+            this.key = key;
+            Regist();
+        }
+
+        #region abstract
+        public abstract bool OnGUI(string label = null);
+        public abstract bool IsDefault { get; }
+        public abstract void SetCurrentToDefault();
+
+        #endregion
     }
     #endregion
 }
