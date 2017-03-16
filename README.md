@@ -1,6 +1,6 @@
 # PrefsGUI
 
- accessor like variable and GUI set for Unity PlayerPrefs / JSON file
+Accessor like variable and GUI set for Unity PlayerPrefs / JSON file
 
 [Unity Package](PrefsGUI.unitypackage)
 
@@ -56,6 +56,11 @@ public class PrefsGUISample : PrefsGUISampleBase
 }
 ```
 
+# EditorWindow
+![](PrefsGUIEditor.gif)
+- List up Prefs and can modify 
+- Can feedback current value to default
+
 # Switch PlayerPrefs / JSON
 
 Switch using at PrefsWrapper.cs
@@ -69,6 +74,6 @@ Application.persistentDataPath + "/Prefs.json"
 
 # MaterialPropertyDebugMenu
 
-auto create material GUI menu
+Auto create material GUI menu
 
 ![](MaterialPropertyDebugMenu.gif)
