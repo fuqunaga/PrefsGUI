@@ -25,20 +25,37 @@ public static class GUIUtil
 
     public class Folds
     {
-        Dictionary<string, Fold> _dic = new Dictionary<string, Fold>();
-        List<string> _order = new List<string>();
+        public class OrderFold
+        {
+            public int _order;
+            public Fold _fold;
+        }
+
+        Dictionary<string, OrderFold> _dic = new Dictionary<string, OrderFold>();
+        bool _needUpdate = true;
 
         public void Add(string name, Action action, bool enableFirst = false)
         {
-            Fold fold;
-            if (_dic.TryGetValue(name, out fold))
+            Add(0, name, action, enableFirst);
+        }
+
+        public void Add(int order, string name, Action action, bool enableFirst = false)
+        {
+            OrderFold orderFold;
+            if (_dic.TryGetValue(name, out orderFold))
             {
-                fold.Add(action);
+                orderFold._order = order;
+                orderFold._fold.Add(action);
             }
             else {
-                _order.Add(name);
-                _dic.Add(name, new Fold(name, action, enableFirst));
+                _dic.Add(name, new OrderFold
+                {
+                    _order = order,
+                    _fold = new Fold(name, action, enableFirst)
+                });
             }
+
+            _needUpdate = true;
         }
 
         public void Remove(string name)
@@ -46,18 +63,24 @@ public static class GUIUtil
             if ( _dic.ContainsKey(name))
             {
                 _dic.Remove(name);
-                _order.Remove(name);
             }
+
+            _needUpdate = true;
         }
 
+
+        List<Fold> _folds = new List<Fold>();
         public void OnGUI()
         {
+            if ( _needUpdate )
+            {
+                _folds = _dic.Values.OrderBy(of => of._order).Select(of => of._fold).ToList();
+                _needUpdate = false;
+            }
+
             using (var v = new GUILayout.VerticalScope())
             {
-                _order.ForEach(name =>
-                {
-                    _dic[name].OnGUI();
-                });
+                _folds.ForEach(fold => fold.OnGUI());
             }
         }
     }

@@ -33,6 +33,7 @@ namespace PrefsGUI
             _miscFold.Add("Fold0", () => { GUILayout.Label("Fold0"); });
             _miscFold.Add("Fold1", () => { GUILayout.Label("Fold1 FirstAdd"); });
             _miscFold.Add("Fold1", () => { GUILayout.Label("Fold1 SecondAdd"); });
+            _miscFold.Add(-1, "FoldCustomOrder", () => { GUILayout.Label("FoldCustomOrder"); });
 
             _fieldFold.Add("Field", () =>
             {
