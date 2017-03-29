@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 public static class GUIUtil
 {
+    #region Fold
     public static class Style {
         // 参考 https://github.com/XJINE/XJUnity3D.GUI
         public static readonly GUIStyle FoldoutPanelStyle;
@@ -25,33 +25,40 @@ public static class GUIUtil
 
     public class Folds
     {
-        public class OrderFold
+        public class FoldData
         {
             public int _order;
             public Fold _fold;
         }
 
-        Dictionary<string, OrderFold> _dic = new Dictionary<string, OrderFold>();
+        Dictionary<string, FoldData> _dic = new Dictionary<string, FoldData>();
         bool _needUpdate = true;
 
-        public void Add(string name, Action action, bool enableFirst = false)
+        public void Add(string name, Action drawFunc, bool enableFirst = false)
         {
-            Add(0, name, action, enableFirst);
+            Add(name, null, drawFunc, enableFirst);
         }
 
-        public void Add(int order, string name, Action action, bool enableFirst = false)
+        public void Add(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
         {
-            OrderFold orderFold;
-            if (_dic.TryGetValue(name, out orderFold))
+            Add(0, name, checkEnableFunc, drawFunc, enableFirst);
+        }
+
+        public void Add(int order, string name, Action drawFunc, bool enableFirst = false) { Add(order, name, null, drawFunc, enableFirst); }
+
+        public void Add(int order, string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
+        {
+            FoldData foldData;
+            if (_dic.TryGetValue(name, out foldData))
             {
-                orderFold._order = order;
-                orderFold._fold.Add(action);
+                foldData._order = order;
+                foldData._fold.Add(checkEnableFunc, drawFunc);
             }
             else {
-                _dic.Add(name, new OrderFold
+                _dic.Add(name, new FoldData
                 {
                     _order = order,
-                    _fold = new Fold(name, action, enableFirst)
+                    _fold = new Fold(name, checkEnableFunc, drawFunc, enableFirst)
                 });
             }
 
@@ -87,39 +94,77 @@ public static class GUIUtil
 
     public class Fold
     {
-        bool foldOpen;
-        string name;
-        Action draw;
+        bool _foldOpen;
+        string _name;
 
-        public Fold(string n, Action action, bool enableFirst = false)
+        public class FuncData
         {
-            name = n;
-            draw += action;
-            foldOpen = enableFirst;
+            public Func<bool> _checkEnable;
+            public Action _draw;
+        }
+        List<FuncData> _funcDatas = new List<FuncData>();
+
+        public Fold(string name, Action drawFunc, bool enableFirst = false) : this(name, null, drawFunc, enableFirst) { }
+
+        public Fold(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
+        {
+            _name = name;
+            _foldOpen = enableFirst;
+            Add(checkEnableFunc, drawFunc);
         }
 
-        public void Add(Action action)
+        public void Add(Action drawFunc) { Add(null, drawFunc); }
+        public void Add(Func<bool> checkEnableFunc, Action drawFunc)
         {
-            draw += action;
+            _funcDatas.Add(new FuncData()
+            {
+                _checkEnable = checkEnableFunc,
+                _draw = drawFunc
+            });
         }
 
         public void OnGUI()
         {
-            var foldStr = foldOpen ? "▼" : "▶";
+            var drawFuncs = _funcDatas.Where(fd => fd._checkEnable == null || fd._checkEnable()).Select(fd => fd._draw).ToList();
 
-            foldOpen ^= GUILayout.Button(foldStr + name, Style.FoldoutPanelStyle);
-            if (foldOpen)
+            if (drawFuncs.Any())
             {
-                using (var v = new GUILayout.VerticalScope("window"))
-                {
-                    draw();
+                var foldStr = _foldOpen ? "▼" : "▶";
 
+                _foldOpen ^= GUILayout.Button(foldStr + _name, Style.FoldoutPanelStyle);
+                if (_foldOpen)
+                {
+                    using (var v = new GUILayout.VerticalScope("window"))
+                    {
+                        drawFuncs.ForEach(drawFunc => drawFunc());
+                    }
                 }
             }
         }
     }
+    #endregion
+
+    #region FoldUtil
+
+    public interface IDebugMenu { void DebugMenu(); }
+
+    public static void Add(this Folds folds, string name, params Type[] iDebugMenuTypes)
+    {
+        folds.Add(0, name, iDebugMenuTypes);
+    }
+
+    public static void Add(this Folds folds, int order, string name, params Type[] iDebugMenuTypes)
+    {
+        // not ToList(). call FindObjectsOfType every frame. heavy but useful.
+        var iDebugMenus = iDebugMenuTypes.SelectMany(t => UnityEngine.Object.FindObjectsOfType(t)).Where(o => o!= null).Cast<IDebugMenu>();
+
+        folds.Add(order, name, () => iDebugMenus.Any(), () => iDebugMenus.ToList().ForEach(idm => idm.DebugMenu()));
+    }
+
+    #endregion
 
 
+    #region Field()
     public static T Field<T>(T v, string label = "") { string s = null;  return Field(v, ref s, label); }
     public static T Field<T>(T v, ref string unparsedStr, string label = "")
     {
@@ -268,7 +313,9 @@ public static class GUIUtil
         return v;
     }
     #endregion
+    #endregion
 
+    #region Slider
     public static float Slider(float v, string label = "") { return Slider(v, 0f, 1f, label); }
     public static float Slider(float v, ref string unparsedStr, string label = "") { return Slider(v, 0f, 1f, ref unparsedStr, label); }
 
@@ -343,6 +390,7 @@ public static class GUIUtil
 
     #endregion
 
+    #endregion
 
     public static int IntButton(int v, string label = "")
     {

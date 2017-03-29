@@ -11,6 +11,8 @@ namespace PrefsGUI
         GUIUtil.Folds _fieldFold = new GUIUtil.Folds();
         GUIUtil.Folds _sliderFold = new GUIUtil.Folds();
         GUIUtil.Folds _miscFold = new GUIUtil.Folds();
+        GUIUtil.Folds _dynamicFold = new GUIUtil.Folds();
+
 
         public EnumSample _enum;
         public string _string;
@@ -27,6 +29,7 @@ namespace PrefsGUI
         public string _vector3Str;
         public string _vector4Str;
 
+        bool _dynamicFoldEnable = true;
 
         public void Start()
         {
@@ -34,6 +37,8 @@ namespace PrefsGUI
             _miscFold.Add("Fold1", () => { GUILayout.Label("Fold1 FirstAdd"); });
             _miscFold.Add("Fold1", () => { GUILayout.Label("Fold1 SecondAdd"); });
             _miscFold.Add(-1, "FoldCustomOrder", () => { GUILayout.Label("FoldCustomOrder"); });
+            _miscFold.Add("IDebugMenu", typeof(IDebugMenuSample));
+            _dynamicFold.Add("DynamicFold", () => _dynamicFoldEnable, () => { GUILayout.Label("DynamicFold"); });
 
             _fieldFold.Add("Field", () =>
             {
@@ -85,6 +90,8 @@ namespace PrefsGUI
                 using (var v = new GUILayout.VerticalScope())
                 {
                     _miscFold.OnGUI();
+                    _dynamicFoldEnable = GUILayout.Toggle(_dynamicFoldEnable, "DynamicFold");
+                    _dynamicFold.OnGUI();
                     _int = GUIUtil.IntButton(_int, "IntButton");
 
                     GUIUtil.Indent(() =>
