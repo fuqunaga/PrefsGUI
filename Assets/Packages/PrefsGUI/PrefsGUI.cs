@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using PrefsWrapper;
-
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Collections;
+using System.Xml.Serialization;
 
 namespace PrefsGUI
 {
@@ -79,7 +82,7 @@ namespace PrefsGUI
 
         public static implicit operator Vector2(PrefsVector4 v) { return v.Get(); }
         public static implicit operator Vector3(PrefsVector4 v) { return v.Get(); }
-        public static implicit operator Color  (PrefsVector4 v) { return v.Get(); }
+        public static implicit operator Color(PrefsVector4 v) { return v.Get(); }
     }
 
     [Serializable]
@@ -99,7 +102,7 @@ namespace PrefsGUI
             }
         }
 
-        protected override bool Compare(Color lhs, Color rhs)
+        protected override bool Compare(Vector4 lhs, Vector4 rhs)
         {
             return lhs == rhs;
         }
@@ -132,6 +135,110 @@ namespace PrefsGUI
         {
             return c.Get();
         }
+    }
+
+
+    /// <summary>
+    /// OnGUI() is depreciated. NOT user friendly.
+    /// you can set customGUI or write runtime GUI.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class PrefsList<T> : PrefsParam<List<T>, string>, IList<T>
+    {
+        Func<List<T>, List<T>> _customOnGUIFunc;
+
+        public PrefsList(string key, List<T> defaultValue = default(List<T>)) : this(key, null, defaultValue) { }
+        public PrefsList(string key, Func<List<T>, List<T>> customOnGUIFunc, List<T> defaultValue = default(List<T>)) : base(key, defaultValue)
+        {
+            _customOnGUIFunc = customOnGUIFunc;
+        }
+
+
+        public override bool OnGUI(string label = null)
+        {
+            return OnGUIStrandardStyle((string v, ref string unparsedStr) =>
+            {
+                string ret = null;
+                string l = label ?? key;
+                if (_customOnGUIFunc != null)
+                {
+                    GUILayout.Label(l);
+                    GUIUtil.Indent(() => ret = ToInner(_customOnGUIFunc(ToOuter(v))));
+                }
+                else {
+                    ret = GUIUtil.Field<string>(v, ref unparsedStr, l);
+                }
+
+                return ret;
+            });
+        }
+
+        static List<T> _empty = new List<T>();
+
+        protected override string ToInner(List<T> outerV)
+        {
+            if (outerV == null) return "";
+            var serializer = new XmlSerializer(typeof(List<T>));
+            using (StringWriter writer = new StringWriter())
+            {
+                serializer.Serialize(writer, outerV);
+                return writer.ToString();
+            }
+            /*
+            
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            MemoryStream memoryStream = new MemoryStream();
+            binaryFormatter.Serialize(memoryStream, outerV);
+            return Convert.ToBase64String(memoryStream.GetBuffer());
+            */
+        }
+
+        protected override List<T> ToOuter(string innerV)
+        {
+            if (!string.IsNullOrEmpty(innerV))
+            {
+                var serializer = new XmlSerializer(typeof(List<T>));
+                using (StringReader reader = new StringReader(innerV))
+                {
+                    try
+                    {
+                        return (List<T>)serializer.Deserialize(reader);
+                    }
+                    catch { }
+                }
+            }
+            return _empty;
+            /*
+
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            MemoryStream memoryStream = new MemoryStream(Convert.FromBase64String(innerV));
+            return (List<T>)binaryFormatter.Deserialize(memoryStream);
+            */
+        }
+
+        #region IList<T>
+        protected void UpdateValue(Action<List<T>> action) { var v = Get(); action(v); Set(v); }
+
+        public int Count { get { return Get().Count; } }
+        public bool IsReadOnly { get { return false; } }
+        public T this[int index] { get { return Get()[index]; } set { UpdateValue((v) => v[index] = value); } }
+        public int IndexOf(T item) { return Get().IndexOf(item); }
+        public void Insert(int index, T item) { UpdateValue((v) => v.Insert(index, item)); }
+        public void RemoveAt(int index) { UpdateValue((v) => v.RemoveAt(index)); }
+        public void Add(T item) { UpdateValue((v) => v.Add(item)); }
+        public void Clear() { UpdateValue((v) => v.Clear()); }
+        public bool Contains(T item) { return Get().Contains(item); }
+        public void CopyTo(T[] array, int arrayIndex) { Get().CopyTo(array, arrayIndex); }
+        public bool Remove(T item)
+        {
+            var v = Get();
+            var ret = v.Remove(item);
+            Set(v);
+            return ret;
+        }
+        public IEnumerator<T> GetEnumerator() { return Get().GetEnumerator(); }
+        IEnumerator IEnumerable.GetEnumerator() { return Get().GetEnumerator(); }
+        #endregion
     }
 
 
@@ -243,7 +350,7 @@ namespace PrefsGUI
             return OnGUIStrandardStyle((InnerT v, ref string unparsedStr) => GUIUtil.Field<InnerT>(v, ref unparsedStr, label ?? key));
         }
 
-        public override bool IsDefault { get { return Compare(defaultValue, Get()); } }
+        public override bool IsDefault { get { return Compare(ToInner(defaultValue), _Get()); } }
         public override void SetCurrentToDefault() { defaultValue = Get(); }
         #endregion
 
@@ -260,7 +367,7 @@ namespace PrefsGUI
             return OnGUIwithButton(() => OnGUIWithUnparsedStr(key, guiFunc));
         }
 
-        protected virtual bool Compare(OuterT lhs, OuterT rhs) { return lhs.Equals(rhs);  }
+        protected virtual bool Compare(InnerT lhs, InnerT rhs) { return lhs.Equals(rhs); }
 
         protected bool OnGUIwithButton(Func<bool> onGUIFunc)
         {
@@ -268,16 +375,24 @@ namespace PrefsGUI
             using (var h = new GUILayout.HorizontalScope())
             {
                 changed = onGUIFunc();
-                var label = Compare(Get(), defaultValue) ? "default" : "<color=red>default</color>" ;
-
-                if (GUILayout.Button(label, GUILayout.Width(60f)))
-                {
-                    Set(defaultValue);
-                    changed = true;
-                }
+                changed |= OnGUIDefaultButton(); 
             }
 
             return changed;
+        }
+
+        // public for Custom GUI
+        public bool OnGUIDefaultButton()
+        {
+            var label = Compare(_Get(), ToInner(defaultValue)) ? "default" : "<color=red>default</color>";
+
+            var ret = GUILayout.Button(label, GUILayout.Width(60f));
+            if ( ret )
+            {
+                Set(defaultValue);
+            }
+
+            return ret;
         }
 
         static Dictionary<string, string> _unparsedStrTable = new Dictionary<string, string>();
