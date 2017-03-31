@@ -103,7 +103,6 @@ namespace PrefsGUI
                     {
                         GUILayout.Label("ColorScope");
                     }
-
                 }
 
                 _fieldFold.OnGUI();

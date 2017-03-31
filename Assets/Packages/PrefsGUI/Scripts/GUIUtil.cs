@@ -155,11 +155,41 @@ public static class GUIUtil
 
     public static void Add(this Folds folds, int order, string name, params Type[] iDebugMenuTypes)
     {
-        // not ToList(). call FindObjectsOfType every frame. heavy but useful.
-        var iDebugMenus = iDebugMenuTypes.SelectMany(t => UnityEngine.Object.FindObjectsOfType(t)).Where(o => o!= null).Cast<IDebugMenu>();
+        var iDebugMenus = iDebugMenuTypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
+            .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDebugMenu>();   // exec every call.
 
         folds.Add(order, name, () => iDebugMenus.Any(), () => iDebugMenus.ToList().ForEach(idm => idm.DebugMenu()));
     }
+
+    /// <summary>
+    /// FindObjectOfTypeを呼びまくるのは重いので適度に散らす
+    /// </summary>
+    public class LazyFindObject
+    {
+        protected UnityEngine.Object _obj;
+        protected Type _type;
+        protected int _delayCount;
+        const int _delayCountMax = 60;
+
+        public LazyFindObject(Type type)
+        {
+            _type = type;
+        }
+
+        public UnityEngine.Object GetObject()
+        {
+            if ((Event.current.type == EventType.Layout) && _obj == null)
+            {
+                if (--_delayCount <= 0)
+                {
+                    _obj = UnityEngine.Object.FindObjectOfType(_type);
+                    _delayCount = UnityEngine.Random.Range(0, _delayCountMax);
+                }
+            }
+            return _obj;
+        }
+    }
+
 
     #endregion
 
