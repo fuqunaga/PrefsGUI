@@ -324,7 +324,7 @@ namespace PrefsGUI
         [SerializeField]
         protected OuterT defaultValue;
 
-        protected bool dirty = true; // if dirty, create OuterT cache when Get() called
+        protected bool cached;
         protected OuterT cachedOuter;
 
         public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key)
@@ -339,10 +339,10 @@ namespace PrefsGUI
 
         public OuterT Get()
         {
-            if (dirty)
+            if (!cached)
             {
                 cachedOuter = ToOuter(_Get());
-                dirty = false;
+                cached = true;
             }
             return cachedOuter;
         }
@@ -354,7 +354,7 @@ namespace PrefsGUI
         protected void _Set(InnerT v)
         {
             PlayerPrefs<InnerT>.Set(key, v);
-            dirty = true;
+            cached = false;
         }
 
         public void SetWithDefault(OuterT v) { Set(v); defaultValue = v; }
