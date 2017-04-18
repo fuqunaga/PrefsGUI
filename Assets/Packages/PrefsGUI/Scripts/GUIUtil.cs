@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 public static class GUIUtil
 {
@@ -155,6 +156,8 @@ public static class GUIUtil
 
     public static void Add(this Folds folds, int order, string name, params Type[] iDebugMenuTypes)
     {
+        Assert.IsTrue(iDebugMenuTypes.All(type => type.GetInterfaces().Contains(typeof(IDebugMenu))));
+
         var iDebugMenus = iDebugMenuTypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
             .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDebugMenu>();   // exec every call.
 
