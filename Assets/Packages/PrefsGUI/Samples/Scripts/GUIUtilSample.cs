@@ -22,12 +22,16 @@ namespace PrefsGUI
         public Vector2 _vector2;
         public Vector3 _vector3;
         public Vector4 _vector4;
+        public Rect _rect;
+
 
         public string _intStr;
         public string _floatStr;
         public string _vector2Str;
         public string _vector3Str;
         public string _vector4Str;
+        public string _rectStr;
+
 
         bool _dynamicFoldEnable = true;
 
@@ -50,6 +54,7 @@ namespace PrefsGUI
                 _vector2 = GUIUtil.Field(_vector2, "vector2");
                 _vector3 = GUIUtil.Field(_vector3, "vector3");
                 _vector4 = GUIUtil.Field(_vector4, "vector4");
+                _rect = GUIUtil.Field(_rect, "rect");
             });
 
             _fieldFold.Add("FieldWithUnparsedStr", () =>
@@ -59,6 +64,7 @@ namespace PrefsGUI
                 _vector2 = GUIUtil.Field(_vector2, ref _vector2Str, "vector2");
                 _vector3 = GUIUtil.Field(_vector3, ref _vector3Str, "vector3");
                 _vector4 = GUIUtil.Field(_vector4, ref _vector4Str, "vector4");
+                _rect = GUIUtil.Field(_rect, ref _rectStr, "rect");
             },
             true);
 
@@ -69,6 +75,7 @@ namespace PrefsGUI
                 _vector2 = GUIUtil.Slider(_vector2, Vector2.zero, Vector2.one, "Slider(Vector2)");
                 _vector3 = GUIUtil.Slider(_vector3, Vector3.zero, Vector3.one, "Slider(Vector3)");
                 _vector4 = GUIUtil.Slider(_vector4, Vector4.zero, Vector4.one, "Slider(Vector4)");
+                _rect = GUIUtil.Slider(_rect, Rect.zero, new Rect(1f,1f,1f,1f), "Slider(Rect)");
             });
 
             _sliderFold.Add("SliderWithUnparsedStr", () =>
@@ -78,6 +85,7 @@ namespace PrefsGUI
                 _vector2 = GUIUtil.Slider(_vector2, Vector2.zero, Vector2.one, ref _vector2Str, "Slider(Vector2)");
                 _vector3 = GUIUtil.Slider(_vector3, Vector3.zero, Vector3.one, ref _vector3Str, "Slider(Vector3)");
                 _vector4 = GUIUtil.Slider(_vector4, Vector4.zero, Vector4.one, ref _vector4Str, "Slider(Vector4)");
+                _rect = GUIUtil.Slider(_rect, Rect.zero, new Rect(1f, 1f, 1f, 1f), ref _rectStr, "Slider(Rect)");
             },
             true);
         }

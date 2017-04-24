@@ -13,11 +13,11 @@ namespace PrefsGUI
         }
 
 
-        Rect _rect = new Rect();
+        Rect _windowRect = new Rect();
 
         public void OnGUI()
         {
-            _rect = GUILayout.Window(GetHashCode(), _rect, (id) =>
+            _windowRect = GUILayout.Window(GetHashCode(), _windowRect, (id) =>
             {
                 OnGUIInternal();
                 GUI.DragWindow();

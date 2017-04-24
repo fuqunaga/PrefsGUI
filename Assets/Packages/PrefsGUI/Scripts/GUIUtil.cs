@@ -151,17 +151,27 @@ public static class GUIUtil
 
     public static void Add(this Folds folds, string name, params Type[] iDebugMenuTypes)
     {
-        folds.Add(0, name, iDebugMenuTypes);
+        folds.Add(name, false, iDebugMenuTypes);
+    }
+
+    public static void Add(this Folds folds, string name, bool enableFirst, params Type[] iDebugMenuTypes)
+    {
+        folds.Add(0, name, enableFirst, iDebugMenuTypes);
     }
 
     public static void Add(this Folds folds, int order, string name, params Type[] iDebugMenuTypes)
+    {
+        folds.Add(order, name, false, iDebugMenuTypes);
+    }
+
+    public static void Add(this Folds folds, int order, string name, bool enableFirst, params Type[] iDebugMenuTypes)
     {
         Assert.IsTrue(iDebugMenuTypes.All(type => type.GetInterfaces().Contains(typeof(IDebugMenu))));
 
         var iDebugMenus = iDebugMenuTypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
             .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDebugMenu>();   // exec every call.
 
-        folds.Add(order, name, () => iDebugMenus.Any(), () => iDebugMenus.ToList().ForEach(idm => idm.DebugMenu()));
+        folds.Add(order, name, () => iDebugMenus.Any(), () => iDebugMenus.ToList().ForEach(idm => idm.DebugMenu()), enableFirst);
     }
 
     /// <summary>
@@ -246,6 +256,20 @@ public static class GUIUtil
     #region Field() Implement
     delegate object FieldFunc(object v, ref string unparsedStr);
     static object FieldFuncBool(object v, ref string unparsedStr) { return GUILayout.Toggle(Convert.ToBoolean(v), ""); }
+    static object FieldFuncRect(object v, ref string unparsedStr)
+    {
+        const int elementNum = 4;
+        var strs = SplitUnparsedStr(unparsedStr, elementNum);
+
+        var rect = (Rect)v;
+        rect.x = Field(rect.x, ref strs[0], "x");
+        rect.y = Field(rect.y, ref strs[1], "y");
+        rect.width = Field(rect.width, ref strs[2], "w");
+        rect.height = Field(rect.height, ref strs[3], "h");
+
+        unparsedStr = JoinUnparsedStr(strs);
+        return rect;
+    }
 
     static object FieldFuncVector<T>(object v, ref string unparsedStr)
     {
@@ -263,6 +287,7 @@ public static class GUIUtil
     static readonly Dictionary<Type, FieldFunc> _typeFuncTable = new Dictionary<Type, FieldFunc>()
     {
         {typeof(bool),  FieldFuncBool },
+        {typeof(Rect), FieldFuncRect },
         {typeof(Vector2), FieldFuncVector<Vector2> },
         {typeof(Vector3), FieldFuncVector<Vector3> },
         {typeof(Vector4), FieldFuncVector<Vector4> },
@@ -384,12 +409,42 @@ public static class GUIUtil
         return ret;
     }
 
+    static readonly string[] defaultElemLabelsRect = new[] { "x", "y", "w", "h" };
+    static object SliderFuncRect(object v, object min, object max, ref string unparsedStr, string label = "", string[] elemLabels = null)
+    {
+        const int elementNum = 4;
+        var eLabels = elemLabels ?? defaultElemLabelsRect;
 
-    static readonly string[] defaultElemLabels = new[] { "x", "y", "z", "w" };
+        using (var h0 = new GUILayout.HorizontalScope())
+        {
+            if (!string.IsNullOrEmpty(label)) GUILayout.Label(label);
+            using (var vertical = new GUILayout.VerticalScope())
+            {
+                var strs = SplitUnparsedStr(unparsedStr, elementNum);
+                var rect = (Rect)v;
+                var rectMin = (Rect)min;
+                var rectMax = (Rect)max;
+
+                rect.x      = Slider(rect.x,      rectMin.x,      rectMax.x,      ref strs[0], eLabels[0]);
+                rect.y      = Slider(rect.y,      rectMin.y,      rectMax.y,      ref strs[1], eLabels[1]);
+                rect.width  = Slider(rect.width,  rectMin.width,  rectMax.width,  ref strs[2], eLabels[2]);
+                rect.height = Slider(rect.height, rectMin.height, rectMax.height, ref strs[3], eLabels[3]);
+
+                v = rect;
+
+                unparsedStr = JoinUnparsedStr(strs);
+            }
+        }
+
+        return v;
+    }
+
+
+    static readonly string[] defaultElemLabelsVector = new[] { "x", "y", "z", "w" };
     static object SliderFuncVector<T>(object v, object min, object max, ref string unparsedStr, string label = "", string[] elemLabels = null)
     {
         var elementNum = AbstractVector.GetElementNum<T>();
-        var eLabels = elemLabels ?? defaultElemLabels;
+        var eLabels = elemLabels ?? defaultElemLabelsVector;
 
         using (var h0 = new GUILayout.HorizontalScope())
         {
@@ -416,6 +471,7 @@ public static class GUIUtil
     {
         {typeof(int), SliderInt },
         {typeof(float), SliderFloat },
+        {typeof(Rect), SliderFuncRect },
         {typeof(Vector2), SliderFuncVector<Vector2> },
         {typeof(Vector3), SliderFuncVector<Vector3> },
         {typeof(Vector4), SliderFuncVector<Vector4> },

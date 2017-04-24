@@ -8,7 +8,7 @@ namespace PrefsGUI
 
     public abstract class PrefsGUIEditorBase : EditorWindow
     {
-        protected IEnumerable<_PrefsParam> PrefsList { get { return _PrefsParam.all.Values.OrderBy(prefs => prefs.key); } }
+        protected IEnumerable<PrefsParam> PrefsList { get { return PrefsParam.all.Values.OrderBy(prefs => prefs.key); } }
 
         void OnGUI()
         {

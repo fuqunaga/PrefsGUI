@@ -1,12 +1,8 @@
-﻿#if UNITY_EDITOR
-using UnityEditor;
-#endif
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using PrefsWrapper;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Collections;
 using System.Xml.Serialization;
@@ -137,6 +133,26 @@ namespace PrefsGUI
         }
     }
 
+
+    [Serializable]
+    public class PrefsRect : PrefsTuple<Rect, Vector4>
+    {
+        public PrefsRect(string key, Rect defaultValue = default(Rect)) : base(key, defaultValue) { }
+
+        protected override string[] defaultEelementLabels { get { return null; } }
+        protected override Vector4 defaultMax { get { return Vector4.one; } }
+        protected override Vector4 defaultMin { get { return Vector4.zero; } }
+
+        protected override Vector4 ToInner(Rect outerV)
+        {
+            return new Vector4(outerV.x, outerV.y, outerV.width, outerV.height);
+        }
+
+        protected override Rect ToOuter(Vector4 innerV)
+        {
+            return new Rect(innerV.x, innerV.y, innerV.z, innerV.w);
+        }
+    }
 
     /// <summary>
     /// OnGUI() is depreciated. NOT user friendly.
@@ -319,7 +335,7 @@ namespace PrefsGUI
         protected override T ToInner(T TouterV) { return TouterV; }
     }
 
-    public abstract class PrefsParam<OuterT, InnerT> : _PrefsParam
+    public abstract class PrefsParam<OuterT, InnerT> : PrefsParam
     {
         [SerializeField]
         protected OuterT defaultValue;
@@ -362,6 +378,20 @@ namespace PrefsGUI
         public virtual void Delete() { PlayerPrefs.DeleteKey(key); }
 
         #region override
+
+        public override Type GetInnerType()
+        {
+            return typeof(InnerT);
+        }
+        public override object GetObject()
+        {
+            return _Get();
+        }
+        public override void SetObject(object obj)
+        {
+            _Set((InnerT)obj);
+        }
+
         public override bool OnGUI(string label = null)
         {
             return OnGUIStrandardStyle((InnerT v, ref string unparsedStr) => GUIUtil.Field<InnerT>(v, ref unparsedStr, label ?? key));
@@ -443,10 +473,11 @@ namespace PrefsGUI
         #endregion
     }
 
-    public abstract class _PrefsParam : ISerializationCallbackReceiver
+
+    public abstract class PrefsParam : ISerializationCallbackReceiver
     {
         #region RegistAllInstance
-        public static Dictionary<string, _PrefsParam> all = new Dictionary<string, _PrefsParam>();
+        public static Dictionary<string, PrefsParam> all = new Dictionary<string, PrefsParam>();
 
         public void OnBeforeSerialize() { }
 
@@ -457,17 +488,20 @@ namespace PrefsGUI
 
         public string key;
 
-        public _PrefsParam(string key)
+        public PrefsParam(string key)
         {
             this.key = key;
             Regist();
         }
 
         #region abstract
+        public abstract Type GetInnerType();
+        public abstract object GetObject();
+        public abstract void SetObject(object obj);
+
         public abstract bool OnGUI(string label = null);
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
-
         #endregion
     }
     #endregion

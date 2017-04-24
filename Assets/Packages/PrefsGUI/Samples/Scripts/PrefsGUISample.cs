@@ -35,6 +35,7 @@ namespace PrefsGUI
         public PrefsVector3 _prefsVector3 = new PrefsVector3("PrefsVector3");
         public PrefsVector4 _prefsVector4 = new PrefsVector4("PrefsVector4");
         public PrefsColor _prefsColor = new PrefsColor("PrefsColor");
+        public PrefsRect _prefsRect = new PrefsRect("PrefsRect");
         public PrefsList _prefsList = new PrefsList("PrefsList");
         public PrefsList _prefsListRuntimeGUI = new PrefsList("PrefsListRuntimeGUI");
         public PrefsList _prefsListCustomGUI = new PrefsList("PrefsListCustomGUI", (list) =>
@@ -68,6 +69,8 @@ namespace PrefsGUI
             _prefsVector4.OnGUI();
             _prefsVector4.OnGUISlider();
             _prefsColor.OnGUI();
+            _prefsRect.OnGUI();
+            _prefsRect.OnGUISlider();
 
             // return true if value was changed
             if (_prefsColor.OnGUISlider())
@@ -131,6 +134,7 @@ namespace PrefsGUI
             v3 = _prefsVector4;
             v4 = _prefsVector4;
             Color c = _prefsVector4;
+            Rect rect = _prefsRect;
             c = _prefsColor;
             v4 = _prefsColor;
         }
