@@ -65,6 +65,8 @@ namespace PrefsGUI
         Dictionary<Type, ISyncListKeyObj> _typeToSyncList;
         Dictionary<string, TypeAndIdx> _keyToTypeIdx = new Dictionary<string, TypeAndIdx>();
 
+        public List<string> _ignoreKeys = new List<string>();
+
 
         public void Awake()
         {
@@ -112,26 +114,29 @@ namespace PrefsGUI
             PrefsParam.all.Values.ToList().ForEach(prefs =>
             {
                 var key = prefs.key;
-                var obj = prefs.GetObject();
-                var type = prefs.GetInnerType();
-                if (type.IsEnum)
+                if (false == _ignoreKeys.Contains(key))
                 {
-                    type = typeof(int);
-                    obj = Convert.ToInt32(obj);
-                }
+                    var obj = prefs.GetObject();
+                    var type = prefs.GetInnerType();
+                    if (type.IsEnum)
+                    {
+                        type = typeof(int);
+                        obj = Convert.ToInt32(obj);
+                    }
 
-                TypeAndIdx ti;
-                if (_keyToTypeIdx.TryGetValue(key, out ti))
-                {
-                    var iSynList = _typeToSyncList[type];
-                    iSynList.Set(ti.idx, obj);
-                }
-                else {
-                    Assert.IsTrue(_typeToSyncList.ContainsKey(type), string.Format("type [{0}] is not supported.", type));
-                    var iSynList = _typeToSyncList[type];
-                    var idx = iSynList.Count;
-                    iSynList.Add(key, obj);
-                    _keyToTypeIdx[key] = new TypeAndIdx() { type = type, idx = idx };
+                    TypeAndIdx ti;
+                    if (_keyToTypeIdx.TryGetValue(key, out ti))
+                    {
+                        var iSynList = _typeToSyncList[type];
+                        iSynList.Set(ti.idx, obj);
+                    }
+                    else {
+                        Assert.IsTrue(_typeToSyncList.ContainsKey(type), string.Format("type [{0}] is not supported.", type));
+                        var iSynList = _typeToSyncList[type];
+                        var idx = iSynList.Count;
+                        iSynList.Add(key, obj);
+                        _keyToTypeIdx[key] = new TypeAndIdx() { type = type, idx = idx };
+                    }
                 }
             });
         }
