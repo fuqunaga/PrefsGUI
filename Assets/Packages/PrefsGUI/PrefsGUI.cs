@@ -369,8 +369,11 @@ namespace PrefsGUI
 
         protected void _Set(InnerT v)
         {
-            PlayerPrefs<InnerT>.Set(key, v);
-            cached = false;
+            if (false == Compare(v, _Get()))
+            {
+                PlayerPrefs<InnerT>.Set(key, v);
+                cached = false;
+            }
         }
 
         public void SetWithDefault(OuterT v) { Set(v); defaultValue = v; }
