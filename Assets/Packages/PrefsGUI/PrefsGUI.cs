@@ -200,13 +200,6 @@ namespace PrefsGUI
                 serializer.Serialize(writer, outerV);
                 return writer.ToString();
             }
-            /*
-            
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            MemoryStream memoryStream = new MemoryStream();
-            binaryFormatter.Serialize(memoryStream, outerV);
-            return Convert.ToBase64String(memoryStream.GetBuffer());
-            */
         }
 
         protected override List<T> ToOuter(string innerV)
@@ -224,12 +217,6 @@ namespace PrefsGUI
                 }
             }
             return _empty;
-            /*
-
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            MemoryStream memoryStream = new MemoryStream(Convert.FromBase64String(innerV));
-            return (List<T>)binaryFormatter.Deserialize(memoryStream);
-            */
         }
 
         #region IList<T>
@@ -343,6 +330,8 @@ namespace PrefsGUI
         protected bool cached;
         protected OuterT cachedOuter;
 
+        protected bool synced;
+
         public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key)
         {
             this.defaultValue = defaultValue;
@@ -367,13 +356,14 @@ namespace PrefsGUI
 
         public void Set(OuterT v) { _Set(ToInner(v)); }
 
-        protected void _Set(InnerT v)
+        protected void _Set(InnerT v, bool synced=false)
         {
             if (false == Compare(v, _Get()))
             {
                 PlayerPrefs<InnerT>.Set(key, v);
                 cached = false;
             }
+            this.synced = synced;
         }
 
         public void SetWithDefault(OuterT v) { Set(v); defaultValue = v; }
@@ -390,9 +380,9 @@ namespace PrefsGUI
         {
             return _Get();
         }
-        public override void SetObject(object obj)
+        public override void SetObject(object obj, bool synced)
         {
-            _Set((InnerT)obj);
+            _Set((InnerT)obj, synced);
         }
 
         public override bool OnGUI(string label = null)
@@ -414,7 +404,17 @@ namespace PrefsGUI
         #region GUI Implement
         protected bool OnGUIStrandardStyle(GUIFunc guiFunc)
         {
-            return OnGUIwithButton(() => OnGUIWithUnparsedStr(key, guiFunc));
+            Color? prevColor = null;
+            if ( synced )
+            {
+                prevColor = GUI.color;
+                GUI.color = Color.cyan;
+            }
+            var ret = OnGUIwithButton(() => OnGUIWithUnparsedStr(key, guiFunc));
+
+            if (prevColor.HasValue) GUI.color = prevColor.Value;
+
+            return ret;
         }
 
         protected virtual bool Compare(InnerT lhs, InnerT rhs) { return lhs.Equals(rhs); }
@@ -500,7 +500,7 @@ namespace PrefsGUI
         #region abstract
         public abstract Type GetInnerType();
         public abstract object GetObject();
-        public abstract void SetObject(object obj);
+        public abstract void SetObject(object obj, bool synced);
 
         public abstract bool OnGUI(string label = null);
         public abstract bool IsDefault { get; }

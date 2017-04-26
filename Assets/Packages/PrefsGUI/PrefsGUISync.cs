@@ -153,7 +153,7 @@ namespace PrefsGUI
                     PrefsParam prefs;
                     if (all.TryGetValue(keyObj.key, out prefs))
                     {
-                        prefs.SetObject(keyObj._value);
+                        prefs.SetObject(keyObj._value, true);
                     }
                 }
             });

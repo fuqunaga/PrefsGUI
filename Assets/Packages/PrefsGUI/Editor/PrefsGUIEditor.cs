@@ -67,9 +67,28 @@ namespace PrefsGUI
             {
                 scrollPosition = sc.scrollPosition;
 
+                var sync = FindObjectOfType<PrefsGUISync>();
+                if (sync != null) GUILayout.Label("sync");
+
+
                 PrefsList.ToList().ForEach(prefs =>
                 {
-                    prefs.OnGUI();
+                    using (var h = new GUILayout.HorizontalScope())
+                    {
+                        if (sync != null)
+                        {
+                            var key = prefs.key;
+                            var isSync = !sync._ignoreKeys.Contains(key);
+
+                            if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
+                            {
+                                if (isSync) sync._ignoreKeys.Add(key);
+                                else sync._ignoreKeys.Remove(key);
+                            }
+                        }
+
+                        prefs.OnGUI();
+                    }
                 });
             }
 
