@@ -408,7 +408,7 @@ namespace PrefsGUI
             if ( synced )
             {
                 prevColor = GUI.color;
-                GUI.color = Color.cyan;
+                GUI.color = syncedColor;
             }
             var ret = OnGUIwithButton(() => OnGUIWithUnparsedStr(key, guiFunc));
 
@@ -490,6 +490,7 @@ namespace PrefsGUI
         #endregion
 
         public string key;
+        public static Color syncedColor = new Color32(255, 143, 63, 255);
 
         public PrefsParam(string key)
         {

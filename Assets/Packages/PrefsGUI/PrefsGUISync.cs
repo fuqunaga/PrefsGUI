@@ -144,19 +144,23 @@ namespace PrefsGUI
         [ClientCallback]
         void ReadPrefs()
         {
-            var all = PrefsParam.all;
-            _typeToSyncList.Values.ToList().ForEach(sl =>
+            // ignore at "Host"
+            if (!NetworkServer.active)
             {
-                for (var i = 0; i < sl.Count; ++i)
+                var all = PrefsParam.all;
+                _typeToSyncList.Values.ToList().ForEach(sl =>
                 {
-                    var keyObj = sl.Get(i);
-                    PrefsParam prefs;
-                    if (all.TryGetValue(keyObj.key, out prefs))
+                    for (var i = 0; i < sl.Count; ++i)
                     {
-                        prefs.SetObject(keyObj._value, true);
+                        var keyObj = sl.Get(i);
+                        PrefsParam prefs;
+                        if (all.TryGetValue(keyObj.key, out prefs))
+                        {
+                            prefs.SetObject(keyObj._value, true);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
