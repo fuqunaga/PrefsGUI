@@ -312,8 +312,7 @@ public static class GUIUtil
         var canParse = false;
         try
         {
-            Convert.ChangeType(unparsedStr, type);
-            canParse = true; // unparsedStr has value only if ChangeType successed.
+            canParse = Convert.ChangeType(unparsedStr, type).ToString() == unparsedStr;
         }
         catch (Exception) { }
 
