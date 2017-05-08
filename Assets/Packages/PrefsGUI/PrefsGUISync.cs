@@ -18,7 +18,7 @@ namespace PrefsGUI
 
 
         public struct KeyBool { public string key; public bool _value; }
-        public struct KeyInt { public string key; public int _value; public object obj { get { return _value; } set { _value = (int)value; } } }
+        public struct KeyInt { public string key; public int _value; }
         public struct KeyUInt { public string key; public uint _value; }
         public struct KeyFloat { public string key; public float _value; }
         public struct KeyString { public string key; public string _value; }

@@ -68,10 +68,10 @@ namespace PrefsGUI
             _prefsVector3.OnGUISlider();
             _prefsVector4.OnGUI();
             _prefsVector4.OnGUISlider();
-            _prefsColor.OnGUI();
             _prefsRect.OnGUI();
             _prefsRect.OnGUISlider();
 
+            _prefsColor.OnGUI();
             // return true if value was changed
             if (_prefsColor.OnGUISlider())
             {

@@ -462,7 +462,7 @@ namespace PrefsGUI
 
             var prev = _Get();
             var next = guiFunc(prev, ref unparsedStr);
-            if (!prev.Equals(next))
+            if (!Compare(prev, next))
             {
                 _Set(next);
                 changed = true;
