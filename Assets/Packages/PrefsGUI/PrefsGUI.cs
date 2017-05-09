@@ -327,8 +327,11 @@ namespace PrefsGUI
         [SerializeField]
         protected OuterT defaultValue;
 
-        protected bool cached;
+        protected bool isCachedOuter;
         protected OuterT cachedOuter;
+
+        protected bool isCachedObj;
+        protected object cachedObj;
 
         protected bool synced;
 
@@ -344,10 +347,10 @@ namespace PrefsGUI
 
         public OuterT Get()
         {
-            if (!cached)
+            if (!isCachedOuter)
             {
                 cachedOuter = ToOuter(_Get());
-                cached = true;
+                isCachedOuter = true;
             }
             return cachedOuter;
         }
@@ -356,12 +359,13 @@ namespace PrefsGUI
 
         public void Set(OuterT v) { _Set(ToInner(v)); }
 
-        protected void _Set(InnerT v, bool synced=false)
+        protected void _Set(InnerT v, bool synced = false)
         {
             if (false == Compare(v, _Get()))
             {
                 PlayerPrefs<InnerT>.Set(key, v);
-                cached = false;
+                isCachedOuter = false;
+                isCachedObj = false;
             }
             this.synced = synced;
         }
@@ -378,7 +382,13 @@ namespace PrefsGUI
         }
         public override object GetObject()
         {
-            return _Get();
+            if (!isCachedObj)
+            {
+                cachedObj = (object)_Get();
+                isCachedObj = true;
+            }
+
+            return cachedObj;
         }
         public override void SetObject(object obj, bool synced)
         {
@@ -405,7 +415,7 @@ namespace PrefsGUI
         protected bool OnGUIStrandardStyle(GUIFunc guiFunc)
         {
             Color? prevColor = null;
-            if ( synced )
+            if (synced)
             {
                 prevColor = GUI.color;
                 GUI.color = syncedColor;
@@ -425,7 +435,7 @@ namespace PrefsGUI
             using (var h = new GUILayout.HorizontalScope())
             {
                 changed = onGUIFunc();
-                changed |= OnGUIDefaultButton(); 
+                changed |= OnGUIDefaultButton();
             }
 
             return changed;
@@ -437,7 +447,7 @@ namespace PrefsGUI
             var label = Compare(_Get(), ToInner(defaultValue)) ? "default" : "<color=red>default</color>";
 
             var ret = GUILayout.Button(label, GUILayout.Width(60f));
-            if ( ret )
+            if (ret)
             {
                 Set(defaultValue);
             }
