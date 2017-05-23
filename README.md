@@ -4,7 +4,7 @@ Accessor like variable and GUI set for Unity PlayerPrefs / JSON file
 
 [Unity Package](PrefsGUI.unitypackage)
 
-![](PrefsGUI.gif)
+![](Docs/PrefsGUI.gif)
 
 ```csharp
 public class PrefsGUISample : PrefsGUISampleBase
@@ -56,10 +56,20 @@ public class PrefsGUISample : PrefsGUISampleBase
 }
 ```
 
+
 # EditorWindow
-![](PrefsGUIEditor.gif)
+
+![](Docs/PrefsGUIEditor.gif)
 - List up Prefs and can modify 
 - Can feedback current value to default
+
+
+# SyncOverUNET
+
+![](Docs/SyncOverUNET.gif)
+- auto sync All Prefs
+- can ignore it by specifying it with EditorWindow
+
 
 # Switch PlayerPrefs / JSON
 
