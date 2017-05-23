@@ -86,4 +86,4 @@ Application.persistentDataPath + "/Prefs.json"
 
 Auto create material GUI menu
 
-![](MaterialPropertyDebugMenu.gif)
+![](Docs/MaterialPropertyDebugMenu.gif)
