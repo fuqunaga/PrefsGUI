@@ -60,6 +60,9 @@ namespace PrefsGUI
         SyncListKeyVector2 _syncListKeyVector2 = new SyncListKeyVector2();
         SyncListKeyVector3 _syncListKeyVector3 = new SyncListKeyVector3();
         SyncListKeyVector4 _syncListKeyVector4 = new SyncListKeyVector4();
+
+        [SyncVar]
+        bool _materialPropertyDebugMenuUpdate;
         #endregion
 
         Dictionary<Type, ISyncListKeyObj> _typeToSyncList;
@@ -139,6 +142,8 @@ namespace PrefsGUI
                     }
                 }
             });
+
+            _materialPropertyDebugMenuUpdate = MaterialPropertyDebugMenu.update;
         }
 
         [ClientCallback]
@@ -161,6 +166,8 @@ namespace PrefsGUI
                     }
                 });
             }
+
+            MaterialPropertyDebugMenu.update = _materialPropertyDebugMenuUpdate;
         }
     }
 

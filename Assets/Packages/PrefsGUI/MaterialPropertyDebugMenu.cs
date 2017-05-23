@@ -19,6 +19,9 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
     }
     #endregion
 
+    static bool _update;
+    public static bool update { get { return _update; } set { _update = value; }  }
+
     [SerializeField]
     List<PrefsColor> _colors = new List<PrefsColor>();
     [SerializeField]
@@ -46,13 +49,20 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
         UpdateMaterial();
     }
 
-#if UNITY_EDITOR
+
     public override void Update()
     {
         base.Update();
+
+#if UNITY_EDITOR
         UpdatePrefs();
-    }
 #endif
+
+        if ( update)
+        {
+            UpdateMaterial();
+        }
+    }
 
     void UpdatePrefs()
     {
