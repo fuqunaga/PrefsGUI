@@ -68,8 +68,6 @@ namespace PrefsGUI
                 scrollPosition = sc.scrollPosition;
 
                 var sync = FindObjectOfType<PrefsGUISync>();
-                if (sync != null) GUILayout.Label("sync");
-
 
                 PrefsList.ToList().ForEach(prefs =>
                 {
@@ -96,31 +94,46 @@ namespace PrefsGUI
         }
     }
 
+
     public class SetCurrentToDefaultWindow : PrefsGUIEditorBase
     {
         public PrefsGUIEditor parentWindow;
         Dictionary<string, bool> checkedList = new Dictionary<string, bool>();
 
+        Vector2 scrollPosition;
+        bool checkAll;
+
         protected override void OnGUIInternal()
         {
             var prefsList = PrefsList.Where(prefs => !prefs.IsDefault).ToList();
+            prefsList.Where(prefs => !checkedList.ContainsKey(prefs.key)).Select(prefs => prefs.key).ToList().ForEach(key => checkedList[key] = true);
+
 
             EditorGUILayout.HelpBox("\nSelect Prefs to change Default.\n", MessageType.None);
 
-            prefsList.ForEach(prefs => 
+            if ( checkAll != GUILayout.Toggle(checkAll, ""))
             {
-                var key = prefs.key;
-                bool check;
-                if (!checkedList.TryGetValue(key, out check)) checkedList[key] = check = true;
+                checkAll = !checkAll;
+                prefsList.ForEach(prefs => checkedList[prefs.key] = checkAll);
+            }
 
-                using (var h0 = new GUILayout.HorizontalScope())
+            using (var sc = new GUILayout.ScrollViewScope(scrollPosition))
+            {
+                scrollPosition = sc.scrollPosition;
+                prefsList.ForEach(prefs =>
                 {
-                    if (check != GUILayout.Toggle(check, "", GUILayout.Width(20f))) checkedList[key] = !check;
-                    GUI.enabled = false;
-                    prefs.OnGUI();
-                    GUI.enabled = true;
-                }
-            });
+                    var key = prefs.key;
+                    bool check = checkedList[key];
+
+                    using (var h0 = new GUILayout.HorizontalScope())
+                    {
+                        if (check != GUILayout.Toggle(check, "", GUILayout.Width(20f))) checkedList[key] = !check;
+                        GUI.enabled = false;
+                        prefs.OnGUI();
+                        GUI.enabled = true;
+                    }
+                });
+            }
 
 
             var checkPrefsList = prefsList.Where(prefs => checkedList[prefs.key]).ToList();
