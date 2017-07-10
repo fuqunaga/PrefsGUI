@@ -109,7 +109,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
         }
     }
 
-    public static Dictionary<string, System.Action<PrefsVector4, string>> customVectorGUI = new Dictionary<string, System.Action<PrefsVector4, string>>();
+    public static Dictionary<string, System.Func<PrefsVector4, string, bool>> customVectorGUI = new Dictionary<string, System.Func<PrefsVector4, string, bool>>();
 
     public void DebugMenu(bool labelEnable = true)
     {
