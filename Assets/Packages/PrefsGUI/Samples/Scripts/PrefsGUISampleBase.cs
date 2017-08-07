@@ -17,7 +17,10 @@ namespace PrefsGUI
 
         public void OnGUI()
         {
-            _windowRect = GUILayout.Window(GetHashCode(), _windowRect, (id) =>
+            _windowRect = 
+                //GUILayout.Window(
+                GUIUtil.ResizableWindow(
+                    GetHashCode(), _windowRect, (id) =>
             {
                 OnGUIInternal();
                 GUI.DragWindow();

@@ -2,213 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
 
-public static class GUIUtil
+public static partial class GUIUtil
 {
-    #region Fold
-    public static class Style {
-        // 参考 https://github.com/XJINE/XJUnity3D.GUI
-        public static readonly GUIStyle FoldoutPanelStyle;
-
-        static Style()
-        {
-            FoldoutPanelStyle = new GUIStyle(GUI.skin.label);
-            FoldoutPanelStyle.normal.textColor = GUI.skin.toggle.normal.textColor;
-            FoldoutPanelStyle.hover.textColor = GUI.skin.toggle.hover.textColor;
-
-            var tex = new Texture2D(1, 1);
-            tex.SetPixels(new[] { new Color(0.5f, 0.5f, 0.5f,0.5f)});
-            tex.Apply();
-            FoldoutPanelStyle.hover.background = tex;
-        }
-    }
-
-    public class Folds
-    {
-        public class FoldData
-        {
-            public int _order;
-            public Fold _fold;
-        }
-
-        Dictionary<string, FoldData> _dic = new Dictionary<string, FoldData>();
-        bool _needUpdate = true;
-
-        public void Add(string name, Action drawFunc, bool enableFirst = false)
-        {
-            Add(name, null, drawFunc, enableFirst);
-        }
-
-        public void Add(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
-        {
-            Add(0, name, checkEnableFunc, drawFunc, enableFirst);
-        }
-
-        public void Add(int order, string name, Action drawFunc, bool enableFirst = false) { Add(order, name, null, drawFunc, enableFirst); }
-
-        public void Add(int order, string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
-        {
-            FoldData foldData;
-            if (_dic.TryGetValue(name, out foldData))
-            {
-                foldData._order = order;
-                foldData._fold.Add(checkEnableFunc, drawFunc);
-            }
-            else {
-                _dic.Add(name, new FoldData
-                {
-                    _order = order,
-                    _fold = new Fold(name, checkEnableFunc, drawFunc, enableFirst)
-                });
-            }
-
-            _needUpdate = true;
-        }
-
-        public void Remove(string name)
-        {
-            if ( _dic.ContainsKey(name))
-            {
-                _dic.Remove(name);
-            }
-
-            _needUpdate = true;
-        }
-
-
-        List<Fold> _folds = new List<Fold>();
-        public void OnGUI()
-        {
-            if ( _needUpdate )
-            {
-                _folds = _dic.Values.OrderBy(of => of._order).Select(of => of._fold).ToList();
-                _needUpdate = false;
-            }
-
-            using (var v = new GUILayout.VerticalScope())
-            {
-                _folds.ForEach(fold => fold.OnGUI());
-            }
-        }
-    }
-
-    public class Fold
-    {
-        bool _foldOpen;
-        string _name;
-
-        public class FuncData
-        {
-            public Func<bool> _checkEnable;
-            public Action _draw;
-        }
-        List<FuncData> _funcDatas = new List<FuncData>();
-
-        public Fold(string name, Action drawFunc, bool enableFirst = false) : this(name, null, drawFunc, enableFirst) { }
-
-        public Fold(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
-        {
-            _name = name;
-            _foldOpen = enableFirst;
-            Add(checkEnableFunc, drawFunc);
-        }
-
-        public void Add(Action drawFunc) { Add(null, drawFunc); }
-        public void Add(Func<bool> checkEnableFunc, Action drawFunc)
-        {
-            _funcDatas.Add(new FuncData()
-            {
-                _checkEnable = checkEnableFunc,
-                _draw = drawFunc
-            });
-        }
-
-        public void OnGUI()
-        {
-            var drawFuncs = _funcDatas.Where(fd => fd._checkEnable == null || fd._checkEnable()).Select(fd => fd._draw).ToList();
-
-            if (drawFuncs.Any())
-            {
-                var foldStr = _foldOpen ? "▼" : "▶";
-
-                _foldOpen ^= GUILayout.Button(foldStr + _name, Style.FoldoutPanelStyle);
-                if (_foldOpen)
-                {
-                    using (var v = new GUILayout.VerticalScope("window"))
-                    {
-                        drawFuncs.ForEach(drawFunc => drawFunc());
-                    }
-                }
-            }
-        }
-    }
-    #endregion
-
-    #region FoldUtil
-
-    public interface IDebugMenu { void DebugMenu(); }
-
-    public static void Add(this Folds folds, string name, params Type[] iDebugMenuTypes)
-    {
-        folds.Add(name, false, iDebugMenuTypes);
-    }
-
-    public static void Add(this Folds folds, string name, bool enableFirst, params Type[] iDebugMenuTypes)
-    {
-        folds.Add(0, name, enableFirst, iDebugMenuTypes);
-    }
-
-    public static void Add(this Folds folds, int order, string name, params Type[] iDebugMenuTypes)
-    {
-        folds.Add(order, name, false, iDebugMenuTypes);
-    }
-
-    public static void Add(this Folds folds, int order, string name, bool enableFirst, params Type[] iDebugMenuTypes)
-    {
-        Assert.IsTrue(iDebugMenuTypes.All(type => type.GetInterfaces().Contains(typeof(IDebugMenu))));
-
-        var iDebugMenus = iDebugMenuTypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
-            .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDebugMenu>();   // exec every call.
-
-        folds.Add(order, name, () => iDebugMenus.Any(), () => iDebugMenus.ToList().ForEach(idm => idm.DebugMenu()), enableFirst);
-    }
-
-    /// <summary>
-    /// FindObjectOfTypeを呼びまくるのは重いので適度に散らす
-    /// </summary>
-    public class LazyFindObject
-    {
-        protected UnityEngine.Object _obj;
-        protected Type _type;
-        protected int _delayCount;
-        const int _delayCountMax = 60;
-
-        public LazyFindObject(Type type)
-        {
-            _type = type;
-        }
-
-        public UnityEngine.Object GetObject()
-        {
-            if ((Event.current.type == EventType.Layout) && _obj == null)
-            {
-                if (--_delayCount <= 0)
-                {
-                    _obj = UnityEngine.Object.FindObjectOfType(_type);
-                    _delayCount = UnityEngine.Random.Range(0, _delayCountMax);
-                }
-            }
-            return _obj;
-        }
-    }
-
-
-    #endregion
-
-
     #region Field()
-    public static T Field<T>(T v, string label = "") { string s = null;  return Field(v, ref s, label); }
+    public static T Field<T>(T v, string label = "") { string s = null; return Field(v, ref s, label); }
     public static T Field<T>(T v, ref string unparsedStr, string label = "")
     {
         var type = typeof(T);
@@ -242,7 +40,8 @@ public static class GUIUtil
             ret = unparsedStr.Split(UnparsedStrSeparator);
             Array.Resize(ref ret, elementNum);
         }
-        else {
+        else
+        {
             ret = new string[elementNum];
         }
         return ret;
@@ -277,8 +76,8 @@ public static class GUIUtil
         var strs = SplitUnparsedStr(unparsedStr, elementNum);
         for (var i = 0; i < elementNum; ++i)
         {
-            var elem = Field(AbstractVector.GetAtIdx<T>(v,i), ref strs[i]);
-            v = AbstractVector.SetAtIdx<T>(v,i,elem);
+            var elem = Field(AbstractVector.GetAtIdx<T>(v, i), ref strs[i]);
+            v = AbstractVector.SetAtIdx<T>(v, i, elem);
         }
         unparsedStr = JoinUnparsedStr(strs);
         return v;
@@ -302,7 +101,7 @@ public static class GUIUtil
         // フォーカスが外れたときにバリデーションしたい（unparsedStr=nullにすることでv.ToString()に更新される）
         // うまい実装がわからないので簡易的にタブ時に行う
         // マウスイベントも対応したいがこれより前のGUIでイベント食われたとき対応できないので一旦無しで
-        if ( Event.current.keyCode== KeyCode.Tab)
+        if (Event.current.keyCode == KeyCode.Tab)
         {
             unparsedStr = null;
         }
@@ -324,11 +123,13 @@ public static class GUIUtil
             try
             {
                 ret = Convert.ChangeType(unparsedStr, type);
-                if ( ret.ToString() == unparsedStr) {
+                if (ret.ToString() == unparsedStr)
+                {
                     unparsedStr = null;
                 }
             }
-            catch (Exception) {
+            catch (Exception)
+            {
             }
         }
         return ret;
@@ -424,9 +225,9 @@ public static class GUIUtil
                 var rectMin = (Rect)min;
                 var rectMax = (Rect)max;
 
-                rect.x      = Slider(rect.x,      rectMin.x,      rectMax.x,      ref strs[0], eLabels[0]);
-                rect.y      = Slider(rect.y,      rectMin.y,      rectMax.y,      ref strs[1], eLabels[1]);
-                rect.width  = Slider(rect.width,  rectMin.width,  rectMax.width,  ref strs[2], eLabels[2]);
+                rect.x = Slider(rect.x, rectMin.x, rectMax.x, ref strs[0], eLabels[0]);
+                rect.y = Slider(rect.y, rectMin.y, rectMax.y, ref strs[1], eLabels[1]);
+                rect.width = Slider(rect.width, rectMin.width, rectMax.width, ref strs[2], eLabels[2]);
                 rect.height = Slider(rect.height, rectMin.height, rectMax.height, ref strs[3], eLabels[3]);
 
                 v = rect;
