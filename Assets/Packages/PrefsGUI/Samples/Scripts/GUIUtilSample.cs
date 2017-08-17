@@ -72,6 +72,12 @@ namespace PrefsGUI
             {
                 _int = GUIUtil.Slider(_int, 0, 100, "Slider(int)");
                 _float = GUIUtil.Slider(_float, "Slider(float)");
+                using (var h = new GUILayout.HorizontalScope())
+                {
+                    GUILayout.Label("hoge");
+                    GUILayout.HorizontalSlider(0f, 0f, 1f, GUILayout.MinWidth(200f));
+                    GUILayout.TextField("hoge", GUILayout.MaxWidth(100f));    
+                }
                 _vector2 = GUIUtil.Slider(_vector2, Vector2.zero, Vector2.one, "Slider(Vector2)");
                 _vector3 = GUIUtil.Slider(_vector3, Vector3.zero, Vector3.one, "Slider(Vector3)");
                 _vector4 = GUIUtil.Slider(_vector4, Vector4.zero, Vector4.one, "Slider(Vector4)");

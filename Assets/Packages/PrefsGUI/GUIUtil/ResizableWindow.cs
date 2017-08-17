@@ -11,7 +11,7 @@ public static partial class GUIUtil
     class _ResizableWindow
     {
         #region static
-        const int detectionRange = 8;
+        const int detectionRange = 12;
 
         static GUIStyle _style;
         protected static GUIStyle Style
@@ -77,10 +77,10 @@ public static partial class GUIUtil
                     }
                 }
 
-                if (draggingLR == -1) window.xMin = pos.x + current.delta.x;
-                if (draggingLR == 1) window.xMax = pos.x + current.delta.x;
-                if (draggingTB == -1) window.yMin = pos.y + current.delta.y;
-                if (draggingTB == 1) window.yMax = pos.y + current.delta.y;
+                if (draggingLR == -1) window.xMin = pos.x;
+                if (draggingLR == 1) window.xMax = pos.x;
+                if (draggingTB == -1) window.yMin = pos.y;
+                if (draggingTB == 1) window.yMax = pos.y;
             }
 
             return window;

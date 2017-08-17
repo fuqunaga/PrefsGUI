@@ -6,8 +6,8 @@ using UnityEngine;
 public static partial class GUIUtil
 {
     #region Field()
-    public static T Field<T>(T v, string label = "") { string s = null; return Field(v, ref s, label); }
-    public static T Field<T>(T v, ref string unparsedStr, string label = "")
+    public static T Field<T>(T v, string label = "", params GUILayoutOption[] options) { string s = null; return Field(v, ref s, label, options); }
+    public static T Field<T>(T v, ref string unparsedStr, string label, params GUILayoutOption[] options)
     {
         var type = typeof(T);
         T ret = default(T);
@@ -17,10 +17,10 @@ public static partial class GUIUtil
             if (!string.IsNullOrEmpty(label)) GUILayout.Label(label);
 
             ret = (T)(_typeFuncTable.ContainsKey(type)
-                ? _typeFuncTable[type](v, ref unparsedStr)
+                ? _typeFuncTable[type](v, ref unparsedStr, options)
                 : ((type.IsEnum)
-                    ? EnumField(v)
-                    : StandardField(v, ref unparsedStr)
+                    ? EnumField(v, options)
+                    : StandardField(v, ref unparsedStr, options)
                     )
                 );
 
@@ -53,30 +53,30 @@ public static partial class GUIUtil
     #endregion
 
     #region Field() Implement
-    delegate object FieldFunc(object v, ref string unparsedStr);
-    static object FieldFuncBool(object v, ref string unparsedStr) { return GUILayout.Toggle(Convert.ToBoolean(v), ""); }
-    static object FieldFuncRect(object v, ref string unparsedStr)
+    delegate object FieldFunc(object v, ref string unparsedStr, params GUILayoutOption[] options);
+    static object FieldFuncBool(object v, ref string unparsedStr, params GUILayoutOption[] options) { return GUILayout.Toggle(Convert.ToBoolean(v), "", options); }
+    static object FieldFuncRect(object v, ref string unparsedStr, params GUILayoutOption[] options)
     {
         const int elementNum = 4;
         var strs = SplitUnparsedStr(unparsedStr, elementNum);
 
         var rect = (Rect)v;
-        rect.x = Field(rect.x, ref strs[0], "x");
-        rect.y = Field(rect.y, ref strs[1], "y");
-        rect.width = Field(rect.width, ref strs[2], "w");
-        rect.height = Field(rect.height, ref strs[3], "h");
+        rect.x = Field(rect.x, ref strs[0], "x", options);
+        rect.y = Field(rect.y, ref strs[1], "y", options);
+        rect.width = Field(rect.width, ref strs[2], "w", options);
+        rect.height = Field(rect.height, ref strs[3], "h", options);
 
         unparsedStr = JoinUnparsedStr(strs);
         return rect;
     }
 
-    static object FieldFuncVector<T>(object v, ref string unparsedStr)
+    static object FieldFuncVector<T>(object v, ref string unparsedStr, params GUILayoutOption[] options)
     {
         var elementNum = AbstractVector.GetElementNum<T>();
         var strs = SplitUnparsedStr(unparsedStr, elementNum);
         for (var i = 0; i < elementNum; ++i)
         {
-            var elem = Field(AbstractVector.GetAtIdx<T>(v, i), ref strs[i]);
+            var elem = Field(AbstractVector.GetAtIdx<T>(v, i), ref strs[i], "", options);
             v = AbstractVector.SetAtIdx<T>(v, i, elem);
         }
         unparsedStr = JoinUnparsedStr(strs);
@@ -92,12 +92,13 @@ public static partial class GUIUtil
         {typeof(Vector4), FieldFuncVector<Vector4> },
     };
 
-    static object StandardField<T>(T v, ref string unparsedStr)
+    static object StandardField<T>(T v, ref string unparsedStr, params GUILayoutOption[] options)
     {
         object ret = v;
 
         var type = typeof(T);
 
+        // TODO:
         // フォーカスが外れたときにバリデーションしたい（unparsedStr=nullにすることでv.ToString()に更新される）
         // うまい実装がわからないので簡易的にタブ時に行う
         // マウスイベントも対応したいがこれより前のGUIでイベント食われたとき対応できないので一旦無しで
@@ -119,7 +120,7 @@ public static partial class GUIUtil
 
         using (var cs = new ColorScope(color))
         {
-            unparsedStr = GUILayout.TextField(hasUnparsedStr ? unparsedStr : v.ToString(), GUILayout.MinWidth(70f));
+            unparsedStr = GUILayout.TextField(hasUnparsedStr ? unparsedStr : v.ToString(), options.Concat(new[] { GUILayout.MinWidth(70f) }).ToArray());
             try
             {
                 ret = Convert.ChangeType(unparsedStr, type);
@@ -135,7 +136,7 @@ public static partial class GUIUtil
         return ret;
     }
 
-    static object EnumField<T>(T v)
+    static object EnumField<T>(T v, params GUILayoutOption[] options)
     {
         var type = typeof(T);
         var enumValues = Enum.GetValues(type).OfType<T>().ToList();
@@ -150,7 +151,7 @@ public static partial class GUIUtil
                 if (flag > 0)
                 {
                     var has = (flag & flagV) == flag;
-                    has = GUILayout.Toggle(has, value.ToString());
+                    has = GUILayout.Toggle(has, value.ToString(), options);
 
                     flagV = has ? (flagV | flag) : (flagV & ~flag);
                 }
@@ -201,9 +202,9 @@ public static partial class GUIUtil
         float ret = default(float);
         using (var h = new GUILayout.HorizontalScope())
         {
-            if (!string.IsNullOrEmpty(label)) GUILayout.Label(label);
+            if (!string.IsNullOrEmpty(label)) GUILayout.Label(label, GUILayout.ExpandWidth(false));
             ret = GUILayout.HorizontalSlider((float)v, (float)min, (float)max, GUILayout.MinWidth(200));
-            ret = Field(ret, ref unparsedStr);
+            ret = (float)StandardField(ret, ref unparsedStr, GUILayout.MaxWidth(100f));
         }
 
         return ret;
@@ -286,8 +287,9 @@ public static partial class GUIUtil
         using (var h = new GUILayout.HorizontalScope())
         {
             v = Field(v, label);
-            if (GUILayout.Button("+")) v++;
-            if (GUILayout.Button("-")) v--;
+            const float width = 20f;
+            if (GUILayout.Button("+", GUILayout.Width(width))) v++;
+            if (GUILayout.Button("-", GUILayout.Width(width))) v--;
         }
         return v;
     }
