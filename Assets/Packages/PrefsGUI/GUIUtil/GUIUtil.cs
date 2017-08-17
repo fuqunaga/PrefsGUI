@@ -92,21 +92,46 @@ public static partial class GUIUtil
         {typeof(Vector4), FieldFuncVector<Vector4> },
     };
 
+    class ForcusChecker
+    {
+        int time;
+        int mouseId;
+        int keyboardId;
+        bool changed;
+
+        public bool IsChanged()
+        {
+            if (time != Time.frameCount)
+            {
+                time = Time.frameCount;
+
+                var currentMouse = GUIUtility.hotControl;
+                var currentKeyboard = GUIUtility.keyboardControl;
+
+                changed = (keyboardId != currentKeyboard) || (mouseId != currentMouse);
+                if ( changed ) {
+                    keyboardId = currentKeyboard;
+                    mouseId = currentMouse;
+                }
+            }
+
+            return changed;
+        }
+    }
+
+    static ForcusChecker _forcusChecker = new ForcusChecker();
+
     static object StandardField<T>(T v, ref string unparsedStr, params GUILayoutOption[] options)
     {
         object ret = v;
 
         var type = typeof(T);
 
-        // TODO:
-        // フォーカスが外れたときにバリデーションしたい（unparsedStr=nullにすることでv.ToString()に更新される）
-        // うまい実装がわからないので簡易的にタブ時に行う
-        // マウスイベントも対応したいがこれより前のGUIでイベント食われたとき対応できないので一旦無しで
-        if (Event.current.keyCode == KeyCode.Tab)
+        // validate when unfocused (unparsedStr=null then v.ToString will to be set)）
+        if ( _forcusChecker.IsChanged() )
         {
             unparsedStr = null;
         }
-
 
         var hasUnparsedStr = !string.IsNullOrEmpty(unparsedStr);
         var canParse = false;
@@ -171,10 +196,10 @@ public static partial class GUIUtil
         }
         return v;
     }
-    #endregion
-    #endregion
+#endregion
+#endregion
 
-    #region Slider
+#region Slider
     public static float Slider(float v, string label = "") { return Slider(v, 0f, 1f, label); }
     public static float Slider(float v, ref string unparsedStr, string label = "") { return Slider(v, 0f, 1f, ref unparsedStr, label); }
 
@@ -189,7 +214,7 @@ public static partial class GUIUtil
         return (T)_typeSliderFuncTable[typeof(T)](v, min, max, ref unparsedStr, label, elementLabels);
     }
 
-    #region Slider() Implement
+#region Slider() Implement
     delegate object SliderFunc(object v, object min, object max, ref string unparsedStr, string label = "", string[] elemLabels = null);
 
     public static object SliderInt(object v, object min, object max, ref string unparsedStr, string label = "", string[] elemLabels = null)
@@ -278,9 +303,9 @@ public static partial class GUIUtil
         {typeof(Vector4), SliderFuncVector<Vector4> },
     };
 
-    #endregion
+#endregion
 
-    #endregion
+#endregion
 
     public static int IntButton(int v, string label = "")
     {
