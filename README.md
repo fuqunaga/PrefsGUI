@@ -1,6 +1,6 @@
 # PrefsGUI
 
-Accessor like variable and GUI set for Unity PlayerPrefs / JSON file
+Accessor and GUI set for Unity PlayerPrefs / JSON file
 
 [Unity Package](PrefsGUI.unitypackage)
 
