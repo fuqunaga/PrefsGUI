@@ -68,6 +68,7 @@ namespace PrefsGUI
                 scrollPosition = sc.scrollPosition;
 
                 var sync = FindObjectOfType<PrefsGUISync>();
+                if (sync != null) GUILayout.Label("sync");
 
                 PrefsList.ToList().ForEach(prefs =>
                 {
