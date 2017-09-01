@@ -1,19 +1,18 @@
-﻿using UnityEngine;
-using System.Collections;
-using PrefsGUI;
-using System;
-
-public class MaterialPropertyDebugMenuSample : PrefsGUISampleBase
+﻿namespace PrefsGUI
 {
-    MaterialPropertyDebugMenu _debugMenu;
 
-    public void Start()
+    public class MaterialPropertyDebugMenuSample : PrefsGUISampleBase
     {
-        _debugMenu = GetComponent<MaterialPropertyDebugMenu>();
-    }
+        MaterialPropertyDebugMenu _debugMenu;
 
-    protected override void OnGUIInternal()
-    {
-        _debugMenu.DebugMenu();
+        public void Start()
+        {
+            _debugMenu = GetComponent<MaterialPropertyDebugMenu>();
+        }
+
+        protected override void OnGUIInternal()
+        {
+            _debugMenu.DebugMenu();
+        }
     }
 }

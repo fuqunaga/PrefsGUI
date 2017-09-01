@@ -2,6 +2,8 @@
 using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using System.Reflection;
 
 namespace PrefsGUI
 {
@@ -55,7 +57,7 @@ namespace PrefsGUI
             GUI.enabled = currentToDefaultEnable;
             if (GUILayout.Button("Open Current To Default Window"))
             {
-                if ( setCurrentToDefaultWindow == null ) setCurrentToDefaultWindow = CreateInstance<SetCurrentToDefaultWindow>();
+                if (setCurrentToDefaultWindow == null) setCurrentToDefaultWindow = CreateInstance<SetCurrentToDefaultWindow>();
                 setCurrentToDefaultWindow.parentWindow = this;
                 setCurrentToDefaultWindow.ShowUtility();
             }
@@ -91,7 +93,7 @@ namespace PrefsGUI
                 });
             }
 
-            if ((setCurrentToDefaultWindow!= null) && Event.current.type == EventType.repaint) setCurrentToDefaultWindow.Repaint();
+            if ((setCurrentToDefaultWindow != null) && Event.current.type == EventType.repaint) setCurrentToDefaultWindow.Repaint();
         }
     }
 
@@ -112,7 +114,7 @@ namespace PrefsGUI
 
             EditorGUILayout.HelpBox("\nSelect Prefs to change Default.\n", MessageType.None);
 
-            if ( checkAll != GUILayout.Toggle(checkAll, ""))
+            if (checkAll != GUILayout.Toggle(checkAll, ""))
             {
                 checkAll = !checkAll;
                 prefsList.ForEach(prefs => checkedList[prefs.key] = checkAll);
@@ -129,9 +131,7 @@ namespace PrefsGUI
                     using (var h0 = new GUILayout.HorizontalScope())
                     {
                         if (check != GUILayout.Toggle(check, "", GUILayout.Width(20f))) checkedList[key] = !check;
-                        GUI.enabled = false;
                         prefs.OnGUI();
-                        GUI.enabled = true;
                     }
                 });
             }
@@ -142,8 +142,22 @@ namespace PrefsGUI
             GUILayout.Space(8f);
 
             GUI.enabled = checkPrefsList.Any();
-            if ( GUILayout.Button("SetCurrentToDefault"))
+            if (GUILayout.Button("SetCurrentToDefault"))
             {
+                // Search Objects to recoard that has PrefsParams
+                var components = FindObjectsOfType<MonoBehaviour>()
+                    .Where(c =>
+                    {
+                        var t = c.GetType();
+                        return Assembly.GetAssembly(t).GetName().Name.StartsWith("Assembly-CSharp") // skip unity classes
+                        && IsContainPrefsParam(t);
+                    })
+                    .ToArray();
+
+                Undo.RecordObjects(components, "Set PrefsGUI default value");
+
+
+                // SetCurrent To Default
                 checkPrefsList.ForEach(prefs =>
                 {
                     prefs.SetCurrentToDefault();
@@ -153,6 +167,14 @@ namespace PrefsGUI
                 parentWindow.Repaint();
             }
             GUI.enabled = true;
+        }
+
+        HashSet<System.Type> _appearedTypes = new HashSet<System.Type>();
+        bool IsContainPrefsParam(System.Type type)
+        {
+            if (_appearedTypes.Contains(type)) return false;
+            _appearedTypes.Add(type);
+            return type.IsSubclassOf(typeof(PrefsParam)) || type.GetFields().Any(fi => IsContainPrefsParam(fi.FieldType));
         }
     }
 }

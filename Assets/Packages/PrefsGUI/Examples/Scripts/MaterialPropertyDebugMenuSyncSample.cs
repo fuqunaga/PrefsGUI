@@ -1,20 +1,24 @@
 ﻿using UnityEngine;
 
-public class MaterialPropertyDebugMenuSyncSample : MaterialPropertyDebugMenuSample
+
+namespace PrefsGUI
 {
-    bool menuEnable;
-
-    protected override void OnGUIInternal()
+    public class MaterialPropertyDebugMenuSyncSample : MaterialPropertyDebugMenuSample
     {
-        if ( menuEnable != GUILayout.Toggle(menuEnable, "MenuEnable"))
-        {
-            menuEnable = !menuEnable;
-            MaterialPropertyDebugMenu.update = menuEnable;
-        }
+        bool menuEnable;
 
-        if (menuEnable)
+        protected override void OnGUIInternal()
         {
-            base.OnGUIInternal();
+            if (menuEnable != GUILayout.Toggle(menuEnable, "MenuEnable"))
+            {
+                menuEnable = !menuEnable;
+                MaterialPropertyDebugMenu.update = menuEnable;
+            }
+
+            if (menuEnable)
+            {
+                base.OnGUIInternal();
+            }
         }
     }
 }

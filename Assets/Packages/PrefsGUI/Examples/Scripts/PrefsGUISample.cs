@@ -1,7 +1,6 @@
 ﻿#pragma warning disable 0219
 
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace PrefsGUI
