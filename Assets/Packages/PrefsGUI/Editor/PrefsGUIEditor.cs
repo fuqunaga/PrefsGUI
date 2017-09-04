@@ -2,7 +2,6 @@
 using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using System.Reflection;
 
 namespace PrefsGUI
@@ -83,6 +82,8 @@ namespace PrefsGUI
 
                             if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
                             {
+                                Undo.RecordObject(sync, "Change PrefsGUI sync flag");
+
                                 if (isSync) sync._ignoreKeys.Add(key);
                                 else sync._ignoreKeys.Remove(key);
                             }
