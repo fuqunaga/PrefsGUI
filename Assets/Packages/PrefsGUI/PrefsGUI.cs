@@ -257,8 +257,8 @@ namespace PrefsGUI
     {
         public PrefsVector(string key, T defaultValue = default(T)) : base(key, defaultValue) { }
 
-        protected override T defaultMin { get { return (T)typeof(T).InvokeMember("zero", BindingFlags.Static | BindingFlags.GetProperty, null, null, null); } }
-        protected override T defaultMax { get { return (T)typeof(T).InvokeMember("one", BindingFlags.Static | BindingFlags.GetProperty, null, null, null); } }
+        protected override T defaultMin { get { return (T)typeof(T).GetProperty("zero").GetValue(null); } }
+        protected override T defaultMax { get { return (T)typeof(T).GetProperty("one").GetValue(null); } }
 
         static readonly string[] _defaultElementLabels = new[] { "x", "y", "z", "w" };
         protected override string[] defaultEelementLabels
