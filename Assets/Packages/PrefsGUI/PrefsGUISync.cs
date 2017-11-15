@@ -68,7 +68,7 @@ namespace PrefsGUI
         Dictionary<Type, ISyncListKeyObj> _typeToSyncList;
         Dictionary<string, TypeAndIdx> _keyToTypeIdx = new Dictionary<string, TypeAndIdx>();
 
-        public List<string> _ignoreKeys = new List<string>();
+        public List<string> _ignoreKeys = new List<string>(); // want use HashSet but use List so it will be serialized on Inspector
 
 
         public void Awake()

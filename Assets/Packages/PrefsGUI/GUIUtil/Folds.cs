@@ -36,36 +36,35 @@ public static partial class GUIUtil
         Dictionary<string, FoldData> _dic = new Dictionary<string, FoldData>();
         bool _needUpdate = true;
 
-        public void Add(string name, Action drawFunc, bool enableFirst = false)
-        {
-            Add(name, null, drawFunc, enableFirst);
-        }
+        public Fold Add(string name, Action drawFunc, bool enableFirst = false) => Add(name, null, drawFunc, enableFirst);
 
-        public void Add(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
-        {
-            Add(0, name, checkEnableFunc, drawFunc, enableFirst);
-        }
+        public Fold Add(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false) => Add(0, name, checkEnableFunc, drawFunc, enableFirst);
 
-        public void Add(int order, string name, Action drawFunc, bool enableFirst = false) { Add(order, name, null, drawFunc, enableFirst); }
+        public Fold Add(int order, string name, Action drawFunc, bool enableFirst = false)  => Add(order, name, null, drawFunc, enableFirst);
 
-        public void Add(int order, string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
+        public Fold Add(int order, string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
         {
+            Fold ret;
             FoldData foldData;
             if (_dic.TryGetValue(name, out foldData))
             {
                 foldData._order = order;
                 foldData._fold.Add(checkEnableFunc, drawFunc);
+                ret = foldData._fold;
             }
             else
             {
+                ret = new Fold(name, checkEnableFunc, drawFunc, enableFirst);
                 _dic.Add(name, new FoldData
                 {
                     _order = order,
-                    _fold = new Fold(name, checkEnableFunc, drawFunc, enableFirst)
+                    _fold = ret,
                 });
             }
 
             _needUpdate = true;
+
+            return ret;
         }
 
         public void Remove(string name)
@@ -99,6 +98,7 @@ public static partial class GUIUtil
     {
         bool _foldOpen;
         string _name;
+        Action _titleAction;
 
         public class FuncData
         {
@@ -115,6 +115,8 @@ public static partial class GUIUtil
             _foldOpen = enableFirst;
             Add(checkEnableFunc, drawFunc);
         }
+
+        public void SetTitleAction(Action titleAction) => _titleAction = titleAction;
 
         public void Add(Action drawFunc) { Add(null, drawFunc); }
         public void Add(Func<bool> checkEnableFunc, Action drawFunc)
@@ -134,7 +136,11 @@ public static partial class GUIUtil
             {
                 var foldStr = _foldOpen ? "▼" : "▶";
 
-                _foldOpen ^= GUILayout.Button(foldStr + _name, Style.FoldoutPanelStyle);
+                using (var h = new GUILayout.HorizontalScope())
+                {
+                    _foldOpen ^= GUILayout.Button(foldStr + _name, Style.FoldoutPanelStyle);
+                    _titleAction?.Invoke();
+                }
                 if (_foldOpen)
                 {
                     using (var v = new GUILayout.VerticalScope("window"))

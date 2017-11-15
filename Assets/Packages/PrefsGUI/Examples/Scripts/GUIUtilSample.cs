@@ -7,10 +7,10 @@ namespace PrefsGUI
         protected override float MinWidth { get { return 1000f; } }
 
 
-        GUIUtil.Folds _fieldFold = new GUIUtil.Folds();
-        GUIUtil.Folds _sliderFold = new GUIUtil.Folds();
-        GUIUtil.Folds _miscFold = new GUIUtil.Folds();
-        GUIUtil.Folds _dynamicFold = new GUIUtil.Folds();
+        GUIUtil.Folds _fieldFolds = new GUIUtil.Folds();
+        GUIUtil.Folds _sliderFolds = new GUIUtil.Folds();
+        GUIUtil.Folds _miscFolds = new GUIUtil.Folds();
+        GUIUtil.Folds _dynamicFolds = new GUIUtil.Folds();
 
 
         public EnumSample _enum;
@@ -36,14 +36,15 @@ namespace PrefsGUI
 
         public void Start()
         {
-            _miscFold.Add("Fold0", () => { GUILayout.Label("Fold0"); });
-            _miscFold.Add("Fold1", () => { GUILayout.Label("Fold1 FirstAdd"); });
-            _miscFold.Add("Fold1", () => { GUILayout.Label("Fold1 SecondAdd"); });
-            _miscFold.Add(-1, "FoldCustomOrder", () => { GUILayout.Label("FoldCustomOrder"); });
-            _miscFold.Add("IDebugMenu", typeof(IDebugMenuSample));
-            _dynamicFold.Add("DynamicFold", () => _dynamicFoldEnable, () => { GUILayout.Label("DynamicFold"); });
+            _miscFolds.Add("Fold0", () => { GUILayout.Label("Fold0"); });
+            _miscFolds.Add("Fold1", () => { GUILayout.Label("Fold1 FirstAdd"); });
+            _miscFolds.Add("Fold1", () => { GUILayout.Label("Fold1 SecondAdd"); });
+            _miscFolds.Add("TitleAction", () => { GUILayout.Label("TitleAction"); }).SetTitleAction(() => _bool = GUILayout.Toggle(_bool, "Custom Title Action"));
+            _miscFolds.Add(-1, "FoldCustomOrder", () => { GUILayout.Label("FoldCustomOrder"); });
+            _miscFolds.Add("IDebugMenu", typeof(IDebugMenuSample));
+            _dynamicFolds.Add("DynamicFold", () => _dynamicFoldEnable, () => { GUILayout.Label("DynamicFold"); });
 
-            _fieldFold.Add("Field", () =>
+            _fieldFolds.Add("Field", () =>
             {
                 _enum = GUIUtil.Field(_enum, "enum");
                 _string = GUIUtil.Field(_string, "string");
@@ -56,7 +57,7 @@ namespace PrefsGUI
                 _rect = GUIUtil.Field(_rect, "rect");
             });
 
-            _fieldFold.Add("FieldWithUnparsedStr", () =>
+            _fieldFolds.Add("FieldWithUnparsedStr", () =>
             {
                 _int = GUIUtil.Field(_int, ref _intStr, "int");
                 _float = GUIUtil.Field(_float, ref _floatStr, "float");
@@ -67,7 +68,7 @@ namespace PrefsGUI
             },
             true);
 
-            _sliderFold.Add("Slider", () =>
+            _sliderFolds.Add("Slider", () =>
             {
                 _int = GUIUtil.Slider(_int, 0, 100, "Slider(int)");
                 _float = GUIUtil.Slider(_float, "Slider(float)");
@@ -83,7 +84,7 @@ namespace PrefsGUI
                 _rect = GUIUtil.Slider(_rect, Rect.zero, new Rect(1f,1f,1f,1f), "Slider(Rect)");
             });
 
-            _sliderFold.Add("SliderWithUnparsedStr", () =>
+            _sliderFolds.Add("SliderWithUnparsedStr", () =>
             {
                 _int = GUIUtil.Slider(_int, 0, 100, ref _intStr, "Slider(int)");
                 _float = GUIUtil.Slider(_float, ref _floatStr, "Slider(float)");
@@ -100,11 +101,11 @@ namespace PrefsGUI
         {
             using (var h = new GUILayout.HorizontalScope())
             {
-                using (var v = new GUILayout.VerticalScope())
+                using (var v = new GUILayout.VerticalScope(GUILayout.MinWidth(300f)))
                 {
-                    _miscFold.OnGUI();
+                    _miscFolds.OnGUI();
                     _dynamicFoldEnable = GUILayout.Toggle(_dynamicFoldEnable, "DynamicFold");
-                    _dynamicFold.OnGUI();
+                    _dynamicFolds.OnGUI();
                     _int = GUIUtil.IntButton(_int, "IntButton");
 
                     GUIUtil.Indent(() =>
@@ -118,8 +119,8 @@ namespace PrefsGUI
                     }
                 }
 
-                _fieldFold.OnGUI();
-                _sliderFold.OnGUI();
+                _fieldFolds.OnGUI();
+                _sliderFolds.OnGUI();
             }
         }
     }
