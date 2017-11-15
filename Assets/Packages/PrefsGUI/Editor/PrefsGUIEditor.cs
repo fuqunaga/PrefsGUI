@@ -71,7 +71,7 @@ namespace PrefsGUI
 
                 if (Order.GameObject == _order)
                 {
-                    _goParams.Where(dic => dic.Key != null).ToList().ForEach(pair =>
+                    _goParams.Where(dic => dic.Key != null).OrderBy(dic => dic.Key.name).ToList().ForEach(pair =>
                     {
                         var go = pair.Key;
                         var prefsList = pair.Value;
