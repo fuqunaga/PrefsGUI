@@ -117,7 +117,7 @@ namespace PrefsGUI
                 }
             }
 
-            if ((setCurrentToDefaultWindow != null) && Event.current.type == EventType.repaint) setCurrentToDefaultWindow.Repaint();
+            if ((setCurrentToDefaultWindow != null) && Event.current.type == EventType.Repaint) setCurrentToDefaultWindow.Repaint();
         }
 
 
