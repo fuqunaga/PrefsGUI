@@ -328,11 +328,14 @@ namespace PrefsGUI
         protected override T ToInner(T TouterV) { return TouterV; }
     }
 
-    public abstract class PrefsParam<OuterT, InnerT> : PrefsParam
-    {
-        [SerializeField]
-        protected OuterT defaultValue;
 
+    /// <summary>
+    /// Basic implementation of OuterT and InnnerT
+    /// </summary>
+    /// <typeparam name="OuterT"></typeparam>
+    /// <typeparam name="InnerT"></typeparam>
+    public abstract class PrefsParam<OuterT, InnerT> : PrefsParamOuter<OuterT>
+    {
         protected bool isCachedOuter;
         protected OuterT cachedOuter;
 
@@ -341,29 +344,9 @@ namespace PrefsGUI
 
         protected bool synced;
 
-        public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key)
-        {
-            this.defaultValue = defaultValue;
-        }
-
-        public static implicit operator OuterT(PrefsParam<OuterT, InnerT> me)
-        {
-            return me.Get();
-        }
-
-        public OuterT Get()
-        {
-            if (!isCachedOuter)
-            {
-                cachedOuter = ToOuter(_Get());
-                isCachedOuter = true;
-            }
-            return cachedOuter;
-        }
+        public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key, defaultValue) { }
 
         protected InnerT _Get() { return PlayerPrefs<InnerT>.Get(key, ToInner(defaultValue)); }
-
-        public void Set(OuterT v) { _Set(ToInner(v)); }
 
         protected void _Set(InnerT v, bool synced = false)
         {
@@ -376,11 +359,20 @@ namespace PrefsGUI
             this.synced = synced;
         }
 
-        public void SetWithDefault(OuterT v) { Set(v); defaultValue = v; }
-
-        public virtual void Delete() { PlayerPrefs.DeleteKey(key); }
 
         #region override
+
+        public override OuterT Get()
+        {
+            if (!isCachedOuter)
+            {
+                cachedOuter = ToOuter(_Get());
+                isCachedOuter = true;
+            }
+            return cachedOuter;
+        }
+
+        public override void Set(OuterT v) { _Set(ToInner(v)); }
 
         public override Type GetInnerType()
         {
@@ -497,6 +489,41 @@ namespace PrefsGUI
     }
 
 
+    /// <summary>
+    /// Define Outer Interface
+    /// </summary>
+    /// <typeparam name="OuterT"></typeparam>
+    public abstract class PrefsParamOuter<OuterT> : PrefsParam
+    {
+        [SerializeField]
+        protected OuterT defaultValue;
+
+        public PrefsParamOuter(string key, OuterT defaultValue = default(OuterT)) : base(key)
+        {
+            this.defaultValue = defaultValue;
+        }
+
+        public static implicit operator OuterT(PrefsParamOuter<OuterT> me)
+        {
+            return me.Get();
+        }
+
+        #region abstract
+
+        public abstract OuterT Get();
+
+        public abstract void Set(OuterT v);
+
+        #endregion
+
+
+        #region override
+
+        public override void SetCurrentToDefault() { defaultValue = Get(); }
+
+        #endregion
+    }
+
     public abstract class PrefsParam : ISerializationCallbackReceiver
     {
         #region RegistAllInstance
@@ -517,8 +544,11 @@ namespace PrefsGUI
             this.key = key;
             Regist();
         }
+        public virtual void Delete() { PlayerPrefs.DeleteKey(key); }
+
 
         #region abstract
+
         public abstract Type GetInnerType();
         public abstract object GetObject();
         public abstract void SetObject(object obj, bool synced);
@@ -526,6 +556,7 @@ namespace PrefsGUI
         public abstract bool OnGUI(string label = null);
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
+
         #endregion
     }
     #endregion

@@ -35,6 +35,8 @@ namespace PrefsGUI
         public PrefsVector4 _prefsVector4 = new PrefsVector4("PrefsVector4");
         public PrefsColor _prefsColor = new PrefsColor("PrefsColor");
         public PrefsRect _prefsRect = new PrefsRect("PrefsRect");
+        public PrefsIPEndPoint _prefsIPEndPoint = new PrefsIPEndPoint("PrefsIPEndPoint");
+
         public PrefsList _prefsList = new PrefsList("PrefsList");
         public PrefsList _prefsListRuntimeGUI = new PrefsList("PrefsListRuntimeGUI");
         public PrefsList _prefsListCustomGUI = new PrefsList("PrefsListCustomGUI", (list) =>
@@ -69,8 +71,11 @@ namespace PrefsGUI
             _prefsVector4.OnGUISlider();
             _prefsRect.OnGUI();
             _prefsRect.OnGUISlider();
-
             _prefsColor.OnGUI();
+
+
+            _prefsIPEndPoint.OnGUI();
+
             // return true if value was changed
             if (_prefsColor.OnGUISlider())
             {
