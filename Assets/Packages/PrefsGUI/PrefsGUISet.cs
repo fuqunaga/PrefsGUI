@@ -15,7 +15,9 @@ namespace PrefsGUI
 
         public PrefsIPEndPoint(string key, string hostname = "localhost", int port = 10000) : base(key, hostname, port) { }
 
-        public static implicit operator IPEndPoint(PrefsIPEndPoint me) => new IPEndPoint(FindFromHostName(me.prefs0.Get()), me.prefs1.Get());
+        public static implicit operator IPEndPoint(PrefsIPEndPoint me) => CreateIPEndPoint(me.prefs0.Get(), me.prefs1.Get());
+
+        public static IPEndPoint CreateIPEndPoint(string hostname, int port) => new IPEndPoint(FindFromHostName(hostname), port);
         
         public static IPAddress FindFromHostName(string hostname)
         {
