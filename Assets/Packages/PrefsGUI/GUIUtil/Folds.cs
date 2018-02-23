@@ -6,7 +6,6 @@ using UnityEngine.Assertions;
 
 public static partial class GUIUtil
 {
-    #region Fold
     public static class Style
     {
         // 参考 https://github.com/XJINE/XJUnity3D.GUI
@@ -66,6 +65,11 @@ public static partial class GUIUtil
 
             return ret;
         }
+
+		public bool Contains(string name)
+		{
+			return _dic.ContainsKey(name);
+		}
 
         public void Remove(string name)
         {
@@ -151,7 +155,6 @@ public static partial class GUIUtil
             }
         }
     }
-    #endregion
 
     #region FoldUtil
 
