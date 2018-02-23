@@ -8,13 +8,20 @@ using UnityEngine.Networking;
 
 namespace PrefsGUI
 {
-    /// <summary>
-    /// Sync PrefsGUI parameter over UNET
-    /// </summary>
-    public class PrefsGUISync : NetworkBehaviour
+	/// <summary>
+	/// Syncs ALL PrefsGUI parameters over UNET,
+	/// except those registered in  _ignoreKeys.
+	/// </summary>
+	public class PrefsGUISync : NetworkBehaviour
     {
-        #region type define
-        public struct KeyObj { public string key; public object _value; }
+		#region Singleton
+		static private PrefsGUISync _singleton = null;
+		static public PrefsGUISync singleton { get { return _singleton; } protected set { } }
+		protected void SinglteonInit() { if (_singleton == null) { _singleton = this; } else { Destroy(this); } }
+		#endregion
+
+		#region type define
+		public struct KeyObj { public string key; public object _value; }
 
 
         public struct KeyBool { public string key; public bool _value; }
@@ -73,7 +80,8 @@ namespace PrefsGUI
 
         public void Awake()
         {
-            _typeToSyncList = new Dictionary<Type, ISyncListKeyObj>()
+			SinglteonInit();
+			_typeToSyncList = new Dictionary<Type, ISyncListKeyObj>()
             {
                 { typeof(bool),    _syncListKeyBool    },
                 { typeof(int),     _syncListKeyInt     },
