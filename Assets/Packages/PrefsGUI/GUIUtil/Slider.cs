@@ -73,9 +73,13 @@ public static partial class GUIUtil
 
 
 	static readonly string[] defaultElemLabelsVector = new[] { "x", "y", "z", "w" };
-	static object SliderFuncVector<T>(object v, object min, object max, ref string unparsedStr, string label = "", string[] elemLabels = null)
+	static object SliderFuncVector<T, ElemType>(object v, object min, object max, ref string unparsedStr, string label = "", string[] elemLabels = null)
 	{
-		var elementNum = AbstractVector.GetElementNum<T>();
+        var vec = new AbstractVector(v);
+        var minVec = new AbstractVector(min);
+        var maxVec = new AbstractVector(max);
+
+        var elementNum = vec.GetElementNum();
 		var eLabels = elemLabels ?? defaultElemLabelsVector;
 
 		using (var h0 = new GUILayout.HorizontalScope())
@@ -88,8 +92,8 @@ public static partial class GUIUtil
 				{
 					using (var h1 = new GUILayout.HorizontalScope())
 					{
-						var elem = Slider(AbstractVector.GetAtIdx<T>(v, i), AbstractVector.GetAtIdx<T>(min, i), AbstractVector.GetAtIdx<T>(max, i), ref strs[i], eLabels[i]);
-						v = AbstractVector.SetAtIdx<T>(v, i, elem);
+						var elem = Slider((ElemType)vec[i], (ElemType)minVec[i], (ElemType)maxVec[i], ref strs[i], eLabels[i]);
+						vec[i] = elem;
 					}
 				}
 				unparsedStr = JoinUnparsedStr(strs);
@@ -104,10 +108,12 @@ public static partial class GUIUtil
 		{typeof(int), SliderInt },
 		{typeof(float), SliderFloat },
 		{typeof(Rect), SliderFuncRect },
-		{typeof(Vector2), SliderFuncVector<Vector2> },
-		{typeof(Vector3), SliderFuncVector<Vector3> },
-		{typeof(Vector4), SliderFuncVector<Vector4> },
-	};
+		{typeof(Vector2), SliderFuncVector<Vector2, float> },
+		{typeof(Vector3), SliderFuncVector<Vector3, float> },
+		{typeof(Vector4), SliderFuncVector<Vector4, float> },
+        {typeof(Vector2Int), SliderFuncVector<Vector2Int, int> },
+        {typeof(Vector3Int), SliderFuncVector<Vector3Int, int> },
+    };
 
 	#endregion
 }

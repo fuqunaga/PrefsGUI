@@ -91,22 +91,26 @@ namespace PrefsWrapper
         public static object Get(string key, object defaultValue)
         {
             object ret = default(T);
+            var defaultVec = new AbstractVector(defaultValue);
+            var retVec = new AbstractVector(ret);
 
             var keys = GenerateKeys(key);
             for (var i = 0; i < keys.Count; ++i)
             {
-                var elem = (float)PlayerPrefsStrandard<float>.Get(keys[i], AbstractVector.GetAtIdx<T>(defaultValue, i));
-                ret = AbstractVector.SetAtIdx<T>(ret, i, elem);
+                var elem = (float)PlayerPrefsStrandard<float>.Get(keys[i], defaultVec[i]);
+                retVec[i] = elem;
             }
             return ret;
         }
 
         public static void Set(string key, object val)
         {
+            var vec = new AbstractVector(val);
+
             var keys = GenerateKeys(key);
             for (var i = 0; i < keys.Count; ++i)
             {
-                PlayerPrefsStrandard<float>.Set(keys[i], AbstractVector.GetAtIdx<T>(val, i));
+                PlayerPrefsStrandard<float>.Set(keys[i], vec[i]);
             }
         }
     }

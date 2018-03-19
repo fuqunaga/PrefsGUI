@@ -33,6 +33,9 @@ namespace PrefsGUI
         public PrefsVector2 _prefsVector2 = new PrefsVector2("PrefsVector2");
         public PrefsVector3 _prefsVector3 = new PrefsVector3("PrefsVector3");
         public PrefsVector4 _prefsVector4 = new PrefsVector4("PrefsVector4");
+        public PrefsVector2Int _prefsVector2Int = new PrefsVector2Int("PrefsVector2Int");
+        public PrefsVector3Int _prefsVector3Int = new PrefsVector3Int("PrefsVector3Int");
+
         public PrefsColor _prefsColor = new PrefsColor("PrefsColor");
         public PrefsRect _prefsRect = new PrefsRect("PrefsRect");
         public PrefsIPEndPoint _prefsIPEndPoint = new PrefsIPEndPoint("PrefsIPEndPoint");
@@ -69,6 +72,10 @@ namespace PrefsGUI
             _prefsVector3.OnGUISlider();
             _prefsVector4.OnGUI();
             _prefsVector4.OnGUISlider();
+            _prefsVector2Int.OnGUI();
+            _prefsVector2Int.OnGUISlider();
+            _prefsVector3Int.OnGUI();
+            _prefsVector3Int.OnGUISlider();
             _prefsRect.OnGUI();
             _prefsRect.OnGUISlider();
             _prefsColor.OnGUI();
@@ -137,6 +144,8 @@ namespace PrefsGUI
             v2 = _prefsVector4;
             v3 = _prefsVector4;
             v4 = _prefsVector4;
+            Vector2Int v2Int = _prefsVector2Int;
+            Vector3Int v3Int = _prefsVector3Int;
             Color c = _prefsVector4;
             Rect rect = _prefsRect;
             c = _prefsColor;

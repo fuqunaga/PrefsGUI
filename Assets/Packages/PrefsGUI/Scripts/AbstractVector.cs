@@ -1,33 +1,58 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.Reflection;
+using System.Linq;
 
-public static class AbstractVector
+public class AbstractVector
 {
-
     public class Data
     {
         public int rank;
-        public Func<object, int, float> get;
-        public Func<object, int, float, object> set;
-    };
+        public PropertyInfo pi;
+    }
 
     static readonly Dictionary<Type, Data> _dataTable = new Dictionary<Type, Data>()
     {
-        {typeof(Vector2), new Data() { rank = 2, get=(o,idx) => ((Vector2)o)[idx], set = (o, idx, v) => { var vec =((Vector2)o); vec[idx] = v; return vec; } } },
-        {typeof(Vector3), new Data() { rank = 3, get=(o,idx) => ((Vector3)o)[idx], set = (o, idx, v) => { var vec =((Vector3)o); vec[idx] = v; return vec; } } },
-        {typeof(Vector4), new Data() { rank = 4, get=(o,idx) => ((Vector4)o)[idx], set = (o, idx, v) => { var vec =((Vector4)o); vec[idx] = v; return vec; } } },
+        { typeof(Vector2), new Data() { rank = 2 } },
+        { typeof(Vector3), new Data() { rank = 3 } },
+        { typeof(Vector4), new Data() { rank = 4 } },
+        { typeof(Vector2Int), new Data(){rank = 2} },
+        { typeof(Vector3Int), new Data(){rank = 3} },
     };
 
-    public static int GetElementNum<T>() { return _dataTable[typeof(T)].rank; }
-
-    public static float GetAtIdx<T>(object o, int idx)
+    static AbstractVector()
     {
-        return _dataTable[typeof(T)].get(o, idx);
+        _dataTable.Keys.ToList().ForEach(type =>
+        {
+            _dataTable[type].pi = type.GetProperty("Item");
+        });
     }
 
-    public static object SetAtIdx<T>(object o, int idx, float v)
+
+    object obj;
+    Data data;
+
+    public AbstractVector(object o)
     {
-        return _dataTable[typeof(T)].set(o, idx, v);
+        obj = o;
+        data = _dataTable[o.GetType()];
+    }
+
+    public static int GetElementNum<T>() => _dataTable[typeof(T)].rank;
+
+    public int GetElementNum() => data.rank;
+
+    public object this[int idx]
+    {
+        get
+        {
+            return data.pi.GetValue(obj, new[] { (object)idx });
+        }
+
+        set
+        {
+            data.pi.SetValue(obj, value, new[] { (object)idx });
+        }
     }
 }

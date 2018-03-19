@@ -88,6 +88,27 @@ namespace PrefsGUI
     }
 
     [Serializable]
+    public class PrefsVector2Int : PrefsVector<Vector2Int>
+    {
+        public PrefsVector2Int(string key, Vector2Int defaultValue = default(Vector2Int)) : base(key, defaultValue) { }
+
+        protected override Vector2Int defaultMax { get { return base.defaultMax * 100; } }
+
+        public static implicit operator Vector2Int(PrefsVector2Int v) { return v.Get(); }
+    }
+
+    [Serializable]
+    public class PrefsVector3Int : PrefsVector<Vector3Int>
+    {
+        public PrefsVector3Int(string key, Vector3Int defaultValue = default(Vector3Int)) : base(key, defaultValue) { }
+
+        protected override Vector3Int defaultMax { get { return base.defaultMax * 100; } }
+
+        public static implicit operator Vector3Int(PrefsVector3Int v) { return v.Get(); }
+    }
+
+
+    [Serializable]
     public class PrefsColor : PrefsTuple<Color, Vector4>
     {
         public PrefsColor(string key, Color defaultValue = default(Color)) : base(key, defaultValue) { }

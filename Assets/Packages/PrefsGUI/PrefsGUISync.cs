@@ -11,47 +11,21 @@ namespace PrefsGUI
     /// <summary>
     /// Sync PrefsGUI parameter over UNET
     /// </summary>
-    public class PrefsGUISync : NetworkBehaviour
+    public partial class PrefsGUISync : NetworkBehaviour
     {
-        #region type define
-        public struct KeyObj { public string key; public object _value; }
-
-
-        public struct KeyBool { public string key; public bool _value; }
-        public struct KeyInt { public string key; public int _value; }
-        public struct KeyUInt { public string key; public uint _value; }
-        public struct KeyFloat { public string key; public float _value; }
-        public struct KeyString { public string key; public string _value; }
-        public struct KeyVector2 { public string key; public Vector2 _value; }
-        public struct KeyVector3 { public string key; public Vector3 _value; }
-        public struct KeyVector4 { public string key; public Vector4 _value; }
-
-
-        public interface ISyncListKeyObj
-        {
-            int Count { get; }
-            void Add(string key, object obj);
-            void Set(int idx, object obj);
-            KeyObj Get(int idx);
-        }
-
-        public class SyncListKeyBool : SyncListStruct<KeyBool>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
-        public class SyncListKeyInt : SyncListStruct<KeyInt>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
-        public class SyncListKeyUInt : SyncListStruct<KeyUInt>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
-        public class SyncListKeyFloat : SyncListStruct<KeyFloat>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
-        public class SyncListKeyString : SyncListStruct<KeyString>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
-        public class SyncListKeyVector2 : SyncListStruct<KeyVector2>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
-        public class SyncListKeyVector3 : SyncListStruct<KeyVector3>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
-        public class SyncListKeyVector4 : SyncListStruct<KeyVector4>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
+        #region Type Define
 
         public class TypeAndIdx
         {
             public Type type;
             public int idx;
         }
+
         #endregion
 
-        #region sync
+
+        #region Sync
+
         SyncListKeyBool _syncListKeyBool = new SyncListKeyBool();
         SyncListKeyInt _syncListKeyInt = new SyncListKeyInt();
         SyncListKeyUInt _syncListKeyUInt = new SyncListKeyUInt();
@@ -60,9 +34,12 @@ namespace PrefsGUI
         SyncListKeyVector2 _syncListKeyVector2 = new SyncListKeyVector2();
         SyncListKeyVector3 _syncListKeyVector3 = new SyncListKeyVector3();
         SyncListKeyVector4 _syncListKeyVector4 = new SyncListKeyVector4();
+        SyncListKeyVector2Int _syncListKeyVector2Int = new SyncListKeyVector2Int();
+        SyncListKeyVector3Int _syncListKeyVector3Int = new SyncListKeyVector3Int();
 
         [SyncVar]
         bool _materialPropertyDebugMenuUpdate;
+
         #endregion
 
         Dictionary<Type, ISyncListKeyObj> _typeToSyncList;
@@ -82,7 +59,9 @@ namespace PrefsGUI
                 { typeof(string),  _syncListKeyString  },
                 { typeof(Vector2), _syncListKeyVector2 },
                 { typeof(Vector3), _syncListKeyVector3 },
-                { typeof(Vector4), _syncListKeyVector4 }
+                { typeof(Vector4), _syncListKeyVector4 },
+                { typeof(Vector2Int), _syncListKeyVector2Int },
+                { typeof(Vector3Int), _syncListKeyVector3Int },
             };
         }
 
@@ -133,7 +112,8 @@ namespace PrefsGUI
                         var iSynList = _typeToSyncList[type];
                         iSynList.Set(ti.idx, obj);
                     }
-                    else {
+                    else
+                    {
                         Assert.IsTrue(_typeToSyncList.ContainsKey(type), string.Format("type [{0}] is not supported.", type));
                         var iSynList = _typeToSyncList[type];
                         var idx = iSynList.Count;
