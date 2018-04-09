@@ -13,16 +13,23 @@ namespace PrefsGUI
         static string[] _paramNames = new[] { "address", "port" };
         protected override string[] paramNames => _paramNames;
 
+
+        public string address => prefs0.Get();
+        public int port => prefs1.Get();
+
         public PrefsIPEndPoint(string key, string hostname = "localhost", int port = 10000) : base(key, hostname, port) { }
 
-        public static implicit operator IPEndPoint(PrefsIPEndPoint me) => CreateIPEndPoint(me.prefs0.Get(), me.prefs1.Get());
-
-        public static IPEndPoint CreateIPEndPoint(string hostname, int port) => new IPEndPoint(FindFromHostName(hostname), port);
+        public static implicit operator IPEndPoint(PrefsIPEndPoint me) => CreateIPEndPoint(me.address, me.port);
         
+        public static IPEndPoint CreateIPEndPoint(string address, int port)
+        {
+            var ip = FindFromHostName(address);
+            return (ip != IPAddress.None) ? new IPEndPoint(ip, port) : null;
+        }
+
         public static IPAddress FindFromHostName(string hostname)
         {
             var address = Dns.GetHostAddresses(hostname).FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-
             return address ?? IPAddress.None;
         }
     }
