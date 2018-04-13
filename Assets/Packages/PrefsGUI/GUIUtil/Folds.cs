@@ -35,13 +35,16 @@ public static partial class GUIUtil
         Dictionary<string, FoldData> _dic = new Dictionary<string, FoldData>();
         bool _needUpdate = true;
 
-        public Fold Add(string name, Action drawFunc, bool enableFirst = false) => Add(name, null, drawFunc, enableFirst);
 
-        public Fold Add(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false) => Add(0, name, checkEnableFunc, drawFunc, enableFirst);
+        #region Add 
 
-        public Fold Add(int order, string name, Action drawFunc, bool enableFirst = false)  => Add(order, name, null, drawFunc, enableFirst);
+        public Fold Add(string name, Func<bool> drawFunc, bool enableFirst = false) => Add(name, null, drawFunc, enableFirst);
 
-        public Fold Add(int order, string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
+        public Fold Add(string name, Func<bool> checkEnableFunc, Func<bool> drawFunc, bool enableFirst = false) => Add(0, name, checkEnableFunc, drawFunc, enableFirst);
+
+        public Fold Add(int order, string name, Func<bool> drawFunc, bool enableFirst = false)  => Add(order, name, null, drawFunc, enableFirst);
+
+        public Fold Add(int order, string name, Func<bool> checkEnableFunc, Func<bool> drawFunc, bool enableFirst = false)
         {
             Fold ret;
             FoldData foldData;
@@ -66,7 +69,18 @@ public static partial class GUIUtil
             return ret;
         }
 
-		public bool Contains(string name)
+        public Fold Add(string name, Action drawFunc, bool enableFirst = false) => Add(name, null, drawFunc, enableFirst);
+
+        public Fold Add(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false) => Add(0, name, checkEnableFunc, drawFunc, enableFirst);
+
+        public Fold Add(int order, string name, Action drawFunc, bool enableFirst = false) => Add(order, name, null, drawFunc, enableFirst);
+
+        public Fold Add(int order, string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false) => Add(order, name, checkEnableFunc, () => { drawFunc(); return false; }, enableFirst);
+
+        #endregion
+
+
+        public bool Contains(string name)
 		{
 			return _dic.ContainsKey(name);
 		}
@@ -83,8 +97,10 @@ public static partial class GUIUtil
 
 
         List<Fold> _folds = new List<Fold>();
-        public void OnGUI()
+        public bool OnGUI()
         {
+            var ret = false;
+
             if (_needUpdate)
             {
                 _folds = _dic.Values.OrderBy(of => of._order).Select(of => of._fold).ToList();
@@ -93,37 +109,43 @@ public static partial class GUIUtil
 
             using (var v = new GUILayout.VerticalScope())
             {
-                _folds.ForEach(fold => fold.OnGUI());
+                ret = _folds.Aggregate(false, (changed, fold) =>  changed || fold.OnGUI());
             }
+            return ret;
         }
     }
 
     public class Fold
     {
-        bool _foldOpen;
-        string _name;
+        public bool _foldOpen;
+        public string _name;
         Action _titleAction;
 
         public class FuncData
         {
             public Func<bool> _checkEnable;
-            public Action _draw;
+            public Func<bool> _draw;
         }
         List<FuncData> _funcDatas = new List<FuncData>();
 
-        public Fold(string name, Action drawFunc, bool enableFirst = false) : this(name, null, drawFunc, enableFirst) { }
+        public Fold(string name, Func<bool> drawFunc, bool enableFirst = false) : this(name, null, drawFunc, enableFirst) { }
 
-        public Fold(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false)
+        public Fold(string name, Func<bool> checkEnableFunc, Func<bool> drawFunc, bool enableFirst = false)
         {
             _name = name;
             _foldOpen = enableFirst;
             Add(checkEnableFunc, drawFunc);
         }
 
+        public Fold(string name, Action drawFunc, bool enableFirst = false) : this(name, null, drawFunc, enableFirst) { }
+
+        public Fold(string name, Func<bool> checkEnableFunc, Action drawFunc, bool enableFirst = false) : this(name, checkEnableFunc, () => { drawFunc(); return false; }, enableFirst) { }
+
+
         public void SetTitleAction(Action titleAction) => _titleAction = titleAction;
 
-        public void Add(Action drawFunc) { Add(null, drawFunc); }
-        public void Add(Func<bool> checkEnableFunc, Action drawFunc)
+        public void Add(Func<bool> drawFunc) { Add(null, drawFunc); }
+        public void Add(Func<bool> checkEnableFunc, Func<bool> drawFunc)
         {
             _funcDatas.Add(new FuncData()
             {
@@ -132,8 +154,9 @@ public static partial class GUIUtil
             });
         }
 
-        public void OnGUI()
+        public bool OnGUI()
         {
+            var ret = false;
             var drawFuncs = _funcDatas.Where(fd => fd._checkEnable == null || fd._checkEnable()).Select(fd => fd._draw).ToList();
 
             if (drawFuncs.Any())
@@ -149,10 +172,12 @@ public static partial class GUIUtil
                 {
                     using (var v = new GUILayout.VerticalScope("window"))
                     {
-                        drawFuncs.ForEach(drawFunc => drawFunc());
+                        ret = drawFuncs.Aggregate(false, (changed, drawFunc) => changed || drawFunc());
                     }
                 }
             }
+
+            return ret;
         }
     }
 
