@@ -217,11 +217,12 @@ namespace PrefsGUI
         }
 
         static List<T> _empty = new List<T>();
+        XmlSerializer serializer = new XmlSerializer(typeof(List<T>));
 
         protected override string ToInner(List<T> outerV)
         {
             if (outerV == null) return "";
-            var serializer = new XmlSerializer(typeof(List<T>));
+
             using (StringWriter writer = new StringWriter())
             {
                 serializer.Serialize(writer, outerV);
@@ -233,7 +234,6 @@ namespace PrefsGUI
         {
             if (!string.IsNullOrEmpty(innerV))
             {
-                var serializer = new XmlSerializer(typeof(List<T>));
                 using (StringReader reader = new StringReader(innerV))
                 {
                     try
@@ -365,9 +365,14 @@ namespace PrefsGUI
 
         protected bool synced;
 
-        public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key, defaultValue) { }
+        protected InnerT defaultInner;
 
-        protected InnerT _Get() { return PlayerPrefs<InnerT>.Get(key, ToInner(defaultValue)); }
+        public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key, defaultValue)
+        {
+            defaultInner = ToInner(defaultValue);
+        }
+
+        protected InnerT _Get() { return PlayerPrefs<InnerT>.Get(key, defaultInner); }
 
         protected void _Set(InnerT v, bool synced = false)
         {
