@@ -99,26 +99,29 @@ namespace PrefsGUI
                 if (false == _ignoreKeys.Contains(key))
                 {
                     var obj = prefs.GetObject();
-                    var type = prefs.GetInnerType();
-                    if (type.IsEnum)
+                    if (obj != null)
                     {
-                        type = typeof(int);
-                        obj = Convert.ToInt32(obj);
-                    }
+                        var type = prefs.GetInnerType();
+                        if (type.IsEnum)
+                        {
+                            type = typeof(int);
+                            obj = Convert.ToInt32(obj);
+                        }
 
-                    TypeAndIdx ti;
-                    if (_keyToTypeIdx.TryGetValue(key, out ti))
-                    {
-                        var iSynList = _typeToSyncList[type];
-                        iSynList.Set(ti.idx, obj);
-                    }
-                    else
-                    {
-                        Assert.IsTrue(_typeToSyncList.ContainsKey(type), string.Format("type [{0}] is not supported.", type));
-                        var iSynList = _typeToSyncList[type];
-                        var idx = iSynList.Count;
-                        iSynList.Add(key, obj);
-                        _keyToTypeIdx[key] = new TypeAndIdx() { type = type, idx = idx };
+                        TypeAndIdx ti;
+                        if (_keyToTypeIdx.TryGetValue(key, out ti))
+                        {
+                            var iSynList = _typeToSyncList[type];
+                            iSynList.Set(ti.idx, obj);
+                        }
+                        else
+                        {
+                            Assert.IsTrue(_typeToSyncList.ContainsKey(type), string.Format("type [{0}] is not supported.", type));
+                            var iSynList = _typeToSyncList[type];
+                            var idx = iSynList.Count;
+                            iSynList.Add(key, obj);
+                            _keyToTypeIdx[key] = new TypeAndIdx() { type = type, idx = idx };
+                        }
                     }
                 }
             });
