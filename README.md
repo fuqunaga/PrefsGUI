@@ -82,6 +82,15 @@ https://github.com/fuqunaga/PrefsGUI/blob/master/Assets/Packages/PrefsGUI/Script
 Application.persistentDataPath + "/Prefs.json"
 ```
 
+You can customize by placing PrefsWrapperPathCustom in the scene and set _path field.  
+also can use the Special folders and enviroment variables.
+```
+- %dataPath% -> Application.dataPath
+- %companyName% -> Application.companyName
+- %productName% -> Application.productName
+- other %[word]% -> System.Environment.GetEnvironmentVariable([word])
+```
+
 
 # MaterialPropertyDebugMenu
 
