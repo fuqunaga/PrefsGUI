@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.IO;
+using PrefsWrapper;
 
 namespace PrefsWrapperJson
 {
@@ -20,12 +21,16 @@ namespace PrefsWrapperJson
 
         public void Set(string key, object value) { _dic[key] = value; }
 
-        string path { get { return Application.persistentDataPath + "/Prefs.json"; } }
+        string path => PrefsWrapperPathSelector.path + "/Prefs.json";
 
         public void Save()
         {
             var str = MiniJSON.Json.Serialize(_dic);
-            File.WriteAllText(path, str);
+
+            var p = path;
+            var dir = Path.GetDirectoryName(p);
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            File.WriteAllText(p, str);
         }
 
         public void Load()

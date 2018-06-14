@@ -21,7 +21,7 @@ namespace PrefsGUI
     [Serializable]
     public class PrefsString : PrefsParam<string>
     {
-        public PrefsString(string key, string defaultValue = default(string)) : base(key, defaultValue) { }
+        public PrefsString(string key, string defaultValue = "") : base(key, defaultValue) { }
     }
 
     [Serializable]
@@ -365,14 +365,21 @@ namespace PrefsGUI
 
         protected bool synced;
 
+        protected bool hasDefaultInner;
         protected InnerT defaultInner;
 
         public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key, defaultValue)
         {
-            defaultInner = ToInner(defaultValue);
         }
 
-        protected InnerT _Get() { return PlayerPrefs<InnerT>.Get(key, defaultInner); }
+        protected InnerT _Get() {
+            if ( !hasDefaultInner )
+            {
+                defaultInner = ToInner(defaultValue);
+                hasDefaultInner = true;
+            }
+            return PlayerPrefs<InnerT>.Get(key, defaultInner);
+        }
 
         protected void _Set(InnerT v, bool synced = false)
         {

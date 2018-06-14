@@ -118,6 +118,9 @@ namespace PrefsGUI
             // if you use OnGUI. to set cumstomOnGUI is bettor.
             _prefsListCustomGUI.OnGUI();
 
+
+            GUILayout.Label($"file path: {PrefsWrapper.PrefsWrapperPathSelector.path}");
+
             if (GUILayout.Button("Save")) Prefs.Save();
             if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
         }
