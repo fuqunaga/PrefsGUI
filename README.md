@@ -97,3 +97,8 @@ also can use the Special folders and enviroment variables.
 Auto create material GUI menu
 
 ![](Docs/MaterialPropertyDebugMenu.gif)
+
+
+# References
+MiniJSON  
+https://gist.github.com/darktable/1411710
