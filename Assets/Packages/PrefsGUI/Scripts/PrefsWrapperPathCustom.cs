@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.Assertions;
 
-namespace PrefsWrapper
+namespace PrefsGUI.Wrapper
 {
     /// <summary>
     /// Custom File Path for PrefsWrapper

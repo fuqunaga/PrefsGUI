@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 
-namespace PrefsWrapper
+namespace PrefsGUI.Wrapper
 {
     interface IPrefsWrapperPath
     {

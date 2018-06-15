@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace PrefsWrapper
+namespace PrefsGUI.Wrapper
 {
     [CustomEditor(typeof(PrefsWrapperPathCustom))]
     public class PrefsWrapperPathReativeEditor : Editor

@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace PrefsWrapperJson.MiniJSON
+namespace PrefsGUI.Wrapper.Json.MiniJSON
 {
     // Example usage:
     //

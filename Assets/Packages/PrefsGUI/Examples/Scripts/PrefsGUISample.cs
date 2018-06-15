@@ -119,7 +119,7 @@ namespace PrefsGUI
             _prefsListCustomGUI.OnGUI();
 
 
-            GUILayout.Label($"file path: {PrefsWrapper.PrefsWrapperPathSelector.path}");
+            GUILayout.Label($"file path: {PrefsGUI.Wrapper.PrefsWrapperPathSelector.path}");
 
             if (GUILayout.Button("Save")) Prefs.Save();
             if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();

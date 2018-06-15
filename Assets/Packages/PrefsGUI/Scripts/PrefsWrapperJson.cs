@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using PrefsWrapper;
 
-namespace PrefsWrapperJson
+namespace PrefsGUI.Wrapper.Json
 {
     public class JSONData
     {

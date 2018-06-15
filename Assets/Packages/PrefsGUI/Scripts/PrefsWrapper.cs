@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 //using PrefsWrapperNative;
-using PrefsWrapperJson;
+using PrefsGUI.Wrapper.Json;
 
-namespace PrefsWrapper
+namespace PrefsGUI.Wrapper
 {
     public static class PrefsGlobal
     {
