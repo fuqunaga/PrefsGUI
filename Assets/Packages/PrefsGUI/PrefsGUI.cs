@@ -190,8 +190,8 @@ namespace PrefsGUI
     {
         Func<List<T>, List<T>> _customOnGUIFunc;
 
-        public PrefsList(string key, List<T> defaultValue = default(List<T>)) : this(key, null, defaultValue) { }
-        public PrefsList(string key, Func<List<T>, List<T>> customOnGUIFunc, List<T> defaultValue = default(List<T>)) : base(key, defaultValue)
+        public PrefsList(string key, List<T> defaultValue = default) : this(key, null, defaultValue) { }
+        public PrefsList(string key, Func<List<T>, List<T>> customOnGUIFunc, List<T> defaultValue = default) : base(key, defaultValue)
         {
             _customOnGUIFunc = customOnGUIFunc;
         }
@@ -208,7 +208,8 @@ namespace PrefsGUI
                     GUILayout.Label(l);
                     GUIUtil.Indent(() => ret = ToInner(_customOnGUIFunc(ToOuter(v))));
                 }
-                else {
+                else
+                {
                     ret = GUIUtil.Field<string>(v, ref unparsedStr, l);
                 }
 
@@ -217,7 +218,9 @@ namespace PrefsGUI
         }
 
         static List<T> _empty = new List<T>();
-        XmlSerializer serializer = new XmlSerializer(typeof(List<T>));
+        XmlSerializer serializer_;
+        XmlSerializer serializer => serializer_ ?? (serializer_ = new XmlSerializer(typeof(List<T>)));
+
 
         protected override string ToInner(List<T> outerV)
         {
@@ -372,8 +375,9 @@ namespace PrefsGUI
         {
         }
 
-        protected InnerT _Get() {
-            if ( !hasDefaultInner )
+        protected InnerT _Get()
+        {
+            if (!hasDefaultInner)
             {
                 defaultInner = ToInner(defaultValue);
                 hasDefaultInner = true;
