@@ -2,8 +2,6 @@
 
 Accessor and GUI set for Unity PlayerPrefs / JSON file
 
-[Unity Package](PrefsGUI.unitypackage)
-
 ![](Docs/PrefsGUI.gif)
 
 ```csharp
@@ -54,6 +52,17 @@ public class PrefsGUISample : PrefsGUISampleBase
         if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
     }
 }
+```
+
+# Install
+Download a `.unitypackage` file from [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
+
+or
+
+Using Pacakge Manager:  
+Add following line to the `dependencies` section in the `Packages/manifest.json`.
+```
+"ga.fuquna.prefsgui": "https://github.com/fuqunaga/PrefsGUI.git"
 ```
 
 
