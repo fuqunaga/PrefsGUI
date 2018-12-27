@@ -1,7 +1,7 @@
 {
     "name": "ga.fuquna.prefsgui",
     "displayName": "PrefsGUI",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "unity": "2018.3",
     "description": "Accessor and GUI set for Unity PlayerPrefs / JSON file",
     "keywords": ["PlayerPrefs", "GUI"],
