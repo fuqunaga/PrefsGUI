@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 using PrefsGUI;
 
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
 {
     #region TypeDefine

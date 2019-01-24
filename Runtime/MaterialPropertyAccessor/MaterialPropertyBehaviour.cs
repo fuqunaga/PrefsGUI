@@ -9,7 +9,7 @@ using System.Linq;
 namespace MaterialPropertyAccessor
 {
 
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public class MaterialPropertyBehaviour : MonoBehaviour
     {
         #region TypeDefine
