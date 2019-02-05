@@ -85,6 +85,14 @@ public static partial class GUIUtil
 			return _dic.ContainsKey(name);
 		}
 
+        public FoldData GetData(string name)
+        {
+            _dic.TryGetValue(name,  out var ret);
+            return ret;
+        }
+
+        public Fold Get(string name) => GetData(name)?._fold;
+
         public void Remove(string name)
         {
             if (_dic.ContainsKey(name))
@@ -185,29 +193,29 @@ public static partial class GUIUtil
 
     public interface IDebugMenu { void DebugMenu(); }
 
-    public static void Add(this Folds folds, string name, params Type[] iDebugMenuTypes)
+    public static Fold Add(this Folds folds, string name, params Type[] iDebugMenuTypes)
     {
-        folds.Add(name, false, iDebugMenuTypes);
+        return folds.Add(name, false, iDebugMenuTypes);
     }
 
-    public static void Add(this Folds folds, string name, bool enableFirst, params Type[] iDebugMenuTypes)
+    public static Fold Add(this Folds folds, string name, bool enableFirst, params Type[] iDebugMenuTypes)
     {
-        folds.Add(0, name, enableFirst, iDebugMenuTypes);
+        return folds.Add(0, name, enableFirst, iDebugMenuTypes);
     }
 
-    public static void Add(this Folds folds, int order, string name, params Type[] iDebugMenuTypes)
+    public static Fold Add(this Folds folds, int order, string name, params Type[] iDebugMenuTypes)
     {
-        folds.Add(order, name, false, iDebugMenuTypes);
+        return folds.Add(order, name, false, iDebugMenuTypes);
     }
 
-    public static void Add(this Folds folds, int order, string name, bool enableFirst, params Type[] iDebugMenuTypes)
+    public static Fold Add(this Folds folds, int order, string name, bool enableFirst, params Type[] iDebugMenuTypes)
     {
         Assert.IsTrue(iDebugMenuTypes.All(type => type.GetInterfaces().Contains(typeof(IDebugMenu))));
 
         var iDebugMenus = iDebugMenuTypes.Select(t => new LazyFindObject(t)).ToList() // exec once.
             .Select(lfo => lfo.GetObject()).Where(o => o != null).Cast<IDebugMenu>();   // exec every call.
 
-        folds.Add(order, name, () => iDebugMenus.Any(), () => iDebugMenus.ToList().ForEach(idm => idm.DebugMenu()), enableFirst);
+        return folds.Add(order, name, () => iDebugMenus.Any(), () => iDebugMenus.ToList().ForEach(idm => idm.DebugMenu()), enableFirst);
     }
 
     /// <summary>
