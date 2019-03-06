@@ -217,6 +217,41 @@ namespace PrefsGUI
             });
         }
 
+        public void OnGUI(Action<T> elementGUI, string label)
+        {
+            OnGUI(elementGUI, null, label);
+        }
+
+        public void OnGUI(Action<T> elementGUI, Func<T> createNewElement=null, string label = null)
+        {
+            GUILayout.Label(label ?? key);
+            GUIUtil.Indent(() =>
+            {
+                var list = Get() ?? new List<T>();
+                list.ForEach(elem =>
+                {
+                    using (var h = new GUILayout.HorizontalScope())
+                    {
+                        elementGUI(elem);
+                    }
+                });
+
+                using (var h = new GUILayout.HorizontalScope())
+                {
+
+                    if (GUILayout.Button("Add"))
+                    {
+                        var elem = (createNewElement != null) ? createNewElement() : Activator.CreateInstance<T>();
+                        list.Add(elem);
+                    }
+                    if (GUILayout.Button("Remove")) list.RemoveAt(list.Count - 1);
+
+                    Set(list);
+                    OnGUIDefaultButton();
+                }
+            });
+        }
+
         static List<T> _empty = new List<T>();
         XmlSerializer serializer_;
         XmlSerializer serializer => serializer_ ?? (serializer_ = new XmlSerializer(typeof(List<T>)));

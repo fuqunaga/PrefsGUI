@@ -41,21 +41,6 @@ namespace PrefsGUI
         public PrefsIPEndPoint _prefsIPEndPoint = new PrefsIPEndPoint("PrefsIPEndPoint");
 
         public PrefsList _prefsList = new PrefsList("PrefsList");
-        public PrefsList _prefsListRuntimeGUI = new PrefsList("PrefsListRuntimeGUI");
-        public PrefsList _prefsListCustomGUI = new PrefsList("PrefsListCustomGUI", (list) =>
-        {
-            list.ForEach(customClass =>
-            {
-                customClass.name = GUILayout.TextField(customClass.name ?? "");
-                customClass.intValue = GUIUtil.IntButton(customClass.intValue);
-            });
-            using (var h = new GUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Add")) list.Add(new CustomClass());
-                if (GUILayout.Button("Remove")) list.RemoveAt(list.Count - 1);
-            }
-            return list;
-        });
 
 
         protected override void OnGUIInternal()
@@ -91,32 +76,11 @@ namespace PrefsGUI
                 Debug.Log("Changed. " + color);
             }
 
-
-            // default OnGUI() is NOT user friendly. but PrefsList can save/load parametors.
-            _prefsList.OnGUI();
-
-
-            GUILayout.Label("PrefsListRuntimeGUI");
-            GUIUtil.Indent(() =>
+            _prefsList.OnGUI((element) =>
             {
-                var list = _prefsListRuntimeGUI.Get();
-                list.ForEach(customClass =>
-                {
-                    customClass.name = GUILayout.TextField(customClass.name ?? "");
-                    customClass.intValue = GUIUtil.IntButton(customClass.intValue);
-                });
-                using (var h = new GUILayout.HorizontalScope())
-                {
-                    if (GUILayout.Button("Add")) list.Add(new CustomClass() { name = "Elem" + list.Count });
-                    if (GUILayout.Button("Remove")) list.RemoveAt(list.Count - 1);
-
-                    _prefsListRuntimeGUI.Set(list);
-                    _prefsList.OnGUIDefaultButton();
-                }
+                element.name = GUIUtil.Field(element.name ?? "", "name");
+                element.intValue = GUIUtil.Field(element.intValue, "intValue");
             });
-
-            // if you use OnGUI. to set cumstomOnGUI is bettor.
-            _prefsListCustomGUI.OnGUI();
 
 
             GUILayout.Label($"file path: {PrefsGUI.Wrapper.PrefsWrapperPathSelector.path}");
