@@ -15,10 +15,16 @@ namespace PrefsGUI
         }
 
         [System.Serializable]
-        public class CustomClass
+        public class CustomClass : GUIUtil.IDebugMenu
         {
             public string name;
             public int intValue;
+
+            public void DebugMenu()
+            {
+                name = GUIUtil.Field(name ?? "", nameof(name));
+                intValue = GUIUtil.Field(intValue, nameof(intValue));
+            }
         }
 
         [System.Serializable]
@@ -76,11 +82,18 @@ namespace PrefsGUI
                 Debug.Log("Changed. " + color);
             }
 
+
+            // PrefsList can call runtime element GUI
             _prefsList.OnGUI((element) =>
             {
                 element.name = GUIUtil.Field(element.name ?? "", "name");
-                element.intValue = GUIUtil.Field(element.intValue, "intValue");
-            });
+                element.intValue = GUIUtil.IntButton(element.intValue, "intValue");
+            },
+            "PrefsList runtime element GUI");
+
+
+            _prefsList.OnGUI("PrefsList automaticaly call element.DebugMenu() if it is IDebugMenu");
+
 
 
             GUILayout.Label($"file path: {PrefsGUI.Wrapper.PrefsWrapperPathSelector.path}");

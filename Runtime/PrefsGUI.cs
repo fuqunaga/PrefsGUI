@@ -190,6 +190,8 @@ namespace PrefsGUI
     {
         Func<List<T>, List<T>> _customOnGUIFunc;
 
+        static bool isIDebugMenu = typeof(GUIUtil.IDebugMenu).IsAssignableFrom(typeof(T));
+
         public PrefsList(string key, List<T> defaultValue = default) : this(key, null, defaultValue) { }
         public PrefsList(string key, Func<List<T>, List<T>> customOnGUIFunc, List<T> defaultValue = default) : base(key, defaultValue)
         {
@@ -199,6 +201,12 @@ namespace PrefsGUI
 
         public override bool OnGUI(string label = null)
         {
+            if (isIDebugMenu)
+            {
+                OnGUI((element) => ((GUIUtil.IDebugMenu)element).DebugMenu(), label);
+                return false;
+            }
+
             return OnGUIStrandardStyle((string v, ref string unparsedStr) =>
             {
                 string ret = null;
