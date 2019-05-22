@@ -65,8 +65,10 @@ namespace PrefsGUI
             {
                 scrollPosition = sc.scrollPosition;
 
+#if false // TODO: UNET
                 var sync = FindObjectOfType<PrefsGUISync>();
                 if (sync != null) GUILayout.Label("sync");
+#endif
 
 
                 if (Order.GameObject == _order)
@@ -75,8 +77,11 @@ namespace PrefsGUI
                     {
                         var go = pair.Key;
                         var prefsList = pair.Value;
-
+#if true
+                        LabelWithEditPrefix(go.name, go, prefsList);
+#else
                         LabelWithEditPrefix(sync, go.name, go, prefsList);
+#endif
 
                         GUIUtil.Indent(() =>
                         {
@@ -84,7 +89,9 @@ namespace PrefsGUI
                             {
                                 using (var h = new GUILayout.HorizontalScope())
                                 {
+#if false // TODO: UNET
                                     SyncToggle(sync, prefs);
+#endif
                                     prefs.OnGUI();
                                 }
                             });
@@ -97,6 +104,7 @@ namespace PrefsGUI
                     {
                         using (var h = new GUILayout.HorizontalScope())
                         {
+#if false // TODO: UNET
                             if (sync != null)
                             {
                                 var key = prefs.key;
@@ -110,6 +118,7 @@ namespace PrefsGUI
                                     else sync._ignoreKeys.Remove(key);
                                 }
                             }
+#endif
 
                             prefs.OnGUI();
                         }
@@ -190,11 +199,18 @@ namespace PrefsGUI
         }
 
 
+#if false // TODO: UNEt
         void LabelWithEditPrefix(PrefsGUISync sync, string label, Object target, List<PrefsParam> prefsList)
         {
             using (var h = new GUILayout.HorizontalScope())
             {
                 SyncToggleList(sync, prefsList);
+#else
+        void LabelWithEditPrefix(string label, Object target, List<PrefsParam> prefsList)
+        {
+            using (var h = new GUILayout.HorizontalScope())
+            {
+#endif
                 GUILayout.Label(label);
 
                 const char separator = '.';
@@ -219,6 +235,7 @@ namespace PrefsGUI
             }
         }
 
+#if false // TODO: UNET
         void SyncToggle(PrefsGUISync sync, PrefsParam prefs)
         {
             if (sync != null)
@@ -264,5 +281,6 @@ namespace PrefsGUI
                 }
             }
         }
+#endif
     }
 }
