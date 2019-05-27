@@ -16,7 +16,7 @@ namespace PrefsGUI
 
         protected override void OnGUIInternal()
         {
-            var prefsList = PrefsList.Where(prefs => !prefs.IsDefault).ToList();
+            var prefsList = allPrefs.Where(prefs => !prefs.IsDefault).ToList();
             prefsList.Where(prefs => !checkedList.ContainsKey(prefs.key)).Select(prefs => prefs.key).ToList().ForEach(key => checkedList[key] = true);
 
 
