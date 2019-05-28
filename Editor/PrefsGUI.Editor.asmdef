@@ -1,5 +1,5 @@
 {
-    "name": "Editor",
+    "name": "PrefsGUI.Editor",
     "references": [
         "PrefsGUI"
     ],
@@ -12,5 +12,6 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }
