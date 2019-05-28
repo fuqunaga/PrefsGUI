@@ -74,11 +74,11 @@ Add following line to the `dependencies` section in the `Packages/manifest.json`
 - You can edit the key prefix for each GameObject by displaying it in order of GameObject
 
 
-# SyncOverUNET
+# Sync Over Network
 
-![](Docs/SyncOverUNET.gif)
-- auto sync All Prefs
-- You can ignore it by specifying it with EditorWindow
+![](https://github.com/fuqunaga/PrefsGUISync/blob/master/Docs/SyncOverUNET.gif)
+Subset package [PrefsGUISync](https://github.com/fuqunaga/PrefsGUISync)
+
 
 
 # Switch PlayerPrefs / JSON
