@@ -76,7 +76,7 @@ Add following line to the `dependencies` section in the `Packages/manifest.json`
 
 # Sync Over Network
 
-![](https://github.com/fuqunaga/PrefsGUISync/blob/master/Docs/SyncOverUNET.gif)
+![](https://github.com/fuqunaga/PrefsGUISync/blob/master/Docs/SyncOverNetwork.gif)
 Subset package [PrefsGUISync](https://github.com/fuqunaga/PrefsGUISync)
 
 
