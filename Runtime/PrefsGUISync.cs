@@ -76,7 +76,7 @@ namespace PrefsGUI
         public override void OnStartClient()
         {
             base.OnStartClient();
-            ReadPrefs();
+            ReadPrefs(true);
         }
 
 
@@ -132,7 +132,7 @@ namespace PrefsGUI
         }
 
         [ClientCallback]
-        void ReadPrefs()
+        void ReadPrefs(bool checkAlreadyGet = false)
         {
             // ignore at "Host"
             if (!NetworkServer.active)
@@ -146,7 +146,7 @@ namespace PrefsGUI
                         PrefsParam prefs;
                         if (all.TryGetValue(keyObj.key, out prefs))
                         {
-                            prefs.SetObject(keyObj._value, true);
+                            prefs.SetObject(keyObj._value, true, checkAlreadyGet);
                         }
                     }
                 });

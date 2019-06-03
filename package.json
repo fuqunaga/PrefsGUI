@@ -6,5 +6,7 @@
     "description": "Accessor and GUI set for Unity PlayerPrefs / JSON file",
     "keywords": ["PlayerPrefs", "GUI"],
     "category": "Tool",
-    "dependencies": { }
+    "dependencies": { 
+        "com.unity.multiplayer-hlapi": "1.0.2"
+    }
 }
