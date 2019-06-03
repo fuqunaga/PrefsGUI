@@ -428,10 +428,21 @@ namespace PrefsGUI
             return PlayerPrefs<InnerT>.Get(key, defaultInner);
         }
 
-        protected void _Set(InnerT v, bool synced = false)
+        protected void _Set(InnerT v, bool synced = false, bool checkAlreadyGet = false)
         {
             if (false == Compare(v, _Get()))
             {
+                if (!this.synced && synced && checkAlreadyGet)
+                {
+                    if (isCachedOuter || isCachedObj)
+                    {
+                        if (enableWarning)
+                        {
+                            Debug.LogWarning($"key:[{key}] Get() before synced. before:[{Get()}] sync:[{ToOuter(v)}]");
+                        }
+                    }
+                }
+
                 PlayerPrefs<InnerT>.Set(key, v);
                 isCachedOuter = false;
                 isCachedObj = false;
@@ -468,9 +479,9 @@ namespace PrefsGUI
 
             return cachedObj;
         }
-        public override void SetObject(object obj, bool synced)
+        public override void SetObject(object obj, bool synced, bool checkAlreadyGet)
         {
-            _Set((InnerT)obj, synced);
+            _Set((InnerT)obj, synced, checkAlreadyGet);
         }
 
         public override bool OnGUI(string label = null)
@@ -618,6 +629,7 @@ namespace PrefsGUI
 
         public string key;
         public static Color syncedColor = new Color32(255, 143, 63, 255);
+        public static bool enableWarning = true;
 
         public PrefsParam(string key)
         {
@@ -631,7 +643,7 @@ namespace PrefsGUI
 
         public abstract Type GetInnerType();
         public abstract object GetObject();
-        public abstract void SetObject(object obj, bool synced);
+        public abstract void SetObject(object obj, bool synced, bool checkAlreadyGet);
 
         public abstract bool OnGUI(string label = null);
         public abstract bool IsDefault { get; }
