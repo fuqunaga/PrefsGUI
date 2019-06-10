@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RapidGUI;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -68,14 +69,14 @@ namespace PrefsGUI
 
         public void OnGUI(string label = null)
         {
-            using (var h = new GUILayout.HorizontalScope())
+            using (new GUILayout.HorizontalScope())
             {
-                GUIUtil.PrefixLabel(label ?? key);
+                RGUI.PrefixLabel(label ?? key);
 
-                using (var v = new GUILayout.VerticalScope())
+                using ( new GUILayout.VerticalScope())
                 {
-                    prefs0.OnGUI(paramNames[0]);
-                    prefs1.OnGUI(paramNames[1]);
+                    prefs0.DoGUI(paramNames[0]);
+                    prefs1.DoGUI(paramNames[1]);
                 }
             }
         }

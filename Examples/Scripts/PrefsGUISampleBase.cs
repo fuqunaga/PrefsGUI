@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RapidGUI;
+using UnityEngine;
 
 namespace PrefsGUI
 {
@@ -12,23 +13,21 @@ namespace PrefsGUI
         }
 
 
-        Rect _windowRect = new Rect();
+        Rect windowRect = new Rect()
+        {
+            width = 500f
+        };
 
         public void OnGUI()
         {
-            _windowRect = 
-                //GUILayout.Window(
-                GUIUtil.ResizableWindow(
-                    GetHashCode(), _windowRect, (id) =>
+            windowRect = RGUI.ResizableWindow(GetHashCode(), windowRect, (id) =>
             {
                 OnGUIInternal();
                 GUI.DragWindow();
             },
-            "",
-            GUILayout.MinWidth(MinWidth));
+            "");
         }
 
         protected abstract void OnGUIInternal();
-        protected virtual float MinWidth { get { return 500f; } }
     }
 }

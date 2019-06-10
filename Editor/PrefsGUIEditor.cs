@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using RapidGUI;
 
 namespace PrefsGUI
 {
@@ -21,7 +22,7 @@ namespace PrefsGUI
 
         }
 
-        Order _order;
+        Order order;
 
         Vector2 scrollPosition;
         SetCurrentToDefaultWindow setCurrentToDefaultWindow;
@@ -56,7 +57,7 @@ namespace PrefsGUI
             using (var h = new GUILayout.HorizontalScope())
             {
                 GUILayout.Label("Order");
-                _order = (Order)GUILayout.SelectionGrid((int)_order, System.Enum.GetNames(typeof(Order)), 5);
+                order = (Order)GUILayout.SelectionGrid((int)order, System.Enum.GetNames(typeof(Order)), 5);
             }
 
             GUILayout.Space(8f);
@@ -69,7 +70,7 @@ namespace PrefsGUI
                 if (sync != null) GUILayout.Label("sync");
 
 
-                if (Order.GameObject == _order)
+                if (Order.GameObject == order)
                 {
                     _goParams.Where(dic => dic.Key != null).OrderBy(dic => dic.Key.name).ToList().ForEach(pair =>
                     {
@@ -77,25 +78,24 @@ namespace PrefsGUI
                         var prefsList = pair.Value;
 
                         LabelWithEditPrefix(sync, go.name, go, prefsList);
-
-                        GUIUtil.Indent(() =>
+                        using (new RGUI.IndentScope())
                         {
                             prefsList.ForEach(prefs =>
                             {
-                                using (var h = new GUILayout.HorizontalScope())
+                                using (new GUILayout.HorizontalScope())
                                 {
                                     SyncToggle(sync, prefs);
-                                    prefs.OnGUI();
+                                    prefs.DoGUI();
                                 }
                             });
-                        });
+                        }
                     });
                 }
                 else
                 {
                     PrefsList.ToList().ForEach(prefs =>
                     {
-                        using (var h = new GUILayout.HorizontalScope())
+                        using (new GUILayout.HorizontalScope())
                         {
                             if (sync != null)
                             {
@@ -111,7 +111,7 @@ namespace PrefsGUI
                                 }
                             }
 
-                            prefs.OnGUI();
+                            prefs.DoGUI();
                         }
                     });
                 }

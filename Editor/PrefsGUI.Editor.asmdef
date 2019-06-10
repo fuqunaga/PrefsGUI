@@ -1,8 +1,9 @@
 {
-    "name": "Editor",
+    "name": "PrefsGUI.Editor",
     "references": [
-        "PrefsGUI",
-        "com.unity.multiplayer-hlapi.Runtime"
+        "GUID:a44f47cf3ada4435dbc516bad0bc86fe",
+        "GUID:436548315e6ca5b499a1008921425bfb",
+        "GUID:3d35d6db7bb67824691179b12a2ce031"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

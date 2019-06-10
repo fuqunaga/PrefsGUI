@@ -28,11 +28,13 @@ namespace PrefsGUI.Wrapper
 
         static readonly Dictionary<Type, MethodSet> _typeMethodSetTable = new Dictionary<Type, MethodSet>()
         {
+            /*
             {typeof(Vector2), new MethodSet { HasKey = PlayerPrefsVector<Vector2, float>.HasKey, DeleteKey = PlayerPrefsVector<Vector2, float>.DeleteKey, Get = PlayerPrefsVector<Vector2, float>.Get,  Set = PlayerPrefsVector<Vector2, float>.Set } },
             {typeof(Vector3), new MethodSet { HasKey = PlayerPrefsVector<Vector3, float>.HasKey, DeleteKey = PlayerPrefsVector<Vector3, float>.DeleteKey, Get = PlayerPrefsVector<Vector3, float>.Get,  Set = PlayerPrefsVector<Vector3, float>.Set } },
             {typeof(Vector4), new MethodSet { HasKey = PlayerPrefsVector<Vector4, float>.HasKey, DeleteKey = PlayerPrefsVector<Vector4, float>.DeleteKey, Get = PlayerPrefsVector<Vector4, float>.Get,  Set = PlayerPrefsVector<Vector4, float>.Set } },
             {typeof(Vector2Int), new MethodSet { HasKey = PlayerPrefsVector<Vector2Int, int>.HasKey, DeleteKey = PlayerPrefsVector<Vector2Int, int>.DeleteKey, Get = PlayerPrefsVector<Vector2Int, int>.Get,  Set = PlayerPrefsVector<Vector2Int, int>.Set } },
             {typeof(Vector3Int), new MethodSet { HasKey = PlayerPrefsVector<Vector3Int, int>.HasKey, DeleteKey = PlayerPrefsVector<Vector3Int, int>.DeleteKey, Get = PlayerPrefsVector<Vector3Int, int>.Get,  Set = PlayerPrefsVector<Vector3Int, int>.Set } },
+            */
         };
 
         static readonly MethodSet _methodSetStandard = new MethodSet()
@@ -63,6 +65,8 @@ namespace PrefsGUI.Wrapper
         public static void Set(string key, T v) { methodSet.Set(key, v); }
     }
 
+
+    /*
     class PlayerPrefsVector<T, ElemType>
     {
         static Dictionary<string, List<string>> _keyCache = new Dictionary<string, List<string>>();
@@ -116,4 +120,5 @@ namespace PrefsGUI.Wrapper
             }
         }
     }
+    */
 }

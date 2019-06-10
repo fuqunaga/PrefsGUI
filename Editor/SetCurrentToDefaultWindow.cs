@@ -39,7 +39,7 @@ namespace PrefsGUI
                     using (var h0 = new GUILayout.HorizontalScope())
                     {
                         if (check != GUILayout.Toggle(check, "", GUILayout.Width(20f))) checkedList[key] = !check;
-                        prefs.OnGUI();
+                        prefs.DoGUI();
                     }
                 });
             }

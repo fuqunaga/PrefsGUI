@@ -1,25 +1,26 @@
 ﻿using UnityEngine;
+using RapidGUI;
 
 namespace PrefsGUI
 {
-    public class IDebugMenuSample : MonoBehaviour, GUIUtil.IDebugMenu
+    public class IDebugMenuSample : MonoBehaviour, IDoGUI
     {
-        bool _countup = true;
-        int _count;
+        bool countup = true;
+        int count;
         public void Update()
         {
-            if (_countup) _count++;
+            if (countup) count++;
         }
 
 
-        public void DebugMenu()
+        public void DoGUI()
         {
             GUILayout.Label("IDebugMenuSample");
-            GUIUtil.Indent(() =>
+            using (new RGUI.IndentScope())
             {
-                _countup = GUILayout.Toggle(_countup, "CountUp");
-                GUILayout.Label("Count: " + _count);
-            });
+                countup = GUILayout.Toggle(countup, "CountUp");
+                GUILayout.Label("Count: " + count);
+            }
         }
     }
 }

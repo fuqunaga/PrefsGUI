@@ -1,4 +1,5 @@
 ﻿using PrefsGUI.Wrapper;
+using RapidGUI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,10 +39,10 @@ namespace PrefsGUI
         public bool OnGUISlider(string label = null) { return OnGUISlider(0f, 1f, label); }
         public bool OnGUISlider(float min, float max, string label = null)
         {
-            return OnGUIStrandardStyle((float v, ref string unparsedStr) =>
+            return DoGUIStrandard((float v) =>
             {
-                GUIUtil.PrefixLabel(label ?? key);
-                return GUIUtil.Slider(v, min, max, ref unparsedStr);
+                RGUI.PrefixLabel(label ?? key);
+                return RGUI.Slider(v, min, max);//, ref unparsedStr);
             });
         }
     }
@@ -52,7 +53,7 @@ namespace PrefsGUI
         public PrefsBool(string key, bool defaultValue = default(bool)) : base(key, defaultValue) { }
         public bool OnGUIToggle(string label = null)
         {
-            return OnGUIStrandardStyle((bool v, ref string unparsedStr) =>
+            return DoGUIStrandard((bool v) =>
             {
                 return GUILayout.Toggle(v, label);
             });
@@ -109,34 +110,17 @@ namespace PrefsGUI
 
 
     [Serializable]
-    public class PrefsColor : PrefsTuple<Color, Vector4>
+    public class PrefsColor : PrefsSlider<Color, Vector4>
     {
         public PrefsColor(string key, Color defaultValue = default(Color)) : base(key, defaultValue) { }
 
         protected override Vector4 defaultMin { get { return Vector4.zero; } }
         protected override Vector4 defaultMax { get { return Vector4.one; } }
 
-        static readonly string[] _defaultElementLabels = new[] { "H", "S", "V", "A" };
-        protected override string[] defaultEelementLabels
-        {
-            get
-            {
-                return _defaultElementLabels;
-            }
-        }
 
         protected override bool Compare(Vector4 lhs, Vector4 rhs)
         {
             return lhs == rhs;
-        }
-
-        protected override void OnGUISliderRight(Vector4 v)
-        {
-            var c = ToOuter(v);
-            using (var cs = new GUIUtil.ColorScope(c))
-            {
-                GUILayout.Label("■■■");
-            }
         }
 
         protected override Color ToOuter(Vector4 v4)
@@ -162,11 +146,10 @@ namespace PrefsGUI
 
 
     [Serializable]
-    public class PrefsRect : PrefsTuple<Rect, Vector4>
+    public class PrefsRect : PrefsSlider<Rect, Vector4>
     {
         public PrefsRect(string key, Rect defaultValue = default(Rect)) : base(key, defaultValue) { }
 
-        protected override string[] defaultEelementLabels { get { return null; } }
         protected override Vector4 defaultMax { get { return Vector4.one; } }
         protected override Vector4 defaultMin { get { return Vector4.zero; } }
 
@@ -190,7 +173,7 @@ namespace PrefsGUI
     {
         Func<List<T>, List<T>> _customOnGUIFunc;
 
-        static bool isIDebugMenu = typeof(GUIUtil.IDebugMenu).IsAssignableFrom(typeof(T));
+        static bool isIDoGUI = typeof(IDoGUI).IsAssignableFrom(typeof(T));
 
         public PrefsList(string key, List<T> defaultValue = default) : this(key, null, defaultValue) { }
         public PrefsList(string key, Func<List<T>, List<T>> customOnGUIFunc, List<T> defaultValue = default) : base(key, defaultValue)
@@ -199,26 +182,26 @@ namespace PrefsGUI
         }
 
 
-        public override bool OnGUI(string label = null)
+        public override bool DoGUI(string label = null)
         {
-            if (isIDebugMenu)
+            if (isIDoGUI)
             {
-                OnGUI((element) => ((GUIUtil.IDebugMenu)element).DebugMenu(), label);
+                OnGUI((element) => ((IDoGUI)element).DoGUI(), label);
                 return false;
             }
 
-            return OnGUIStrandardStyle((string v, ref string unparsedStr) =>
+            return DoGUIStrandard((string v) =>
             {
                 string ret = null;
                 string l = label ?? key;
                 if (_customOnGUIFunc != null)
                 {
                     GUILayout.Label(l);
-                    GUIUtil.Indent(() => ret = ToInner(_customOnGUIFunc(ToOuter(v))));
+                    using (new RGUI.IndentScope()) { ret = ToInner(_customOnGUIFunc(ToOuter(v))); }
                 }
                 else
                 {
-                    ret = GUIUtil.Field<string>(v, ref unparsedStr, l);
+                    ret = RGUI.Field<string>(v, l);//, ref unparsedStr, l);
                 }
 
                 return ret;
@@ -233,7 +216,7 @@ namespace PrefsGUI
         public void OnGUI(Action<T> elementGUI, Func<T> createNewElement=null, string label = null)
         {
             GUILayout.Label(label ?? key);
-            GUIUtil.Indent(() =>
+            using (new RGUI.IndentScope())
             {
                 var list = Get() ?? new List<T>();
                 list.ForEach(elem =>
@@ -255,9 +238,9 @@ namespace PrefsGUI
                     if (GUILayout.Button("Remove")) list.RemoveAt(list.Count - 1);
 
                     Set(list);
-                    OnGUIDefaultButton();
+                    DoGUIDefaultButton();
                 }
-            });
+            }
         }
 
         static List<T> _empty = new List<T>();
@@ -319,337 +302,29 @@ namespace PrefsGUI
 
 
     #region abstract classes
-    public abstract class PrefsVector<T> : PrefsTuple<T, T>
+
+    public abstract class PrefsVector<T> : PrefsSlider<T, T>
     {
-        public PrefsVector(string key, T defaultValue = default(T)) : base(key, defaultValue) { }
+        public PrefsVector(string key, T defaultValue = default) : base(key, defaultValue) { }
 
-        protected override T defaultMin { get { return (T)typeof(T).GetProperty("zero").GetValue(null); } }
-        protected override T defaultMax { get { return (T)typeof(T).GetProperty("one").GetValue(null); } }
+        static Lazy<T> zero = new Lazy<T>(() => (T)typeof(T).GetProperty("zero").GetValue(null));
+        static Lazy<T> one = new Lazy<T>(() => (T)typeof(T).GetProperty("one").GetValue(null));
 
-        static readonly string[] _defaultElementLabels = new[] { "x", "y", "z", "w" };
-        protected override string[] defaultEelementLabels
-        {
-            get
-            {
-                return _defaultElementLabels;
-            }
-        }
-        protected override T ToOuter(T innerV) { return innerV; }
-        protected override T ToInner(T TouterV) { return TouterV; }
+        protected override T defaultMin => zero.Value;
+        protected override T defaultMax => one.Value;
+
+
+        protected override T ToOuter(T innerV) =>innerV;
+        protected override T ToInner(T TouterV) => TouterV;
     }
-
-    public abstract class PrefsTuple<OuterT, InnerT> : PrefsParam<OuterT, InnerT>
-    {
-        bool foldOpen;
-
-        #region abstract
-        protected abstract string[] defaultEelementLabels { get; }
-        protected abstract InnerT defaultMin { get; }
-        protected abstract InnerT defaultMax { get; }
-        #endregion abstract
-
-        public PrefsTuple(string key, OuterT defaultValue = default(OuterT)) : base(key, defaultValue) { }
-
-        public bool OnGUISlider(string label = null)
-        {
-            return OnGUISlider(defaultMin, defaultMax, label);
-        }
-
-        public bool OnGUISlider(OuterT min, OuterT max, string label = null, string[] elementLabels = null)
-        {
-            return OnGUISlider(ToInner(min), ToInner(max), label, elementLabels);
-        }
-
-        protected bool OnGUISlider(InnerT min, InnerT max, string label = null, string[] elementLabels = null)
-        {
-            return OnGUIStrandardStyle((InnerT v, ref string unparsedStr) =>
-            {
-                elementLabels = elementLabels ?? defaultEelementLabels;
-
-                using (var h = new GUILayout.HorizontalScope())
-                {
-                    var foldStr = foldOpen ? "▼" : "▶";
-
-                    foldOpen ^= GUIUtil.Prefix((width) => GUILayout.Button(foldStr + (label ?? key), GUIUtil.Style.FoldoutPanelStyle, GUILayout.Width(width)));
-
-                    v = foldOpen
-                        ? GUIUtil.Slider(v, min, max, ref unparsedStr, "", elementLabels)
-                        : GUIUtil.Field(v, ref unparsedStr, null);
-
-                    OnGUISliderRight(v);
-                    //GUILayout.FlexibleSpace();
-                }
-
-                return v;
-            });
-        }
-
-        protected virtual void OnGUISliderRight(InnerT v) { }
-    }
-
 
     public class PrefsParam<T> : PrefsParam<T, T>
     {
-        public PrefsParam(string key, T defaultValue = default(T)) : base(key, defaultValue) { }
-        protected override T ToOuter(T innerV) { return innerV; }
-        protected override T ToInner(T TouterV) { return TouterV; }
+        public PrefsParam(string key, T defaultValue = default) : base(key, defaultValue) { }
+
+        protected override T ToOuter(T innerV) => innerV;
+        protected override T ToInner(T TouterV) => TouterV;
     }
 
-
-    /// <summary>
-    /// Basic implementation of OuterT and InnnerT
-    /// </summary>
-    /// <typeparam name="OuterT"></typeparam>
-    /// <typeparam name="InnerT"></typeparam>
-    public abstract class PrefsParam<OuterT, InnerT> : PrefsParamOuter<OuterT>
-    {
-        protected bool isCachedOuter;
-        protected OuterT cachedOuter;
-
-        protected bool isCachedObj;
-        protected object cachedObj;
-
-        protected bool synced;
-
-        protected bool hasDefaultInner;
-        protected InnerT defaultInner;
-
-        public PrefsParam(string key, OuterT defaultValue = default(OuterT)) : base(key, defaultValue)
-        {
-        }
-
-        protected InnerT _Get()
-        {
-            if (!hasDefaultInner)
-            {
-                defaultInner = ToInner(defaultValue);
-                hasDefaultInner = true;
-            }
-            return PlayerPrefs<InnerT>.Get(key, defaultInner);
-        }
-
-        protected void _Set(InnerT v, bool synced = false, bool checkAlreadyGet = false)
-        {
-            if (false == Compare(v, _Get()))
-            {
-                if (!this.synced && synced && checkAlreadyGet)
-                {
-                    if (isCachedOuter || isCachedObj)
-                    {
-                        if (enableWarning)
-                        {
-                            Debug.LogWarning($"key:[{key}] Get() before synced. before:[{Get()}] sync:[{ToOuter(v)}]");
-                        }
-                    }
-                }
-
-                PlayerPrefs<InnerT>.Set(key, v);
-                isCachedOuter = false;
-                isCachedObj = false;
-            }
-            this.synced = synced;
-        }
-
-
-        #region override
-
-        public override OuterT Get()
-        {
-            if (!isCachedOuter)
-            {
-                cachedOuter = ToOuter(_Get());
-                isCachedOuter = true;
-            }
-            return cachedOuter;
-        }
-
-        public override void Set(OuterT v) { _Set(ToInner(v)); }
-
-        public override Type GetInnerType()
-        {
-            return typeof(InnerT);
-        }
-        public override object GetObject()
-        {
-            if (!isCachedObj)
-            {
-                cachedObj = _Get();
-                isCachedObj = true;
-            }
-
-            return cachedObj;
-        }
-        public override void SetObject(object obj, bool synced, bool checkAlreadyGet)
-        {
-            _Set((InnerT)obj, synced, checkAlreadyGet);
-        }
-
-        public override bool OnGUI(string label = null)
-        {
-            return OnGUIStrandardStyle((InnerT v, ref string unparsedStr) =>
-            {
-                GUIUtil.PrefixLabel(label ?? key);
-                return GUIUtil.Field(v, ref unparsedStr, null);
-            });
-        }
-
-        public override bool IsDefault { get { return Compare(ToInner(defaultValue), _Get()); } }
-        public override void SetCurrentToDefault() { defaultValue = Get(); }
-        #endregion
-
-
-        #region abstract
-        protected abstract OuterT ToOuter(InnerT innerV);
-        protected abstract InnerT ToInner(OuterT outerV);
-        #endregion
-
-
-        #region GUI Implement
-        protected bool OnGUIStrandardStyle(GUIFunc guiFunc)
-        {
-            Color? prevColor = null;
-            if (synced)
-            {
-                prevColor = GUI.color;
-                GUI.color = syncedColor;
-            }
-            var ret = OnGUIwithButton(() => OnGUIWithUnparsedStr(key, guiFunc));
-
-            if (prevColor.HasValue) GUI.color = prevColor.Value;
-
-            return ret;
-        }
-
-        protected virtual bool Compare(InnerT lhs, InnerT rhs) { return lhs.Equals(rhs); }
-
-        protected bool OnGUIwithButton(Func<bool> onGUIFunc)
-        {
-            var changed = false;
-            using (var h = new GUILayout.HorizontalScope())
-            {
-                changed = onGUIFunc();
-                changed |= OnGUIDefaultButton();
-            }
-
-            return changed;
-        }
-
-        // public for Custom GUI
-        public bool OnGUIDefaultButton()
-        {
-            var label = Compare(_Get(), ToInner(defaultValue)) ? "default" : "<color=red>default</color>";
-
-            var ret = GUILayout.Button(label, GUILayout.ExpandWidth(false));
-            if (ret)
-            {
-                Set(defaultValue);
-            }
-
-            return ret;
-        }
-
-        static Dictionary<string, string> _unparsedStrTable = new Dictionary<string, string>();
-        protected delegate InnerT GUIFunc(InnerT v, ref string unparsedStr);
-
-        protected bool OnGUIWithUnparsedStr(string key, GUIFunc guiFunc)
-        {
-            var changed = false;
-            if (!PlayerPrefs<InnerT>.HasKey(key))
-            {
-                Set(defaultValue);
-                changed = true;
-            }
-
-            var hasUnparsedStr = _unparsedStrTable.ContainsKey(key);
-            var unparsedStr = hasUnparsedStr ? _unparsedStrTable[key] : null;
-
-            var prev = _Get();
-            var next = guiFunc(prev, ref unparsedStr);
-            if (!Compare(prev, next))
-            {
-                _Set(next);
-                changed = true;
-            }
-
-            if (unparsedStr != null) _unparsedStrTable[key] = unparsedStr;
-            else if (hasUnparsedStr) _unparsedStrTable.Remove(key);
-
-            return changed;
-        }
-        #endregion
-    }
-
-
-    /// <summary>
-    /// Define Outer Interface
-    /// </summary>
-    /// <typeparam name="OuterT"></typeparam>
-    public abstract class PrefsParamOuter<OuterT> : PrefsParam
-    {
-        [SerializeField]
-        protected OuterT defaultValue;
-
-        public PrefsParamOuter(string key, OuterT defaultValue = default(OuterT)) : base(key)
-        {
-            this.defaultValue = defaultValue;
-        }
-
-        public static implicit operator OuterT(PrefsParamOuter<OuterT> me)
-        {
-            return me.Get();
-        }
-
-        #region abstract
-
-        public abstract OuterT Get();
-
-        public abstract void Set(OuterT v);
-
-        #endregion
-
-
-        #region override
-
-        public override void SetCurrentToDefault() { defaultValue = Get(); }
-
-        #endregion
-    }
-
-    public abstract class PrefsParam : ISerializationCallbackReceiver
-    {
-        #region RegistAllInstance
-        public static Dictionary<string, PrefsParam> all = new Dictionary<string, PrefsParam>();
-
-        public void OnBeforeSerialize() { }
-
-        public void OnAfterDeserialize() { Regist(); } // To Regist Array/List In Inspector. Constructor not called.
-
-        void Regist() { all[key] = this; }
-        #endregion
-
-        public string key;
-        public static Color syncedColor = new Color32(255, 143, 63, 255);
-        public static bool enableWarning = true;
-
-        public PrefsParam(string key)
-        {
-            this.key = key;
-            Regist();
-        }
-        public virtual void Delete() { PlayerPrefs.DeleteKey(key); }
-
-
-        #region abstract
-
-        public abstract Type GetInnerType();
-        public abstract object GetObject();
-        public abstract void SetObject(object obj, bool synced, bool checkAlreadyGet);
-
-        public abstract bool OnGUI(string label = null);
-        public abstract bool IsDefault { get; }
-        public abstract void SetCurrentToDefault();
-
-        #endregion
-    }
     #endregion
 }

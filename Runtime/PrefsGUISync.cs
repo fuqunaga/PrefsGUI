@@ -146,7 +146,10 @@ namespace PrefsGUI
                         PrefsParam prefs;
                         if (all.TryGetValue(keyObj.key, out prefs))
                         {
-                            prefs.SetObject(keyObj._value, true, checkAlreadyGet);
+                            prefs.SetSyncedObject(keyObj._value, () =>
+                            {
+                                Debug.LogWarning($"key:[{prefs.key}] Get() before synced. before:[{prefs.GetObject()}] sync:[{keyObj._value}]");
+                            });
                         }
                     }
                 });
