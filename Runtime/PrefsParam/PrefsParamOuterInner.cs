@@ -1,4 +1,5 @@
-﻿using PrefsGUI.Wrapper;
+﻿using PrefsGUI.KVS;
+using PrefsGUI.KVS;
 using RapidGUI;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,8 @@ namespace PrefsGUI
                 defaultInner = ToInner(defaultValue);
                 hasDefaultInner = true;
             }
-            return PlayerPrefs<InnerT>.Get(key, defaultInner);
+
+            return PrefsKVS.Get(key, defaultInner);
         }
 
         protected void _Set(InnerT v, bool synced = false, Action onIfAlreadyGet = null)
@@ -49,7 +51,7 @@ namespace PrefsGUI
                     }
                 }
 
-                PlayerPrefs<InnerT>.Set(key, v);
+                PrefsKVS.Set(key, v);
                 isCachedOuter = false;
                 isCachedObj = false;
             }
@@ -159,7 +161,7 @@ namespace PrefsGUI
         protected bool DoGUICheckChanged(string key, GUIFunc func)
         {
             var changed = false;
-            if (!PlayerPrefs<InnerT>.HasKey(key))
+            if (!PrefsKVS.HasKey(key))
             {
                 Set(defaultValue);
                 changed = true;

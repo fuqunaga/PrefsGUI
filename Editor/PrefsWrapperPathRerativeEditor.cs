@@ -1,14 +1,14 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace PrefsGUI.Wrapper
+namespace PrefsGUI.KVS
 {
-    [CustomEditor(typeof(PrefsWrapperPathCustom))]
+    [CustomEditor(typeof(PrefsKVSPathCustom))]
     public class PrefsWrapperPathReativeEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            PrefsWrapperPathCustom tg = (PrefsWrapperPathCustom)target;
+            PrefsKVSPathCustom tg = (PrefsKVSPathCustom)target;
 
             base.OnInspectorGUI();
             var tmp = GUI.enabled;

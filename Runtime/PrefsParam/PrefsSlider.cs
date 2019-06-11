@@ -2,6 +2,17 @@
 
 namespace PrefsGUI
 {
+    public abstract class PrefsSlider<T> : PrefsSlider<T,T>
+    {
+        public PrefsSlider(string key, T defaultValue = default) : base(key, defaultValue)
+        {
+        }
+
+        protected override T ToInner(T outerV) => outerV;
+        protected override T ToOuter(T innerV) => innerV;
+    }
+
+
     public abstract class PrefsSlider<OuterT, InnerT> : PrefsParamOuterInner<OuterT, InnerT>
     {
         protected bool isOpen;

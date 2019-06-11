@@ -1,23 +1,38 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-//using PrefsWrapperNative;
-using PrefsGUI.Wrapper.Json;
+﻿using PrefsGUI.KVS.Json;
 
-namespace PrefsGUI.Wrapper
+namespace PrefsGUI.KVS
 {
-    public static class PrefsGlobal
+    public interface IKVS
     {
-        public static void Save() { PlayerPrefsGlobal.Save(); }
-        public static void Load() { PlayerPrefsGlobal.Load(); }
-        public static void DeleteAll() { PlayerPrefsGlobal.DeleteAll(); }
+        void Save();
+        void Load();
+        void DeleteAll();
+
+        bool HasKey(string key);
+        void DeleteKey(string key);
+        T Get<T>(string key, T defaultValue);
+        void Set<T>(string key, T v);
     }
 
 
-    public static class PlayerPrefs<T>
+    public static class PrefsKVS
     {
-        #region mthodSet Impelment
+        public static IKVS implement = new PrefsKVSJson();
+
+        public static void Save() => implement.Save();
+        public static void Load() => implement.Load();
+        public static void DeleteAll() => implement.DeleteAll();
+
+        public static bool HasKey(string key) => implement.HasKey(key);
+        public static void DeleteKey(string key) => implement.DeleteKey(key);
+        public static T Get<T>(string key, T defaultValue) => implement.Get(key, defaultValue);
+        public static void Set<T>(string key, T v) => implement.Set(key, v);
+    }
+
+#if false
+    public static class PrefsKVS<T>
+    {
+    #region mthodSet Impelment
         class MethodSet
         {
             public Func<string, bool> HasKey;
@@ -37,7 +52,7 @@ namespace PrefsGUI.Wrapper
             */
         };
 
-        static readonly MethodSet _methodSetStandard = new MethodSet()
+        static readonly MethodSet methodSetStandard = new MethodSet()
         {
             HasKey = PlayerPrefsStrandard<T>.HasKey,
             DeleteKey = PlayerPrefsStrandard<T>.DeleteKey,
@@ -52,16 +67,16 @@ namespace PrefsGUI.Wrapper
                 MethodSet ret = null;
                 if (!_typeMethodSetTable.TryGetValue(typeof(T), out ret))
                 {
-                    ret = _methodSetStandard;
+                    ret = methodSetStandard;
                 }
                 return ret;
             }
         }
-        #endregion
+    #endregion
 
         public static bool HasKey(string key) { return methodSet.HasKey(key); }
         public static void DeleteKey(string key) { methodSet.DeleteKey(key); }
-        public static T Get(string key, T defaultValue = default(T)) { return (T)methodSet.Get(key, defaultValue); }
+        public static T Get(string key, T defaultValue = default) { return (T)methodSet.Get(key, defaultValue); }
         public static void Set(string key, T v) { methodSet.Set(key, v); }
     }
 
@@ -121,4 +136,6 @@ namespace PrefsGUI.Wrapper
         }
     }
     */
+#endif
 }
+

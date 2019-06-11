@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.Assertions;
 
-namespace PrefsGUI.Wrapper
+namespace PrefsGUI.KVS
 {
     /// <summary>
-    /// Custom File Path for PrefsWrapper
+    /// Custom File Path for PrefsKVS
     /// Rerative to Application.dataPath
     /// you can use magic path
     /// - %dataPath% -> Application.dataPath
@@ -15,7 +14,7 @@ namespace PrefsGUI.Wrapper
     /// - %productName% -> Application.productName
     /// - other %[word]% -> System.Environment.GetEnvironmentVariable([word])
     /// </summary>
-    public class PrefsWrapperPathCustom : MonoBehaviour, IPrefsWrapperPath
+    public class PrefsKVSPathCustom : MonoBehaviour, IPrefsKVSPath
     {
         [SerializeField]
         protected string _path = "%dataPath%/../../%productName%Prefs";

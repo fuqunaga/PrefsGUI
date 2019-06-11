@@ -1,4 +1,4 @@
-﻿using PrefsGUI.Wrapper;
+﻿using PrefsGUI.KVS;
 using RapidGUI;
 using System;
 using System.Collections;

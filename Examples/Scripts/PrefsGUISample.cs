@@ -87,7 +87,7 @@ namespace PrefsGUI
 
 
 
-            GUILayout.Label($"file path: {PrefsGUI.Wrapper.PrefsWrapperPathSelector.path}");
+            GUILayout.Label($"file path: {PrefsGUI.KVS.PrefsKVSPathSelector.path}");
 
             if (GUILayout.Button("Save")) Prefs.Save();
             if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();

@@ -2,18 +2,18 @@
 using UnityEngine;
 
 
-namespace PrefsGUI.Wrapper
+namespace PrefsGUI.KVS
 {
-    interface IPrefsWrapperPath
+    interface IPrefsKVSPath
     {
         string path { get; }
     }
 
 
-    public static class PrefsWrapperPathSelector
+    public static class PrefsKVSPathSelector
     {
         static bool first = true;
-        static IPrefsWrapperPath _path;
+        static IPrefsKVSPath _path;
 
         public static string path
         {
@@ -23,7 +23,7 @@ namespace PrefsGUI.Wrapper
                 {
                     first = false;
                     _path = Resources.FindObjectsOfTypeAll<MonoBehaviour>()
-                        .Select(b => b.GetComponent<IPrefsWrapperPath>())
+                        .Select(b => b.GetComponent<IPrefsKVSPath>())
                         .Where(o => o != null).FirstOrDefault();
                 }
                 return _path?.path ?? Application.persistentDataPath;

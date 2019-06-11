@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrefsGUI.KVS;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace PrefsGUI
             this.key = key;
             Regist();
         }
-        public virtual void Delete() { PlayerPrefs.DeleteKey(key); }
+        public virtual void Delete() { PrefsKVS.DeleteKey(key); }
 
 
 
