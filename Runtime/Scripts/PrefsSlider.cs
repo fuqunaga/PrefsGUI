@@ -2,7 +2,7 @@
 
 namespace PrefsGUI
 {
-    public abstract class PrefsSlider<OuterT, InnerT> : PrefsParam<OuterT, InnerT>
+    public abstract class PrefsSlider<OuterT, InnerT> : PrefsParamOuterInner<OuterT, InnerT>
     {
         protected bool isOpen;
 

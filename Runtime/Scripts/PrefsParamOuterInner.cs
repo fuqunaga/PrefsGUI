@@ -9,7 +9,7 @@ namespace PrefsGUI
     /// <summary>
     /// Basic implementation of OuterT and InnnerT
     /// </summary>
-    public abstract class PrefsParam<OuterT, InnerT> : PrefsParamOuter<OuterT>
+    public abstract class PrefsParamOuterInner<OuterT, InnerT> : PrefsParamOuter<OuterT>
     {
         protected bool isCachedOuter;
         protected OuterT cachedOuter;
@@ -23,7 +23,7 @@ namespace PrefsGUI
         protected InnerT defaultInner;
 
 
-        public PrefsParam(string key, OuterT defaultValue = default) : base(key, defaultValue)
+        public PrefsParamOuterInner(string key, OuterT defaultValue = default) : base(key, defaultValue)
         {
         }
 
@@ -57,7 +57,10 @@ namespace PrefsGUI
             this.synced = synced;
         }
 
+        protected virtual bool Compare(InnerT lhs, InnerT rhs) => lhs.Equals(rhs);
+
         protected virtual Dictionary<string, string> GetCustomLabel() => null;
+
 
 
         #region abstract
@@ -109,19 +112,8 @@ namespace PrefsGUI
 
         public override bool DoGUI(string label = null)
         {
-            return DoGUIStrandard((v) =>
-            {
-                var customLabel = GetCustomLabel();
-                if (customLabel != null) RGUI.BeginCustomLabel(customLabel);
-
-                var ret = RGUI.Field(v, label ?? key);
-
-                if (customLabel != null) RGUI.EndCustomLabel();
-
-                return ret;
-            });
+            return DoGUIStrandard((v) => RGUI.Field(v, label ?? key));
         }
-
 
         #endregion
 
@@ -133,25 +125,19 @@ namespace PrefsGUI
 
         protected bool DoGUIStrandard(GUIFunc func)
         {
+            var customLabel = GetCustomLabel();
+            if (customLabel != null) RGUI.BeginCustomLabel(customLabel);
             if (synced) RGUI.BeginColor(syncedColor);
-            
-            var ret = DoGUIwithButton(() => DoGUICheckChanged(key, func));
 
-            if (synced) RGUI.EndColor();
-
-            return ret;
-        }
-
-        protected virtual bool Compare(InnerT lhs, InnerT rhs) => lhs.Equals(rhs);
-
-        protected bool DoGUIwithButton(Func<bool> onGUIFunc)
-        {
             var changed = false;
             using (new GUILayout.HorizontalScope())
             {
-                changed = onGUIFunc();
+                changed = DoGUICheckChanged(key, func);
                 changed |= DoGUIDefaultButton();
             }
+
+            if (synced) RGUI.EndColor();
+            if (customLabel != null) RGUI.EndCustomLabel();
 
             return changed;
         }

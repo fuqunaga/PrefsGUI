@@ -23,8 +23,9 @@ namespace PrefsGUI
         [System.Serializable]
         public class PrefsList : PrefsList<CustomClass>
         {
-            public PrefsList(string key, System.Func<List<CustomClass>, List<CustomClass>> customOnGUI = null) : base(key, customOnGUI)
-            { }
+            public PrefsList(string key, List<CustomClass> defaultValue = null) : base(key, defaultValue)
+            {
+            }
         }
 
         // define PrefsParams with key.
@@ -82,17 +83,7 @@ namespace PrefsGUI
                 Debug.Log("Changed. " + color);
             }
 
-
-            // PrefsList can call runtime element GUI
-            prefsList.OnGUI((element) =>
-            {
-                element.name = RGUI.Field(element.name ?? "", "name");
-                //element.intValue = RGUI.IntButton(element.intValue, "intValue");
-            },
-            "PrefsList runtime element GUI");
-
-
-            prefsList.DoGUI("PrefsList automaticaly call element.DebugMenu() if it is IDebugMenu");
+            prefsList.DoGUI();
 
 
 
