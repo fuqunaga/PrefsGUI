@@ -10,8 +10,6 @@ namespace PrefsGUI
     /// </summary>
     public abstract class PrefsParamAny<OuterT> : PrefsParamOuterInner<OuterT, string>
     {
-        static Lazy<XmlSerializer> serializer = new Lazy<XmlSerializer>(() => new XmlSerializer(typeof(OuterT)));
-
         public PrefsParamAny(string key, OuterT defaultValue = default) : base(key, defaultValue)
         {
         }
@@ -20,25 +18,14 @@ namespace PrefsGUI
         {
             if (outerV == null) return "";
 
-            using (var writer = new StringWriter())
-            {
-                serializer.Value.Serialize(writer, outerV);
-                return writer.ToString();
-            }
+            return JsonUtilityEx.ToJson(outerV);
         }
 
         protected override OuterT ToOuter(string innerV)
         {
             if (!string.IsNullOrEmpty(innerV))
             {
-                using (var reader = new StringReader(innerV))
-                {
-                    try
-                    {
-                        return (OuterT)serializer.Value.Deserialize(reader);
-                    }
-                    catch { }
-                }
+                return JsonUtilityEx.FromJson<OuterT>(innerV);
             }
             return default;
         }

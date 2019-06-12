@@ -1,6 +1,9 @@
 ﻿using PrefsGUI.KVS;
 using RapidGUI;
 using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -33,7 +36,7 @@ namespace PrefsGUI
         public PrefsColor(string key, Color defaultValue = default) : base(key, defaultValue) { }
     }
 
-s    [Serializable]
+    [Serializable]
     public class PrefsInt : PrefsParam<int>
     {
         public PrefsInt(string key, int defaultValue = default) : base(key, defaultValue) { }
@@ -115,31 +118,55 @@ s    [Serializable]
         protected override Rect defaultMin => default;
     }
 
-
-    #region abstract classes
-
-    public abstract class PrefsVector<T> : PrefsSlider<T, T>
+    [Serializable]
+    public class PrefsBounds : PrefsSlider<Bounds>
     {
-        public PrefsVector(string key, T defaultValue = default) : base(key, defaultValue) { }
+        public PrefsBounds(string key, Bounds defaultValue = default) : base(key, defaultValue)
+        {
+        }
 
-        static Lazy<T> zero = new Lazy<T>(() => (T)typeof(T).GetProperty("zero").GetValue(null));
-        static Lazy<T> one = new Lazy<T>(() => (T)typeof(T).GetProperty("one").GetValue(null));
+        protected override Bounds defaultMin => default;
 
-        protected override T defaultMin => zero.Value;
-        protected override T defaultMax => one.Value;
-
-
-        protected override T ToOuter(T innerV) =>innerV;
-        protected override T ToInner(T TouterV) => TouterV;
+        protected override Bounds defaultMax => new Bounds(Vector3.one * 100f, Vector3.one * 100f);
     }
 
-    public class PrefsParam<T> : PrefsParamOuterInner<T, T>
+    [Serializable]
+    public class PrefsBoundsInt : PrefsSlider<BoundsInt>
     {
-        public PrefsParam(string key, T defaultValue = default) : base(key, defaultValue) { }
+        public PrefsBoundsInt(string key, BoundsInt defaultValue = default) : base(key, defaultValue)
+        {
+        }
 
-        protected override T ToOuter(T innerV) => innerV;
-        protected override T ToInner(T TouterV) => TouterV;
+        protected override BoundsInt defaultMin => default;
+
+        protected override BoundsInt defaultMax => new BoundsInt(Vector3Int.one * 100, Vector3Int.one * 100);
     }
 
-    #endregion
+
+    [Serializable]
+    public class PrefsIPEndPoint : PrefsSet<PrefsString, PrefsInt, string, int>
+    {
+        static string[] _paramNames = new[] { "address", "port" };
+        protected override string[] paramNames => _paramNames;
+
+
+        public string address => prefs0.Get();
+        public int port => prefs1.Get();
+
+        public PrefsIPEndPoint(string key, string hostname = "localhost", int port = 10000) : base(key, hostname, port) { }
+
+        public static implicit operator IPEndPoint(PrefsIPEndPoint me) => CreateIPEndPoint(me.address, me.port);
+
+        public static IPEndPoint CreateIPEndPoint(string address, int port)
+        {
+            var ip = FindFromHostName(address);
+            return (ip != IPAddress.None) ? new IPEndPoint(ip, port) : null;
+        }
+
+        public static IPAddress FindFromHostName(string hostname)
+        {
+            var address = Dns.GetHostAddresses(hostname).FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+            return address ?? IPAddress.None;
+        }
+    }
 }

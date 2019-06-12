@@ -34,32 +34,40 @@ namespace PrefsGUI
         public PrefsInt prefsInt = new PrefsInt("PrefsInt");
         public PrefsFloat prefsFloat = new PrefsFloat("PrefsFloat");
         public PrefsBool prefsBool = new PrefsBool("PrefsBool");
+        public PrefsColor prefsColor = new PrefsColor("PrefsColor");
         public PrefsVector2 prefsVector2 = new PrefsVector2("PrefsVector2");
         public PrefsVector3 prefsVector3 = new PrefsVector3("PrefsVector3");
         public PrefsVector4 prefsVector4 = new PrefsVector4("PrefsVector4");
         public PrefsVector2Int prefsVector2Int = new PrefsVector2Int("PrefsVector2Int");
         public PrefsVector3Int prefsVector3Int = new PrefsVector3Int("PrefsVector3Int");
-
-        public PrefsColor prefsColor = new PrefsColor("PrefsColor");
         public PrefsRect prefsRect = new PrefsRect("PrefsRect");
+        public PrefsBounds prefsBounds = new PrefsBounds("PrefsBounds");
+        public PrefsBounds prefsBoundsInt = new PrefsBounds("PrefsBoundsInt");
+
         public PrefsIPEndPoint prefsIPEndPoint = new PrefsIPEndPoint("PrefsIPEndPoint");
 
         public PrefsList prefsList = new PrefsList("PrefsList");
-
-        bool isOpen;
 
         protected override void OnGUIInternal()
         {
             prefsEnum.DoGUI();
             prefsString.DoGUI();
-            prefsInt.DoGUI();
+            var changed = prefsInt.DoGUI();
+            // return true if value was changed
+            if (changed)
+            {
+                // use as native type
+                int intValue = prefsInt;
+                Debug.Log("Changed. " + intValue);
+            }
+
             prefsFloat.DoGUI();
             prefsFloat.OnGUISlider();
             prefsBool.DoGUI();
+            prefsColor.DoGUI();
+        
             prefsVector2.DoGUI();
             prefsVector2.DoGUISlider();
-            RGUI.Slider(prefsVector2.Get(), Vector2.zero, "sinple", ref isOpen);
-
             prefsVector3.DoGUI();
             prefsVector3.DoGUISlider();
             prefsVector4.DoGUI();
@@ -70,23 +78,17 @@ namespace PrefsGUI
             prefsVector3Int.DoGUISlider();
             prefsRect.DoGUI();
             prefsRect.DoGUISlider();
-            prefsColor.DoGUI();
-
+            prefsBounds.DoGUI();
+            prefsBounds.DoGUISlider();
+            prefsBoundsInt.DoGUI();
+            prefsBoundsInt.DoGUISlider();
+            /*
 
             prefsIPEndPoint.OnGUI();
 
-            // return true if value was changed
-            /*
-            if (prefsColor.DoGUISlider())
-            {
-                // use as native type
-                Color color = prefsColor;
-                Debug.Log("Changed. " + color);
-            }
-            */
 
             prefsList.DoGUI();
-
+            */
 
 
             GUILayout.Label($"file path: {PrefsGUI.KVS.PrefsKVSPathSelector.path}");
@@ -98,7 +100,7 @@ namespace PrefsGUI
 
         void Update()
         {
-            TestImplicitCast();
+            //TestImplicitCast();
         }
 
         protected void TestImplicitCast()

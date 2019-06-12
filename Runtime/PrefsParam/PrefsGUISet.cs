@@ -1,39 +1,10 @@
 ﻿using RapidGUI;
 using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI
 {
-    [Serializable]
-    public class PrefsIPEndPoint : PrefsSet<PrefsString, PrefsInt, string, int>
-    {
-        static string[] _paramNames = new[] { "address", "port" };
-        protected override string[] paramNames => _paramNames;
-
-
-        public string address => prefs0.Get();
-        public int port => prefs1.Get();
-
-        public PrefsIPEndPoint(string key, string hostname = "localhost", int port = 10000) : base(key, hostname, port) { }
-
-        public static implicit operator IPEndPoint(PrefsIPEndPoint me) => CreateIPEndPoint(me.address, me.port);
-        
-        public static IPEndPoint CreateIPEndPoint(string address, int port)
-        {
-            var ip = FindFromHostName(address);
-            return (ip != IPAddress.None) ? new IPEndPoint(ip, port) : null;
-        }
-
-        public static IPAddress FindFromHostName(string hostname)
-        {
-            var address = Dns.GetHostAddresses(hostname).FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-            return address ?? IPAddress.None;
-        }
-    }
 
 
 
@@ -52,7 +23,7 @@ namespace PrefsGUI
 
         protected virtual string GenerateParamKey(string key, string paramName) => key + "_" + paramName;
 
-        public PrefsSet(string key, Outer0 default0 = default(Outer0), Outer1 default1 = default(Outer1))
+        public PrefsSet(string key, Outer0 default0 = default, Outer1 default1 = default)
         {
             this.key = key;
             prefs0 = Construct<Prefs0, Outer0>(key, paramNames[0], default0);

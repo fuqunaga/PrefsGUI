@@ -107,45 +107,4 @@ namespace PrefsGUI.KVS.Json
             cachedObj[key] = v;
         }
     }
-
-#if false
-
-    class PlayerPrefsStrandard<T>
-    {
-        static Type type
-        {
-            get
-            {
-                return (typeof(T) == typeof(bool) || typeof(T).IsEnum)
-                    ? typeof(int)
-                    : typeof(T);
-            }
-        }
-
-        public static bool HasKey(string key)
-        {
-            return JSONData.Instance.HasKey(key);
-        }
-
-        public static void DeleteKey(string key)
-        {
-            JSONData.Instance.DeleteKey(key);
-        }
-
-        public static object Get(string key, object defaultValue)
-        {
-            if (!HasKey(key)) Set(key, defaultValue);
-
-            var ret = JSONData.Instance.Get(key);
-            return (typeof(T).IsEnum ? (T)Enum.Parse(typeof(T), ret.ToString()) : Convert.ChangeType(ret, typeof(T)));
-        }
-
-        public static void Set(string key, object val)
-        {
-            JSONData.Instance.Set(key, val);
-        }
-    }
-
-#endif
-
 }

@@ -19,6 +19,7 @@ namespace PrefsGUI
             this.key = key;
             Regist();
         }
+
         public virtual void Delete() { PrefsKVS.DeleteKey(key); }
 
 
