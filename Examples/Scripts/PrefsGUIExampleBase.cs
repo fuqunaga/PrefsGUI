@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PrefsGUI
 {
-    public abstract class PrefsGUISampleBase : MonoBehaviour
+    public abstract class PrefsGUIExampleBase : MonoBehaviour
     {
         public enum EnumSample
         {

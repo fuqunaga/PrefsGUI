@@ -4,7 +4,7 @@ using RapidGUI;
 
 namespace PrefsGUI
 {
-    public class PrefsGUISample : PrefsGUISampleBase
+    public class PrefsGUIExample : PrefsGUIExampleBase
     {
         [System.Serializable]
         public class PrefsEnum : PrefsParam<EnumSample>
@@ -76,12 +76,14 @@ namespace PrefsGUI
             prefsIPEndPoint.OnGUI();
 
             // return true if value was changed
+            /*
             if (prefsColor.DoGUISlider())
             {
                 // use as native type
                 Color color = prefsColor;
                 Debug.Log("Changed. " + color);
             }
+            */
 
             prefsList.DoGUI();
 
@@ -120,7 +122,6 @@ namespace PrefsGUI
             Color c = prefsVector4;
             Rect rect = prefsRect;
             c = prefsColor;
-            v4 = prefsColor;
         }
     }
 }

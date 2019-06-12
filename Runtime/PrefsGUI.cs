@@ -28,9 +28,21 @@ namespace PrefsGUI
     }
 
     [Serializable]
+    public class PrefsColor : PrefsParam<Color>
+    {
+        public PrefsColor(string key, Color defaultValue = default) : base(key, defaultValue) { }
+    }
+
+s    [Serializable]
     public class PrefsInt : PrefsParam<int>
     {
         public PrefsInt(string key, int defaultValue = default) : base(key, defaultValue) { }
+
+        public bool OnGUISlider(string label = null) => OnGUISlider(0, 100, label);
+        public bool OnGUISlider(int min, int max, string label = null)
+        {
+            return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
+        }
     }
 
     [Serializable]
@@ -91,42 +103,6 @@ namespace PrefsGUI
         protected override Vector3Int defaultMax => base.defaultMax * 100;
 
         public static implicit operator Vector3(PrefsVector3Int v) => v.Get();
-    }
-
-
-    [Serializable]
-    public class PrefsColor : PrefsSlider<Color, Vector4>
-    {
-        public PrefsColor(string key, Color defaultValue = default(Color)) : base(key, defaultValue) { }
-
-        protected override Vector4 defaultMin { get { return Vector4.zero; } }
-        protected override Vector4 defaultMax { get { return Vector4.one; } }
-
-
-        protected override bool Compare(Vector4 lhs, Vector4 rhs)
-        {
-            return lhs == rhs;
-        }
-
-        protected override Color ToOuter(Vector4 v4)
-        {
-            var c = Color.HSVToRGB(v4.x, v4.y, v4.z);
-            c.a = v4.w;
-            return c;
-        }
-
-        protected override Vector4 ToInner(Color c)
-        {
-            Vector4 v4 = default(Vector4);
-            Color.RGBToHSV(c, out v4.x, out v4.y, out v4.z);
-            v4.w = c.a;
-            return v4;
-        }
-
-        public static implicit operator Vector4(PrefsColor c)
-        {
-            return c.Get();
-        }
     }
 
 

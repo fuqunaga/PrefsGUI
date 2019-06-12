@@ -129,7 +129,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
             if (labelEnable) GUILayout.Label(_material.name);
             using(new RGUI.IndentScope())
             {
-                _colors.ForEach(c => c.DoGUISlider(KeyToPropertyName(c.key)));
+                _colors.ForEach(c => c.DoGUI(KeyToPropertyName(c.key)));
                 _vectors.ForEach(v =>
                 {
                     var n = KeyToPropertyName(v.key);

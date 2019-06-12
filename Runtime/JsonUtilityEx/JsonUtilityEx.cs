@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,7 @@ using UnityEngine;
 namespace PrefsGUI
 {
     /// <summary>
-    /// JsonUtility exntend.
+    /// JsonUtility exntention.
     /// support primitive type, List and Array
     /// </summary>
     public static class JsonUtilityEx
@@ -23,7 +22,7 @@ namespace PrefsGUI
                 var wrapperType = ValueWrapper.GetWrapperType(type);
                 var wrapper = JsonUtility.FromJson(json, wrapperType);
 
-                ret = ((ValueWrapper)wrapper).obj;
+                ret = (wrapper as ValueWrapper)?.obj;
             }
             else
             {
@@ -33,7 +32,7 @@ namespace PrefsGUI
             return ret;
         }
 
-        //public static void FromJsonOverwrite(string json, object objectToOverwrite);
+        
         public static string ToJson(object obj) => ToJson(obj, false);
 
         public static string ToJson(object obj, bool prettyPrint)
@@ -60,8 +59,24 @@ namespace PrefsGUI
         protected abstract class ValueWrapper
         {
             public static Type GetWrapperType(Type type) => typeof(ValueWrapper<>).MakeGenericType(type);
-            
-            public static bool IsSupport(Type type) => type.IsPrimitive || (type == typeof(string));
+
+
+            static HashSet<Type> supportedTypes = new HashSet<Type>()
+            {
+                typeof(string),
+                typeof(Vector2Int), typeof(Vector3Int),
+                typeof(Rect), typeof(RectOffset),
+                typeof(Bounds), typeof(BoundsInt)
+            };
+
+            public static bool IsSupport(Type type)
+            {
+                return type.IsPrimitive
+                    || supportedTypes.Contains(type)
+                    || type.IsArray
+                    || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                    ;
+            }
 
             public abstract object obj { get; }
         }
