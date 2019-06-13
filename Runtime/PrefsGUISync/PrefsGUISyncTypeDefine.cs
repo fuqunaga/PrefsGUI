@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
 using UnityEngine.Networking;
 
 #pragma warning disable 0618  
@@ -9,12 +12,18 @@ namespace PrefsGUI
     {
         public struct KeyObj { public string key; public object _value; }
 
+        public struct Hoge<T>
+        {
+            T hoge;
+        }
+
 
         public struct KeyBool { public string key; public bool _value; }
         public struct KeyInt { public string key; public int _value; }
         public struct KeyUInt { public string key; public uint _value; }
         public struct KeyFloat { public string key; public float _value; }
         public struct KeyString { public string key; public string _value; }
+        public struct KeyColor { public string key; public Color _value; }
         public struct KeyVector2 { public string key; public Vector2 _value; }
         public struct KeyVector3 { public string key; public Vector3 _value; }
         public struct KeyVector4 { public string key; public Vector4 _value; }
@@ -30,6 +39,9 @@ namespace PrefsGUI
             KeyObj Get(int idx);
         }
 
+#if false
+        public class SyncListKeyBool : SyncListStruct<KeyBool> { }
+#else
         public class SyncListKeyBool : SyncListStruct<KeyBool>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
         public class SyncListKeyInt : SyncListStruct<KeyInt>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
         public class SyncListKeyUInt : SyncListStruct<KeyUInt>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
@@ -38,6 +50,7 @@ namespace PrefsGUI
         public class SyncListKeyVector2 : SyncListStruct<KeyVector2>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
         public class SyncListKeyVector3 : SyncListStruct<KeyVector3>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
         public class SyncListKeyVector4 : SyncListStruct<KeyVector4>, ISyncListKeyObj { public void Add(string key, object obj) { this._Add(key, obj); } public KeyObj Get(int idx) { return this._Get(idx); } public void Set(int idx, object obj) { this._Set(idx, obj); } }
+
         public class SyncListKeyVector2Int : SyncListStruct<KeyVector2Int>, ISyncListKeyObj
         {
             public void Add(string key, object obj)
@@ -116,6 +129,70 @@ namespace PrefsGUI
                 }
             }
 
+        }
+    }
+#endif
+
+
+    public static class SyncListStructExtenion
+    {
+        public class KVField
+        {
+            public FieldInfo keyField;
+            public FieldInfo valueField;
+        }
+
+        static Dictionary<Type, KVField> typeToField = new Dictionary<Type, KVField>();
+
+        static KVField GetField(Type type)
+        {
+            if (!typeToField.TryGetValue(type, out var kvField))
+            {
+                typeToField[type] = kvField = new KVField()
+                {
+                    keyField = type.GetField("key"),
+                    valueField = type.GetField("_value")
+                };
+            }
+            return kvField;
+        }
+
+
+        static T CreateInstance<T>(string key, object obj)
+        {
+            var ret = Activator.CreateInstance(typeof(T));
+            var kvField = GetField(typeof(T));
+            kvField.keyField.SetValue(ret, key);
+            kvField.valueField.SetValue(ret, obj);
+            return (T)ret;
+        }
+
+        public static void _Add<T>(this SyncListStruct<T> sl, string key, object obj)
+            where T : struct
+        {
+            sl.Add(CreateInstance<T>(key, obj));
+        }
+
+        public static void _Set<T>(this SyncListStruct<T> sl, int idx, object obj)
+            where T : struct
+        {
+            var kvField = GetField(typeof(T));
+            if (false == kvField.valueField.GetValue(sl[idx]).Equals(obj))
+            {
+                var key = (string)kvField.keyField.GetValue(sl[idx]);
+                sl[idx] = CreateInstance<T>(key, obj);
+            }
+        }
+
+        public static PrefsGUISync.KeyObj _Get<T>(this SyncListStruct<T> sl, int idx)
+            where T : struct
+        {
+            var kvField = GetField(typeof(T));
+            return new PrefsGUISync.KeyObj()
+            {
+                key = (string)kvField.keyField.GetValue(sl[idx]),
+                _value = kvField.valueField.GetValue(sl[idx])
+            };
         }
     }
 }

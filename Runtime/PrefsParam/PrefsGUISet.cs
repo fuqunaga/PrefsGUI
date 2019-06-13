@@ -38,7 +38,7 @@ namespace PrefsGUI
             return (T)ctor.Invoke(new object[] { GenerateParamKey(key, postfix), defaultValue });
         }
 
-        public void OnGUI(string label = null)
+        public void DoGUI(string label = null)
         {
             using (new GUILayout.HorizontalScope())
             {

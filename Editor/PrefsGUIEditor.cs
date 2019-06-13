@@ -100,14 +100,14 @@ namespace PrefsGUI
                             if (sync != null)
                             {
                                 var key = prefs.key;
-                                var isSync = !sync._ignoreKeys.Contains(key);
+                                var isSync = !sync.ignoreKeys.Contains(key);
 
                                 if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
                                 {
                                     Undo.RecordObject(sync, "Change PrefsGUI sync flag");
 
-                                    if (isSync) sync._ignoreKeys.Add(key);
-                                    else sync._ignoreKeys.Remove(key);
+                                    if (isSync) sync.ignoreKeys.Add(key);
+                                    else sync.ignoreKeys.Remove(key);
                                 }
                             }
 
@@ -224,15 +224,15 @@ namespace PrefsGUI
             if (sync != null)
             {
                 var key = prefs.key;
-                var isSync = !sync._ignoreKeys.Contains(key);
+                var isSync = !sync.ignoreKeys.Contains(key);
 
                 if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
                 {
                     Undo.RecordObject(sync, "Change PrefsGUI sync flag");
                     EditorUtility.SetDirty(sync);
 
-                    if (isSync) sync._ignoreKeys.Add(key);
-                    else sync._ignoreKeys.Remove(key);
+                    if (isSync) sync.ignoreKeys.Add(key);
+                    else sync.ignoreKeys.Remove(key);
                 }
             }
         }
@@ -242,7 +242,7 @@ namespace PrefsGUI
             if (sync != null)
             {
                 var keys = prefsList.Select(p => p.key).ToList();
-                var syncKeys = keys.Except(sync._ignoreKeys);
+                var syncKeys = keys.Except(sync.ignoreKeys);
                 var syncKeysCount = syncKeys.Count();
                 var isSync = syncKeys.Any();
                 var mixed = syncKeysCount != 0 && syncKeysCount != prefsList.Count;
@@ -255,11 +255,11 @@ namespace PrefsGUI
 
                     if (!isSync)
                     {
-                        sync._ignoreKeys.AddRange(syncKeys);
+                        sync.ignoreKeys.AddRange(syncKeys);
                     }
                     else
                     {
-                        keys.ForEach(k => sync._ignoreKeys.Remove(k));
+                        keys.ForEach(k => sync.ignoreKeys.Remove(k));
                     }
                 }
             }
