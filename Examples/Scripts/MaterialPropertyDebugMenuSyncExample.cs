@@ -3,7 +3,7 @@
 
 namespace PrefsGUI
 {
-    public class MaterialPropertyDebugMenuSyncSample : MaterialPropertyDebugMenuSample
+    public class MaterialPropertyDebugMenuSyncSample : MaterialPropertyDebugMenuExample
     {
         bool menuEnable;
 

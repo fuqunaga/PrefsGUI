@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using RapidGUI;
+using System.Net;
 
 namespace PrefsGUI
 {
@@ -29,11 +30,11 @@ namespace PrefsGUI
         }
 
         // define PrefsParams with key.
-        public PrefsEnum prefsEnum = new PrefsEnum("PrefsEnum");
-        public PrefsString prefsString = new PrefsString("PrefsString");
+        public PrefsBool prefsBool = new PrefsBool("PrefsBool");
         public PrefsInt prefsInt = new PrefsInt("PrefsInt");
         public PrefsFloat prefsFloat = new PrefsFloat("PrefsFloat");
-        public PrefsBool prefsBool = new PrefsBool("PrefsBool");
+        public PrefsString prefsString = new PrefsString("PrefsString");
+        public PrefsEnum prefsEnum = new PrefsEnum("PrefsEnum");
         public PrefsColor prefsColor = new PrefsColor("PrefsColor");
         public PrefsVector2 prefsVector2 = new PrefsVector2("PrefsVector2");
         public PrefsVector3 prefsVector3 = new PrefsVector3("PrefsVector3");
@@ -42,16 +43,15 @@ namespace PrefsGUI
         public PrefsVector3Int prefsVector3Int = new PrefsVector3Int("PrefsVector3Int");
         public PrefsRect prefsRect = new PrefsRect("PrefsRect");
         public PrefsBounds prefsBounds = new PrefsBounds("PrefsBounds");
-        public PrefsBounds prefsBoundsInt = new PrefsBounds("PrefsBoundsInt");
-
+        public PrefsBoundsInt prefsBoundsInt = new PrefsBoundsInt("PrefsBoundsInt");
+        
         public PrefsIPEndPoint prefsIPEndPoint = new PrefsIPEndPoint("PrefsIPEndPoint");
-
         public PrefsList prefsList = new PrefsList("PrefsList");
+
 
         protected override void OnGUIInternal()
         {
-            prefsEnum.DoGUI();
-            prefsString.DoGUI();
+            prefsBool.DoGUI();
             var changed = prefsInt.DoGUI();
             // return true if value was changed
             if (changed)
@@ -62,16 +62,17 @@ namespace PrefsGUI
             }
 
             prefsFloat.DoGUI();
-            prefsFloat.OnGUISlider();
-            prefsBool.DoGUI();
+            prefsFloat.DoGUISlider();
+            prefsString.DoGUI();
+            prefsEnum.DoGUI();
             prefsColor.DoGUI();
-        
             prefsVector2.DoGUI();
             prefsVector2.DoGUISlider();
             prefsVector3.DoGUI();
             prefsVector3.DoGUISlider();
             prefsVector4.DoGUI();
             prefsVector4.DoGUISlider();
+
             prefsVector2Int.DoGUI();
             prefsVector2Int.DoGUISlider();
             prefsVector3Int.DoGUI();
@@ -82,13 +83,9 @@ namespace PrefsGUI
             prefsBounds.DoGUISlider();
             prefsBoundsInt.DoGUI();
             prefsBoundsInt.DoGUISlider();
-            /*
 
-            prefsIPEndPoint.OnGUI();
-
-
+            prefsIPEndPoint.DoGUI();
             prefsList.DoGUI();
-            */
 
 
             GUILayout.Label($"file path: {PrefsGUI.KVS.PrefsKVSPathSelector.path}");
@@ -100,16 +97,17 @@ namespace PrefsGUI
 
         void Update()
         {
-            //TestImplicitCast();
+            TestImplicitCast();
         }
 
         protected void TestImplicitCast()
         {
-            EnumSample e = prefsEnum;
-            string s = prefsString;
+            bool b = prefsBool;
             int i = prefsInt;
             float f = prefsFloat;
-            bool b = prefsBool;
+            string s = prefsString;
+            EnumSample e = prefsEnum;
+            Color c = prefsColor;
             Vector2 v2 = prefsVector2;
             Vector3 v3 = prefsVector2;
             Vector4 v4 = prefsVector2;
@@ -121,9 +119,12 @@ namespace PrefsGUI
             v4 = prefsVector4;
             Vector2Int v2Int = prefsVector2Int;
             Vector3Int v3Int = prefsVector3Int;
-            Color c = prefsVector4;
             Rect rect = prefsRect;
-            c = prefsColor;
+            Bounds bounds = prefsBounds;
+            BoundsInt boundsInt = prefsBoundsInt;
+
+            IPEndPoint ip = prefsIPEndPoint;
+            List<CustomClass> list = prefsList;
         }
     }
 }

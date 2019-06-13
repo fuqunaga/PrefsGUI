@@ -141,13 +141,13 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
                         v.DoGUISlider(n);
                     }
                 });
-                _floats.ForEach(f => f.OnGUISlider(KeyToPropertyName(f.key)));
+                _floats.ForEach(f => f.DoGUISlider(KeyToPropertyName(f.key)));
                 _ranges.ForEach(range =>
                 {
                     var n = KeyToPropertyName(range.key);
                     var mr = _propertySet.ranges.Find(r => r.name == n);
 
-                    range.OnGUISlider(mr.min, mr.max, n);
+                    range.DoGUISlider(mr.min, mr.max, n);
                 });
 
                 _texEnvs.ForEach(t =>

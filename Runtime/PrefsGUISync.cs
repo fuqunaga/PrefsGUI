@@ -28,43 +28,56 @@ namespace PrefsGUI
 
         #region Sync
 
-        SyncListKeyBool _syncListKeyBool = new SyncListKeyBool();
-        SyncListKeyInt _syncListKeyInt = new SyncListKeyInt();
-        SyncListKeyUInt _syncListKeyUInt = new SyncListKeyUInt();
-        SyncListKeyFloat _syncListKeyFloat = new SyncListKeyFloat();
-        SyncListKeyString _syncListKeyString = new SyncListKeyString();
-        SyncListKeyVector2 _syncListKeyVector2 = new SyncListKeyVector2();
-        SyncListKeyVector3 _syncListKeyVector3 = new SyncListKeyVector3();
-        SyncListKeyVector4 _syncListKeyVector4 = new SyncListKeyVector4();
-        SyncListKeyVector2Int _syncListKeyVector2Int = new SyncListKeyVector2Int();
-        SyncListKeyVector3Int _syncListKeyVector3Int = new SyncListKeyVector3Int();
+        SyncListKeyBool syncListKeyBool = new SyncListKeyBool();
+        SyncListKeyInt syncListKeyInt = new SyncListKeyInt();
+        SyncListKeyUInt syncListKeyUInt = new SyncListKeyUInt();
+        SyncListKeyFloat syncListKeyFloat = new SyncListKeyFloat();
+        SyncListKeyString syncListKeyString = new SyncListKeyString();
+        SyncListKeyColor syncListKeyColor = new SyncListKeyColor();
+        SyncListKeyVector2 syncListKeyVector2 = new SyncListKeyVector2();
+        SyncListKeyVector3 syncListKeyVector3 = new SyncListKeyVector3();
+        SyncListKeyVector4 syncListKeyVector4 = new SyncListKeyVector4();
+        SyncListKeyVector2Int syncListKeyVector2Int = new SyncListKeyVector2Int();
+        SyncListKeyVector3Int syncListKeyVector3Int = new SyncListKeyVector3Int();
+        SyncListKeyRect syncListKeyRect = new SyncListKeyRect();
+        SyncListKeyBounds syncListKeyBounds = new SyncListKeyBounds();
+        SyncListKeyBoundsInt syncListKeyBoundsInt = new SyncListKeyBoundsInt();
+
 
         [SyncVar]
-        bool _materialPropertyDebugMenuUpdate;
+        bool materialPropertyDebugMenuUpdate;
 
         #endregion
 
-        Dictionary<Type, ISyncListKeyObj> _typeToSyncList;
-        Dictionary<string, TypeAndIdx> _keyToTypeIdx = new Dictionary<string, TypeAndIdx>();
 
-        public List<string> _ignoreKeys = new List<string>(); // want use HashSet but use List so it will be serialized on Inspector
+        Dictionary<Type, ISyncListKeyObj> typeToSyncList;
+        Dictionary<string, TypeAndIdx> keyToTypeIdx = new Dictionary<string, TypeAndIdx>();
+
+        public List<string> ignoreKeys = new List<string>(); // want use HashSet but use List so it will be serialized on Inspector
 
 
         public void Awake()
         {
-            _typeToSyncList = new Dictionary<Type, ISyncListKeyObj>()
+            typeToSyncList = new ISyncListKeyObj[]
             {
-                { typeof(bool),    _syncListKeyBool    },
-                { typeof(int),     _syncListKeyInt     },
-                { typeof(uint),    _syncListKeyUInt    },
-                { typeof(float),   _syncListKeyFloat   },
-                { typeof(string),  _syncListKeyString  },
-                { typeof(Vector2), _syncListKeyVector2 },
-                { typeof(Vector3), _syncListKeyVector3 },
-                { typeof(Vector4), _syncListKeyVector4 },
-                { typeof(Vector2Int), _syncListKeyVector2Int },
-                { typeof(Vector3Int), _syncListKeyVector3Int },
-            };
+                syncListKeyBool    ,
+                syncListKeyInt     ,
+                syncListKeyUInt    ,
+                syncListKeyFloat   ,
+                syncListKeyString  ,
+                syncListKeyColor   ,
+                syncListKeyVector2 ,
+                syncListKeyVector3 ,
+                syncListKeyVector4 ,
+                syncListKeyRect,
+
+            }
+            .ToDictionary(sl => sl.GetType().BaseType.GetGenericArguments()[0].GetField("value").FieldType);
+
+            typeToSyncList[typeof(Vector2Int)] = syncListKeyVector2Int;
+            typeToSyncList[typeof(Vector3Int)] = syncListKeyVector3Int;
+            typeToSyncList[typeof(Bounds)] = syncListKeyBounds;
+            typeToSyncList[typeof(BoundsInt)] = syncListKeyBoundsInt;
         }
 
         public override void OnStartServer()
@@ -95,11 +108,11 @@ namespace PrefsGUI
         [ServerCallback]
         void SendPrefs()
         {
-            PrefsParam.all.Values.ToList().ForEach(prefs =>
-            {
-                var key = prefs.key;
-                if (false == _ignoreKeys.Contains(key))
+            PrefsParam.all.Values
+                .Where(prefs => !ignoreKeys.Contains(prefs.key))
+                .ToList().ForEach(prefs =>
                 {
+                    var key = prefs.key;
                     var obj = prefs.GetObject();
                     if (obj != null)
                     {
@@ -110,25 +123,25 @@ namespace PrefsGUI
                             obj = Convert.ToInt32(obj);
                         }
 
-                        TypeAndIdx ti;
-                        if (_keyToTypeIdx.TryGetValue(key, out ti))
+                        if (keyToTypeIdx.TryGetValue(key, out var ti))
                         {
-                            var iSynList = _typeToSyncList[type];
+                            var iSynList = typeToSyncList[type];
                             iSynList.Set(ti.idx, obj);
                         }
                         else
                         {
-                            Assert.IsTrue(_typeToSyncList.ContainsKey(type), string.Format("type [{0}] is not supported.", type));
-                            var iSynList = _typeToSyncList[type];
+                            Assert.IsTrue(typeToSyncList.ContainsKey(type), string.Format($"type [{type}] is not supported."));
+
+                            var iSynList = typeToSyncList[type];
                             var idx = iSynList.Count;
                             iSynList.Add(key, obj);
-                            _keyToTypeIdx[key] = new TypeAndIdx() { type = type, idx = idx };
+                            keyToTypeIdx[key] = new TypeAndIdx() { type = type, idx = idx };
                         }
                     }
-                }
-            });
 
-            _materialPropertyDebugMenuUpdate = MaterialPropertyDebugMenu.update;
+                });
+
+            materialPropertyDebugMenuUpdate = MaterialPropertyDebugMenu.update;
         }
 
         [ClientCallback]
@@ -138,87 +151,25 @@ namespace PrefsGUI
             if (!NetworkServer.active)
             {
                 var all = PrefsParam.all;
-                _typeToSyncList.Values.ToList().ForEach(sl =>
+                typeToSyncList.Values.ToList().ForEach(sl =>
                 {
                     for (var i = 0; i < sl.Count; ++i)
                     {
-                        var keyObj = sl.Get(i);
-                        PrefsParam prefs;
-                        if (all.TryGetValue(keyObj.key, out prefs))
+                        (string key, object obj) = sl.Get(i);
+
+                        if (all.TryGetValue(key, out var prefs))
                         {
-                            prefs.SetSyncedObject(keyObj._value, () =>
+                            prefs.SetSyncedObject(obj, () =>
                             {
-                                Debug.LogWarning($"key:[{prefs.key}] Get() before synced. before:[{prefs.GetObject()}] sync:[{keyObj._value}]");
+                                Debug.LogWarning($"key:[{prefs.key}] Get() before synced. before:[{prefs.GetObject()}] sync:[{obj}]");
                             });
                         }
                     }
                 });
             }
 
-            MaterialPropertyDebugMenu.update = _materialPropertyDebugMenuUpdate;
+            MaterialPropertyDebugMenu.update = materialPropertyDebugMenuUpdate;
         }
     }
 
-
-    public static class SyncListStructExtenion
-    {
-        public class KVField
-        {
-            public FieldInfo keyField;
-            public FieldInfo valueField;
-        }
-
-        static Dictionary<Type, KVField> _typeToField = new Dictionary<Type, KVField>();
-        static KVField GetField(Type type)
-        {
-            KVField kvField;
-            if (!_typeToField.TryGetValue(type, out kvField))
-            {
-                _typeToField[type] = kvField = new KVField()
-                {
-                    keyField = type.GetField("key"),
-                    valueField = type.GetField("_value")
-                };
-            }
-            return kvField;
-        }
-
-
-        static T CreateInstance<T>(string key, object obj)
-        {
-            var ret = Activator.CreateInstance(typeof(T));
-            var kvField = GetField(typeof(T));
-            kvField.keyField.SetValue(ret, key);
-            kvField.valueField.SetValue(ret, obj);
-            return (T)ret;
-        }
-
-        public static void _Add<T>(this SyncListStruct<T> sl, string key, object obj)
-            where T : struct
-        {
-            sl.Add(CreateInstance<T>(key, obj));
-        }
-
-        public static void _Set<T>(this SyncListStruct<T> sl, int idx, object obj)
-            where T : struct
-        {
-            var kvField = GetField(typeof(T));
-            if (false == kvField.valueField.GetValue(sl[idx]).Equals(obj))
-            {
-                var key = (string)kvField.keyField.GetValue(sl[idx]);
-                sl[idx] = CreateInstance<T>(key, obj);
-            }
-        }
-
-        public static PrefsGUISync.KeyObj _Get<T>(this SyncListStruct<T> sl, int idx)
-            where T : struct
-        {
-            var kvField = GetField(typeof(T));
-            return new PrefsGUISync.KeyObj()
-            {
-                key = (string)kvField.keyField.GetValue(sl[idx]),
-                _value = kvField.valueField.GetValue(sl[idx])
-            };
-        }
-    }
 }
