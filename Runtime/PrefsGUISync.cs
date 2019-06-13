@@ -29,23 +29,26 @@ namespace PrefsGUI
         #region Sync
 
         SyncListKeyBool syncListKeyBool = new SyncListKeyBool();
-        /*
         SyncListKeyInt syncListKeyInt = new SyncListKeyInt();
         SyncListKeyUInt syncListKeyUInt = new SyncListKeyUInt();
         SyncListKeyFloat syncListKeyFloat = new SyncListKeyFloat();
         SyncListKeyString syncListKeyString = new SyncListKeyString();
-        //SyncListKeyColor syncListKeyColor = new SyncListKeyColor();
+        SyncListKeyColor syncListKeyColor = new SyncListKeyColor();
         SyncListKeyVector2 syncListKeyVector2 = new SyncListKeyVector2();
         SyncListKeyVector3 syncListKeyVector3 = new SyncListKeyVector3();
         SyncListKeyVector4 syncListKeyVector4 = new SyncListKeyVector4();
         SyncListKeyVector2Int syncListKeyVector2Int = new SyncListKeyVector2Int();
         SyncListKeyVector3Int syncListKeyVector3Int = new SyncListKeyVector3Int();
-        */
+        SyncListKeyRect syncListKeyRect = new SyncListKeyRect();
+        SyncListKeyBounds syncListKeyBounds = new SyncListKeyBounds();
+        SyncListKeyBoundsInt syncListKeyBoundsInt = new SyncListKeyBoundsInt();
+
 
         [SyncVar]
         bool materialPropertyDebugMenuUpdate;
 
         #endregion
+
 
         Dictionary<Type, ISyncListKeyObj> typeToSyncList;
         Dictionary<string, TypeAndIdx> keyToTypeIdx = new Dictionary<string, TypeAndIdx>();
@@ -55,20 +58,26 @@ namespace PrefsGUI
 
         public void Awake()
         {
-            typeToSyncList = new Dictionary<Type, ISyncListKeyObj>()
+            typeToSyncList = new ISyncListKeyObj[]
             {
-                { typeof(bool),    syncListKeyBool    },
-                { typeof(int),     syncListKeyInt     },
-                { typeof(uint),    syncListKeyUInt    },
-                { typeof(float),   syncListKeyFloat   },
-                { typeof(string),  syncListKeyString  },
-                //{ typeof(Color),   syncListKeyColor   },
-                { typeof(Vector2), syncListKeyVector2 },
-                { typeof(Vector3), syncListKeyVector3 },
-                { typeof(Vector4), syncListKeyVector4 },
-                { typeof(Vector2Int), syncListKeyVector2Int },
-                { typeof(Vector3Int), syncListKeyVector3Int },
-            };
+                syncListKeyBool    ,
+                syncListKeyInt     ,
+                syncListKeyUInt    ,
+                syncListKeyFloat   ,
+                syncListKeyString  ,
+                syncListKeyColor   ,
+                syncListKeyVector2 ,
+                syncListKeyVector3 ,
+                syncListKeyVector4 ,
+                syncListKeyRect,
+
+            }
+            .ToDictionary(sl => sl.GetType().BaseType.GetGenericArguments()[0].GetField("value").FieldType);
+
+            typeToSyncList[typeof(Vector2Int)] = syncListKeyVector2Int;
+            typeToSyncList[typeof(Vector3Int)] = syncListKeyVector3Int;
+            typeToSyncList[typeof(Bounds)] = syncListKeyBounds;
+            typeToSyncList[typeof(BoundsInt)] = syncListKeyBoundsInt;
         }
 
         public override void OnStartServer()
@@ -146,13 +155,13 @@ namespace PrefsGUI
                 {
                     for (var i = 0; i < sl.Count; ++i)
                     {
-                        var keyObj = sl.Get(i);
+                        (string key, object obj) = sl.Get(i);
 
-                        if (all.TryGetValue(keyObj.key, out var prefs))
+                        if (all.TryGetValue(key, out var prefs))
                         {
-                            prefs.SetSyncedObject(keyObj._value, () =>
+                            prefs.SetSyncedObject(obj, () =>
                             {
-                                Debug.LogWarning($"key:[{prefs.key}] Get() before synced. before:[{prefs.GetObject()}] sync:[{keyObj._value}]");
+                                Debug.LogWarning($"key:[{prefs.key}] Get() before synced. before:[{prefs.GetObject()}] sync:[{obj}]");
                             });
                         }
                     }
