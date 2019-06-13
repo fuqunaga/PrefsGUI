@@ -28,6 +28,11 @@ namespace PrefsGUI
     public class PrefsBool : PrefsParam<bool>
     {
         public PrefsBool(string key, bool defaultValue = default(bool)) : base(key, defaultValue) { }
+
+        public bool DoGUIToggle(string label = null)
+        {
+            return DoGUIStrandard((v) => GUILayout.Toggle(v, label ?? key));
+        }
     }
 
     [Serializable]
