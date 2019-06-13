@@ -55,6 +55,13 @@ public class PrefsGUISample : PrefsGUISampleBase
 ```
 
 # Install
+
+## Install dependencies
+
+- MultiPlayer HLAPI from PackageManager
+- [RapidGUI](https://github.com/fuqunaga/RapidGUI)
+
+## Intall PrefsGUI
 Download a `.unitypackage` file from [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
 
 or
