@@ -2,7 +2,6 @@
 using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
-using System.Reflection;
 using RapidGUI;
 
 namespace PrefsGUI
@@ -42,7 +41,7 @@ namespace PrefsGUI
                 }
             }
 
-            var currentToDefaultEnable = !Application.isPlaying && PrefsList.Any(prefs => !prefs.IsDefault);
+            var currentToDefaultEnable = !Application.isPlaying && prefsAll.Any(prefs => !prefs.IsDefault);
             GUI.enabled = currentToDefaultEnable;
             if (GUILayout.Button("Open Current To Default Window"))
             {
@@ -93,7 +92,7 @@ namespace PrefsGUI
                 }
                 else
                 {
-                    PrefsList.ToList().ForEach(prefs =>
+                    prefsAll.ToList().ForEach(prefs =>
                     {
                         using (new GUILayout.HorizontalScope())
                         {
@@ -148,9 +147,7 @@ namespace PrefsGUI
                 for (var i = 0; i < comps.Length; ++i)
                 {
                     var comp = comps[i];
-                    var fields = comp.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-                    prefsList.AddRange(SearchChildPrefsParams(comp, fields));
+                    prefsList.AddRange(SearchChildPrefsParams(comp));
                 }
 
                 if (prefsList.Any())
@@ -159,38 +156,8 @@ namespace PrefsGUI
                 }
             }
         }
-
-        List<PrefsParam> SearchChildPrefsParams(object obj, FieldInfo[] fields, int level = 0)
-        {
-            var ret = new List<PrefsParam>();
-
-            for (var fi = 0; fi < fields.Length; ++fi)
-            {
-                var field = fields[fi];
-                var fieldType = field.FieldType;
-                var fieldObj = field.GetValue(obj);
-
-                if (fieldType.IsSubclassOf(typeof(PrefsParam)))
-                {
-                    ret.Add(fieldObj as PrefsParam);
-                }
-                else if (
-                    fieldObj != null
-                    && !fieldType.IsPrimitive
-                    && !fieldType.IsSubclassOf(typeof(Component))
-                    && fieldType.GetCustomAttribute<System.SerializableAttribute>() != null
-                    && fieldType.Assembly.GetName().Name == "Assembly-CSharp"
-                        )
-                {
-                    ret.AddRange(SearchChildPrefsParams(fieldObj, fieldType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)));
-                }
-            }
-
-            return ret;
-        }
-
-
-        void LabelWithEditPrefix(PrefsGUISync sync, string label, Object target, List<PrefsParam> prefsList)
+        
+        void LabelWithEditPrefix(PrefsGUISync sync, string label, UnityEngine.Object target, List<PrefsParam> prefsList)
         {
             using (var h = new GUILayout.HorizontalScope())
             {

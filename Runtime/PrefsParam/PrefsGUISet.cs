@@ -5,9 +5,6 @@ using UnityEngine.Assertions;
 
 namespace PrefsGUI
 {
-
-
-
     /// <summary>
     /// Combination of PrefsParams
     /// </summary>

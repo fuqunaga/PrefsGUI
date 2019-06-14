@@ -28,12 +28,5 @@ namespace PrefsGUI
         public abstract void Set(OuterT v);
 
         #endregion
-
-
-        #region override
-
-        public override void SetCurrentToDefault() { defaultValue = Get(); }
-
-        #endregion
     }
 }

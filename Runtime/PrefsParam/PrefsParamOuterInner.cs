@@ -27,7 +27,7 @@ namespace PrefsGUI
         {
         }
 
-        protected InnerT _Get()
+        protected InnerT GetDefaultInner()
         {
             if (!hasDefaultInner)
             {
@@ -35,7 +35,12 @@ namespace PrefsGUI
                 hasDefaultInner = true;
             }
 
-            return PrefsKVS.Get(key, defaultInner);
+            return defaultInner;
+        }
+
+        protected InnerT _Get()
+        {
+            return PrefsKVS.Get(key, GetDefaultInner());
         }
 
         protected void _Set(InnerT v, bool synced = false, Action onIfAlreadyGet = null)
@@ -106,9 +111,13 @@ namespace PrefsGUI
             _Set((InnerT)obj, true, onIfAlreadyGet);
         }
 
-        public override bool IsDefault => Compare(ToInner(defaultValue), _Get());
+        public override bool IsDefault => Compare(GetDefaultInner(), _Get());
 
-        public override void SetCurrentToDefault() { defaultValue = Get(); }
+        public override void SetCurrentToDefault()
+        {
+            defaultValue = Get();
+            hasDefaultInner = false;
+        }
 
 
         public override bool DoGUI(string label = null)
