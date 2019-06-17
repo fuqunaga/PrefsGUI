@@ -22,12 +22,12 @@ namespace PrefsGUI
         {
             windowRect = RGUI.ResizableWindow(GetHashCode(), windowRect, (id) =>
             {
-                OnGUIInternal();
+                DoGUI();
                 GUI.DragWindow();
             },
             "");
         }
 
-        protected abstract void OnGUIInternal();
+        protected abstract void DoGUI();
     }
 }

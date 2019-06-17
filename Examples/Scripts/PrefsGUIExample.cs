@@ -49,7 +49,7 @@ namespace PrefsGUI
         public PrefsList prefsList = new PrefsList("PrefsList");
 
 
-        protected override void OnGUIInternal()
+        protected override void DoGUI()
         {
             prefsBool.DoGUI();
             var changed = prefsInt.DoGUI();

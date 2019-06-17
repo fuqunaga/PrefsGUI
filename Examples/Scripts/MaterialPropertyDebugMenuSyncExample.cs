@@ -7,7 +7,7 @@ namespace PrefsGUI
     {
         bool menuEnable;
 
-        protected override void OnGUIInternal()
+        protected override void DoGUI()
         {
             if (menuEnable != GUILayout.Toggle(menuEnable, "MenuEnable"))
             {
@@ -17,7 +17,7 @@ namespace PrefsGUI
 
             if (menuEnable)
             {
-                base.OnGUIInternal();
+                base.DoGUI();
             }
         }
     }

@@ -1,13 +1,13 @@
-﻿using UnityEngine;
-using MaterialPropertyAccessor;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine.Assertions;
+﻿using MaterialPropertyAccessor;
 using PrefsGUI;
 using RapidGUI;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 [ExecuteAlways]
-public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
+public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
 {
     #region TypeDefine
 
@@ -122,7 +122,9 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
 
     public static Dictionary<string, System.Func<PrefsVector4, string, bool>> customVectorGUI = new Dictionary<string, System.Func<PrefsVector4, string, bool>>();
 
-    public void DebugMenu(bool labelEnable = true)
+    public void DoGUI() => DoGUI(true);
+    
+    public void DoGUI(bool labelEnable = true)
     {
         if ((_material != null) && _propertySet.Any())
         {
@@ -137,7 +139,8 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
                     {
                         customVectorGUI[n](v, n);
                     }
-                    else {
+                    else
+                    {
                         v.DoGUISlider(n);
                     }
                 });

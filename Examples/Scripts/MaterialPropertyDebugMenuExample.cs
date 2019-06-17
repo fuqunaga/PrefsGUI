@@ -3,16 +3,16 @@
 
     public class MaterialPropertyDebugMenuExample : PrefsGUIExampleBase
     {
-        MaterialPropertyDebugMenu _debugMenu;
+        MaterialPropertyDebugMenu debugMenu;
 
         public void Start()
         {
-            _debugMenu = GetComponent<MaterialPropertyDebugMenu>();
+            debugMenu = GetComponent<MaterialPropertyDebugMenu>();
         }
 
-        protected override void OnGUIInternal()
+        protected override void DoGUI()
         {
-            _debugMenu.DebugMenu();
+            debugMenu.DoGUI();
         }
     }
 }
