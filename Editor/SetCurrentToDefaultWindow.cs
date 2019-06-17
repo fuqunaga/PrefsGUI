@@ -54,7 +54,7 @@ namespace PrefsGUI
             if (GUILayout.Button("SetCurrentToDefault"))
             {
                 // Search Objects to recoard that has PrefsParams
-                var monos = FindObjectsOfType<MonoBehaviour>()
+                var monos = Resources.FindObjectsOfTypeAll<MonoBehaviour>() //FindObjectsOfType<MonoBehaviour>()
                     .Where(mono => Assembly.GetAssembly(mono.GetType()).GetName().Name.StartsWith("Assembly-CSharp")) // skip unity classes
                     .Where(mono =>
                     {
