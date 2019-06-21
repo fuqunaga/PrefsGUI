@@ -34,6 +34,11 @@ namespace PrefsGUI
             return DoGUISlider(defaultMin, defaultMax, label);
         }
 
+        public bool DoGUISlider(OuterT max, string label = null)
+        {
+            return DoGUISlider(defaultMin, ToInner(max), label);
+        }
+
         public bool DoGUISlider(OuterT min, OuterT max, string label = null)
         {
             return DoGUISlider(ToInner(min), ToInner(max), label);

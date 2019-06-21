@@ -47,6 +47,7 @@ namespace PrefsGUI
         public PrefsInt(string key, int defaultValue = default) : base(key, defaultValue) { }
 
         public bool DoGUISlider(string label = null) => DoGUISlider(0, 100, label);
+        public bool DoGUISlider(int max, string label = null) => DoGUISlider(0, max, label);
         public bool DoGUISlider(int min, int max, string label = null)
         {
             return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
@@ -59,6 +60,7 @@ namespace PrefsGUI
         public PrefsFloat(string key, float defaultValue = default) : base(key, defaultValue) { }
 
         public bool DoGUISlider(string label = null) => DoGUISlider(0f, 1f, label);
+        public bool DoGUISlider(float max, string label = null) => DoGUISlider(0f, max, label);
         public bool DoGUISlider(float min, float max, string label = null)
         {
             return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
