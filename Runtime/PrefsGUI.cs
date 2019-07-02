@@ -52,6 +52,30 @@ namespace PrefsGUI
         {
             return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
         }
+
+        public bool DoGUIToolbar(string[] texts, string label = null)
+        {
+            return DoGUIStrandard((v) =>
+            {
+                using (new GUILayout.HorizontalScope())
+                {
+                    RGUI.PrefixLabel(label ?? key);
+                    return GUILayout.Toolbar(v, texts);
+                }
+            });
+        }
+
+        public bool DoGUISelectionGrid(string[] texts, int xCount, string label = null)
+        {
+            return DoGUIStrandard((v) =>
+            {
+                using (new GUILayout.HorizontalScope())
+                {
+                    RGUI.PrefixLabel(label ?? key);
+                    return GUILayout.SelectionGrid(v, texts, xCount);
+                }
+            });
+        }
     }
 
     [Serializable]
@@ -92,7 +116,7 @@ namespace PrefsGUI
 
         public static implicit operator Vector2(PrefsVector4 v) => v.Get();
         public static implicit operator Vector3(PrefsVector4 v) => v.Get();
-        public static implicit operator Color(PrefsVector4 v)   => v.Get();
+        public static implicit operator Color(PrefsVector4 v) => v.Get();
     }
 
     [Serializable]
