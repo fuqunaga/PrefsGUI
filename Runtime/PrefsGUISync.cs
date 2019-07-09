@@ -159,10 +159,11 @@ namespace PrefsGUI
 
                         if (all.TryGetValue(key, out var prefs))
                         {
-                            prefs.SetSyncedObject(obj, () =>
-                            {
-                                Debug.LogWarning($"key:[{prefs.key}] Get() before synced. before:[{prefs.GetObject()}] sync:[{obj}]");
-                            });
+                            var onIfAlreadyGet = checkAlreadyGet
+                                ? new Action(() => Debug.LogWarning($"key:[{prefs.key}] Get() before synced. before:[{prefs.GetObject()}] sync:[{obj}]"))
+                                : null;
+
+                            prefs.SetSyncedObject(obj, onIfAlreadyGet);
                         }
                     }
                 });
