@@ -7,7 +7,7 @@ namespace PrefsGUI
     /// <summary>
     /// List style PrefsGUI
     /// </summary>
-    public class PrefsList<T> : PrefsParamAny<List<T>>, IList<T>
+    public class PrefsList<T> : PrefsAny<List<T>>, IList<T>
     {
         public PrefsList(string key, List<T> defaultValue = default) : base(key, defaultValue) { }
 

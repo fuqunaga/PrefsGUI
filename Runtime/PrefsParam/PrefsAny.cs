@@ -1,17 +1,15 @@
 ﻿using RapidGUI;
-using System;
-using System.IO;
-using System.Xml.Serialization;
 
 namespace PrefsGUI
 {
     /// <summary>
     /// PrefsParam for any type
     /// </summary>
-    public abstract class PrefsParamAny<OuterT> : PrefsParamOuterInner<OuterT, string>
+    public abstract class PrefsAny<OuterT> : PrefsParamOuterInner<OuterT, string> where OuterT : new()
     {
-        public PrefsParamAny(string key, OuterT defaultValue = default) : base(key, defaultValue)
+        public PrefsAny(string key, OuterT defaultValue = default) : base(key, defaultValue)
         {
+            if (this.defaultValue == null) this.defaultValue = new OuterT();
         }
 
         protected override string ToInner(OuterT outerV)

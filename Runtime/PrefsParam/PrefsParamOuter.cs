@@ -10,7 +10,7 @@ namespace PrefsGUI
         [SerializeField]
         protected OuterT defaultValue;
 
-        public PrefsParamOuter(string key, OuterT defaultValue = default(OuterT)) : base(key)
+        public PrefsParamOuter(string key, OuterT defaultValue = default) : base(key)
         {
             this.defaultValue = defaultValue;
         }
