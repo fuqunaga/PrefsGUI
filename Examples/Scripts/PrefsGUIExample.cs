@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using RapidGUI;
+﻿using System.Collections.Generic;
 using System.Net;
+using UnityEngine;
 
 namespace PrefsGUI
 {
@@ -44,54 +43,94 @@ namespace PrefsGUI
         public PrefsRect prefsRect = new PrefsRect("PrefsRect");
         public PrefsBounds prefsBounds = new PrefsBounds("PrefsBounds");
         public PrefsBoundsInt prefsBoundsInt = new PrefsBoundsInt("PrefsBoundsInt");
-        
+
         public PrefsIPEndPoint prefsIPEndPoint = new PrefsIPEndPoint("PrefsIPEndPoint");
         public PrefsList prefsList = new PrefsList("PrefsList");
 
+        public PrefsMinMaxInt prefsMinMaxInt = new PrefsMinMaxInt("PrefsMinMaxInt");
+        public PrefsMinMaxFloat prefsMinMaxFloat = new PrefsMinMaxFloat("PrefsMinMaxFloat");
+        public PrefsMinMaxVector2 prefsMinMaxVector2 = new PrefsMinMaxVector2("PrefsMinMaxVector2");
+        public PrefsMinMaxVector3 prefsMinMaxVector3 = new PrefsMinMaxVector3("PrefsMinMaxVector3");
+        public PrefsMinMaxVector4 prefsMinMaxVector4 = new PrefsMinMaxVector4("PrefsMinMaxVector4");
+        public PrefsMinMaxVector2Int prefsMinMaxVector2Int = new PrefsMinMaxVector2Int("PrefsMinMaxVector2Int");
+        public PrefsMinMaxVector3Int prefsMinMaxVector3Int = new PrefsMinMaxVector3Int("PrefsMinMaxVector3Int");
+        public PrefsMinMaxRect prefsMinMaxRect = new PrefsMinMaxRect("PrefsMinMaxRect");
+        public PrefsMinMaxBounds prefsMinMaxBounds = new PrefsMinMaxBounds("PrefsMinMaxBounds");
+        public PrefsMinMaxBoundsInt prefsMinMaxBoundsInt = new PrefsMinMaxBoundsInt("PrefsMinMaxBoundsInt");
 
         protected override void DoGUI()
         {
-            prefsBool.DoGUI();
-            var changed = prefsInt.DoGUI();
-            // return true if value was changed
-            if (changed)
+            using (new GUILayout.HorizontalScope())
             {
-                // use as native type
-                int intValue = prefsInt;
-                Debug.Log("Changed. " + intValue);
+                using (new GUILayout.VerticalScope())
+                {
+                    prefsBool.DoGUI();
+                    var changed = prefsInt.DoGUI();
+                    // return true if value was changed
+                    if (changed)
+                    {
+                        // use as native type
+                        int intValue = prefsInt;
+                        Debug.Log("Changed. " + intValue);
+                    }
+
+                    prefsFloat.DoGUI();
+                    prefsFloat.DoGUISlider();
+                    prefsString.DoGUI();
+                    prefsEnum.DoGUI();
+                    prefsColor.DoGUI();
+                    prefsVector2.DoGUI();
+                    prefsVector2.DoGUISlider();
+                    prefsVector3.DoGUI();
+                    prefsVector3.DoGUISlider();
+                    prefsVector4.DoGUI();
+                    prefsVector4.DoGUISlider();
+
+                    prefsVector2Int.DoGUI();
+                    prefsVector2Int.DoGUISlider();
+                    prefsVector3Int.DoGUI();
+                    prefsVector3Int.DoGUISlider();
+                    prefsRect.DoGUI();
+                    prefsRect.DoGUISlider();
+                    prefsBounds.DoGUI();
+                    prefsBounds.DoGUISlider();
+                    prefsBoundsInt.DoGUI();
+                    prefsBoundsInt.DoGUISlider();
+
+                    GUILayout.Space(50f);
+
+                    prefsList.DoGUI();
+                    prefsIPEndPoint.DoGUI();
+                    
+
+
+                    GUILayout.Space(50f);
+                    GUILayout.Label($"file path: {PrefsGUI.KVS.PrefsKVSPathSelector.path}");
+
+                    if (GUILayout.Button("Save")) Prefs.Save();
+                    if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
+
+                }
+
+                GUILayout.Space(20f);
+
+                using (new GUILayout.VerticalScope())
+                {
+                    prefsMinMaxInt.DoGUI();
+                    prefsMinMaxVector2.DoGUI();
+                    prefsMinMaxInt.DoGUISlider();
+                    prefsMinMaxFloat.DoGUISlider();
+                    prefsMinMaxVector2.DoGUISlider();
+                    prefsMinMaxVector3.DoGUISlider();
+                    prefsMinMaxVector4.DoGUISlider();
+                    prefsMinMaxVector2Int.DoGUISlider();
+                    prefsMinMaxVector3Int.DoGUISlider();
+                    prefsMinMaxRect.DoGUISlider();
+                    prefsMinMaxBounds.DoGUISlider();
+                    prefsMinMaxBoundsInt.DoGUISlider();
+                }
             }
 
-            prefsFloat.DoGUI();
-            prefsFloat.DoGUISlider();
-            prefsString.DoGUI();
-            prefsEnum.DoGUI();
-            prefsColor.DoGUI();
-            prefsVector2.DoGUI();
-            prefsVector2.DoGUISlider();
-            prefsVector3.DoGUI();
-            prefsVector3.DoGUISlider();
-            prefsVector4.DoGUI();
-            prefsVector4.DoGUISlider();
-
-            prefsVector2Int.DoGUI();
-            prefsVector2Int.DoGUISlider();
-            prefsVector3Int.DoGUI();
-            prefsVector3Int.DoGUISlider();
-            prefsRect.DoGUI();
-            prefsRect.DoGUISlider();
-            prefsBounds.DoGUI();
-            prefsBounds.DoGUISlider();
-            prefsBoundsInt.DoGUI();
-            prefsBoundsInt.DoGUISlider();
-
-            prefsIPEndPoint.DoGUI();
-            prefsList.DoGUI();
-
-
-            GUILayout.Label($"file path: {PrefsGUI.KVS.PrefsKVSPathSelector.path}");
-
-            if (GUILayout.Button("Save")) Prefs.Save();
-            if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
         }
 
 

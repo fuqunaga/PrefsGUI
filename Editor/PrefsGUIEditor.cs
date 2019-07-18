@@ -18,7 +18,6 @@ namespace PrefsGUI
         {
             AtoZ,
             GameObject,
-
         }
 
         Order order;

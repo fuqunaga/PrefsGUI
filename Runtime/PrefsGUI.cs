@@ -124,7 +124,7 @@ namespace PrefsGUI
     {
         public PrefsVector2Int(string key, Vector2Int defaultValue = default) : base(key, defaultValue) { }
 
-        protected override Vector2Int defaultMax => base.defaultMax * 100;
+        public override Vector2Int defaultMax => base.defaultMax * 100;
 
         public static implicit operator Vector2(PrefsVector2Int v) => v.Get();
     }
@@ -134,7 +134,7 @@ namespace PrefsGUI
     {
         public PrefsVector3Int(string key, Vector3Int defaultValue = default) : base(key, defaultValue) { }
 
-        protected override Vector3Int defaultMax => base.defaultMax * 100;
+        public override Vector3Int defaultMax => base.defaultMax * 100;
 
         public static implicit operator Vector3(PrefsVector3Int v) => v.Get();
     }
@@ -145,32 +145,43 @@ namespace PrefsGUI
     {
         public PrefsRect(string key, Rect defaultValue = default) : base(key, defaultValue) { }
 
-        protected override Rect defaultMax => new Rect(Vector2.one * 100f, Vector2.one * 100f);
-        protected override Rect defaultMin => default;
+        public override Rect defaultMin => default;
+        public override Rect defaultMax => new Rect(1f, 1f, 1f, 1f);
+
+        public bool DoGUISlider(float max, string label = null)
+        {
+            return this.DoGUISlider(new Rect(max, max, max, max), label);
+        }
     }
 
     [Serializable]
     public class PrefsBounds : PrefsSlider<Bounds>
     {
-        public PrefsBounds(string key, Bounds defaultValue = default) : base(key, defaultValue)
+        public PrefsBounds(string key, Bounds defaultValue = default) : base(key, defaultValue) { }
+
+        public override Bounds defaultMin => default;
+
+        public override Bounds defaultMax => new Bounds(Vector3.one, Vector3.one);
+
+        public bool DoGUISlider(float max, string label = null)
         {
+            return this.DoGUISlider(new Bounds(Vector3.one * max, Vector3.one * max), label);
         }
-
-        protected override Bounds defaultMin => default;
-
-        protected override Bounds defaultMax => new Bounds(Vector3.one * 100f, Vector3.one * 100f);
     }
 
     [Serializable]
     public class PrefsBoundsInt : PrefsSlider<BoundsInt>
     {
-        public PrefsBoundsInt(string key, BoundsInt defaultValue = default) : base(key, defaultValue)
+        public PrefsBoundsInt(string key, BoundsInt defaultValue = default) : base(key, defaultValue) { }
+
+        public override BoundsInt defaultMin => default;
+
+        public override BoundsInt defaultMax => new BoundsInt(Vector3Int.one * 100, Vector3Int.one * 100);
+
+        public bool DoGUISlider(int max, string label = null)
         {
+            return this.DoGUISlider(new BoundsInt(Vector3Int.one * max, Vector3Int.one * max), label);
         }
-
-        protected override BoundsInt defaultMin => default;
-
-        protected override BoundsInt defaultMax => new BoundsInt(Vector3Int.one * 100, Vector3Int.one * 100);
     }
 
 

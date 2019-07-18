@@ -3,7 +3,7 @@
 namespace PrefsGUI
 {
     /// <summary>
-    /// PrefsParam for any type
+    /// PrefsParam for user type that has new(), serializable by Unity(JsonUtility)
     /// </summary>
     public abstract class PrefsAny<OuterT> : PrefsParamOuterInner<OuterT, string> where OuterT : new()
     {
