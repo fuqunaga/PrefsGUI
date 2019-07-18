@@ -2,9 +2,11 @@
 
 namespace PrefsGUI
 {
-    public abstract class PrefsMinMax<T> : PrefsAny<PrefsMinMax<T>.MinMax>, IPrefsSlider<T>
+    public abstract class PrefsMinMax<T, MinMaxT> : PrefsAny<MinMaxT>, IPrefsSlider<T>   
+        where MinMaxT : PrefsMinMax<T, MinMaxT>.MinMaxBase, new()
     {
-        public struct MinMax
+        // can't use directly because unity don't serialize generic type
+        public abstract class MinMaxBase
         {
             public T min;
             public T max;
@@ -13,9 +15,8 @@ namespace PrefsGUI
         public T min => Get().min;
         public T max => Get().max;
 
-        public PrefsMinMax(string key, T defaultValueMax = default) : this(key, default(T), defaultValueMax) { }
-        public PrefsMinMax(string key, T defaultValueMin,  T defaultValueMax) : base(key, new MinMax() { min = defaultValueMin, max = defaultValueMax }) { }
-
+        public PrefsMinMax(string key, T defaultValueMax = default) : this(key, default, defaultValueMax) { }
+        public PrefsMinMax(string key, T defaultValueMin,  T defaultValueMax) : base(key, new MinMaxT() { min = defaultValueMin, max = defaultValueMax }) { }
 
 
         #region IPrefSlider
@@ -26,7 +27,7 @@ namespace PrefsGUI
 
         public bool DoGUISlider(T rangeMin, T rangeMax, string label = null)
         {
-            return DoGUIStrandard((string v) =>
+            return DoGUIStrandard((v) =>
             {
                 var minMax = ToOuter(v);
                 RGUI.MinMaxSlider(ref minMax.min, ref minMax.max, rangeMin, rangeMax, label ?? key);

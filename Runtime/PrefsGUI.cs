@@ -19,9 +19,12 @@ namespace PrefsGUI
 
 
     [Serializable]
-    public class PrefsString : PrefsParam<string>
+    public class PrefsString : PrefsParamOuterInner<string, string>
     {
         public PrefsString(string key, string defaultValue = "") : base(key, defaultValue) { }
+
+        protected override string ToInner(string outerV) => outerV;
+        protected override string ToOuter(string innerV) => innerV;
     }
 
     [Serializable]

@@ -3,6 +3,7 @@
 namespace PrefsGUI
 {
     public abstract class PrefsVector<T> : PrefsSlider<T>
+        where T : struct
     {
         public PrefsVector(string key, T defaultValue = default) : base(key, defaultValue) { }
 

@@ -1,9 +1,10 @@
 ﻿namespace PrefsGUI
 {
     /// <summary>
-    /// Basic PrefsParam same as InnerType and OuterType
+    /// Basic PrefsParam that has same InnerType, OuterType
     /// </summary>
     public abstract class PrefsParam<T> : PrefsParamOuterInner<T, T>
+        where T:struct // if class, that can change devaultValue in DoGUI()
     {
         public PrefsParam(string key, T defaultValue = default) : base(key, defaultValue) { }
 

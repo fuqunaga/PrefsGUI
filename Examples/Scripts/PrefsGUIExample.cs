@@ -101,7 +101,7 @@ namespace PrefsGUI
 
                     prefsList.DoGUI();
                     prefsIPEndPoint.DoGUI();
-                    
+
 
 
                     GUILayout.Space(50f);
@@ -116,8 +116,6 @@ namespace PrefsGUI
 
                 using (new GUILayout.VerticalScope())
                 {
-                    prefsMinMaxInt.DoGUI();
-                    prefsMinMaxVector2.DoGUI();
                     prefsMinMaxInt.DoGUISlider();
                     prefsMinMaxFloat.DoGUISlider();
                     prefsMinMaxVector2.DoGUISlider();
