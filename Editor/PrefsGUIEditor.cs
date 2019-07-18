@@ -162,7 +162,7 @@ namespace PrefsGUI
             }
         }
 
-        void LabelWithEditPrefix(PrefsGUISync sync, string label, Object target, List<PrefsParam> prefsList)
+        void LabelWithEditPrefix(PrefsGUISync sync, string label, GameObject go, List<PrefsParam> prefsList)
         {
             using (new GUILayout.HorizontalScope())
             {
@@ -177,7 +177,7 @@ namespace PrefsGUI
                 var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
                 if (prefix != prefixNew)
                 {
-                    Undo.RecordObject(target, "Change PrefsGUI Prefix");
+                    Undo.RecordObject(go, "Change PrefsGUI Prefix");
                     
                     var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
                     prefsList.ForEach(p =>
@@ -185,7 +185,7 @@ namespace PrefsGUI
                         p.key = prefixWithSeparator + p.key.Split(separator).Last();
                     });
 
-                    EditorUtility.SetDirty(target);
+                    go.GetComponents<Component>().ToList().ForEach(c => EditorUtility.SetDirty(c));
                 }
 
                 GUILayout.FlexibleSpace();
