@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PrefsGUI.KVS
 {
     [CustomEditor(typeof(PrefsKVSPathCustom))]
-    public class PrefsWrapperPathReativeEditor : Editor
+    public class PrefsKVSPathCustomEditor : Editor
     {
         public override void OnInspectorGUI()
         {
