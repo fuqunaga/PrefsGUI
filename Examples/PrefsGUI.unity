@@ -342,21 +342,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7614bb62828319d4aacb15b5251cde29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefsEnum:
-    key: PrefsEnum
+  prefsBool:
+    key: PrefsBool
     defaultValue: 0
-  prefsString:
-    key: PrefsString
-    defaultValue: 
   prefsInt:
     key: PrefsInt
     defaultValue: 0
   prefsFloat:
     key: PrefsFloat
     defaultValue: 0
-  prefsBool:
-    key: PrefsBool
+  prefsString:
+    key: PrefsString
+    defaultValue: 
+  prefsEnum:
+    key: PrefsEnum
     defaultValue: 0
+  prefsColor:
+    key: PrefsColor
+    defaultValue: {r: 0, g: 0, b: 0, a: 0}
   prefsVector2:
     key: PrefsVector2
     defaultValue: {x: 0, y: 0}
@@ -372,9 +375,6 @@ MonoBehaviour:
   prefsVector3Int:
     key: PrefsVector3Int
     defaultValue: {x: 0, y: 0, z: 0}
-  prefsColor:
-    key: PrefsColor
-    defaultValue: {r: 0, g: 0, b: 0, a: 0}
   prefsRect:
     key: PrefsRect
     defaultValue:
@@ -383,6 +383,16 @@ MonoBehaviour:
       y: 0
       width: 0
       height: 0
+  prefsBounds:
+    key: PrefsBounds
+    defaultValue:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+  prefsBoundsInt:
+    key: PrefsBoundsInt
+    defaultValue:
+      m_Position: {x: 0, y: 0, z: 0}
+      m_Size: {x: 0, y: 0, z: 0}
   prefsIPEndPoint:
     prefs0:
       key: PrefsIPEndPoint_address
@@ -393,6 +403,74 @@ MonoBehaviour:
   prefsList:
     key: PrefsList
     defaultValue: []
+  prefsMinMaxInt:
+    key: PrefsMinMaxInt
+    defaultValue:
+      min: 0
+      max: 0
+  prefsMinMaxFloat:
+    key: PrefsMinMaxFloat
+    defaultValue:
+      min: 0
+      max: 0
+  prefsMinMaxVector2:
+    key: PrefsMinMaxVector2
+    defaultValue:
+      min: {x: 0, y: 0}
+      max: {x: 0, y: 0}
+  prefsMinMaxVector3:
+    key: PrefsMinMaxVector3
+    defaultValue:
+      min: {x: 0, y: 0, z: 0}
+      max: {x: 0, y: 0, z: 0}
+  prefsMinMaxVector4:
+    key: PrefsMinMaxVector4
+    defaultValue:
+      min: {x: 0, y: 0, z: 0, w: 0}
+      max: {x: 0, y: 0, z: 0, w: 0}
+  prefsMinMaxVector2Int:
+    key: PrefsMinMaxVector2Int
+    defaultValue:
+      min: {x: 0, y: 0}
+      max: {x: 0, y: 0}
+  prefsMinMaxVector3Int:
+    key: PrefsMinMaxVector3Int
+    defaultValue:
+      min: {x: 0, y: 0, z: 0}
+      max: {x: 0, y: 0, z: 0}
+  prefsMinMaxRect:
+    key: PrefsMinMaxRect
+    defaultValue:
+      min:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 0
+        height: 0
+      max:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 0
+        height: 0
+  prefsMinMaxBounds:
+    key: PrefsMinMaxBounds
+    defaultValue:
+      min:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0, y: 0, z: 0}
+      max:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0, y: 0, z: 0}
+  prefsMinMaxBoundsInt:
+    key: PrefsMinMaxBoundsInt
+    defaultValue:
+      min:
+        m_Position: {x: 0, y: 0, z: 0}
+        m_Size: {x: 0, y: 0, z: 0}
+      max:
+        m_Position: {x: 0, y: 0, z: 0}
+        m_Size: {x: 0, y: 0, z: 0}
 --- !u!4 &1408913455
 Transform:
   m_ObjectHideFlags: 0

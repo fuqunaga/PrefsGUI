@@ -25,6 +25,7 @@ namespace PrefsGUI
         Vector2 scrollPosition;
         SetCurrentToDefaultWindow setCurrentToDefaultWindow;
 
+
         protected override void OnGUIInternal()
         {
             using (new GUILayout.HorizontalScope())
@@ -40,6 +41,7 @@ namespace PrefsGUI
                 }
             }
 
+            var prefsAll = GameObjectPrefsUtility.goPrefsList.SelectMany(gp => gp.prefsList).ToList();
             var currentToDefaultEnable = !Application.isPlaying && prefsAll.Any(prefs => !prefs.IsDefault);
             using (new RGUI.EnabledScope(currentToDefaultEnable))
             {
@@ -55,8 +57,11 @@ namespace PrefsGUI
 
             using (new GUILayout.HorizontalScope())
             {
+
                 GUILayout.Label("Order");
-                order = (Order)GUILayout.SelectionGrid((int)order, System.Enum.GetNames(typeof(Order)), 5);
+
+                order = (Order)GUILayout.Toolbar((int)order, System.Enum.GetNames(typeof(Order)));
+                EditorGUILayout.Space();
             }
 
             GUILayout.Space(8f);
@@ -73,29 +78,12 @@ namespace PrefsGUI
                 {
                     case Order.GameObject:
                         {
-                            _goParams.Where(dic => dic.Key != null).OrderBy(dic => dic.Key.name).ToList().ForEach(pair =>
-                            {
-                                var go = pair.Key;
-                                var prefsList = pair.Value;
-
-                                LabelWithEditPrefix(sync, go.name, go, prefsList);
-                                using (new RGUI.IndentScope())
-                                {
-                                    prefsList.ForEach(prefs =>
-                                    {
-                                        using (new GUILayout.HorizontalScope())
-                                        {
-                                            SyncToggle(sync, prefs);
-                                            prefs.DoGUI();
-                                        }
-                                    });
-                                }
-                            });
+                            DoGUIGameObject(sync);
                         }
                         break;
 
                     default:
-                        prefsAll.ToList().ForEach(prefs =>
+                        prefsAll.OrderBy(p => p.key).ToList().ForEach(prefs =>
                         {
                             using (new GUILayout.HorizontalScope())
                             {
@@ -125,49 +113,40 @@ namespace PrefsGUI
         }
 
 
-        Dictionary<GameObject, List<PrefsParam>> _goParams = new Dictionary<GameObject, List<PrefsParam>>();
-
-        float _interaval = 1f;
-        float _lastTime;
-
-        void Update()
+        public void DoGUIGameObject(PrefsGUISync sync)
         {
-            var time = (float)EditorApplication.timeSinceStartup;
-            if (time - _lastTime > _interaval)
+            GameObjectPrefsUtility.goPrefsList.ForEach(gp =>
             {
-                UpdateCompParam();
-                _lastTime = time;
-            }
+                LabelWithEditPrefix(sync, gp);
+
+                using (new RGUI.IndentScope())
+                {
+                    gp.prefsList.ToList().ForEach(prefs =>
+                    {
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            SyncToggle(sync, prefs);
+                            prefs.DoGUI();
+                        }
+                    });
+                }
+            });
+
         }
 
-        void UpdateCompParam()
+
+
+        void LabelWithEditPrefix(PrefsGUISync sync, GameObjectPrefsUtility.GoPrefs gp)
         {
-            var gos = FindObjectsOfType<GameObject>();
-            for (var iGo = 0; iGo < gos.Length; ++iGo)
-            {
-                var go = gos[iGo];
-                var comps = go.GetComponents<Component>();
-                var prefsList = new List<PrefsParam>();
-
-                for (var i = 0; i < comps.Length; ++i)
-                {
-                    var comp = comps[i];
-                    prefsList.AddRange(SearchChildPrefsParams(comp));
-                }
-
-                if (prefsList.Any())
-                {
-                    _goParams[go] = prefsList;
-                }
-            }
-        }
-
-        void LabelWithEditPrefix(PrefsGUISync sync, string label, GameObject go, List<PrefsParam> prefsList)
-        {
+            var prefsList = gp.prefsList;
             using (new GUILayout.HorizontalScope())
             {
                 SyncToggleList(sync, prefsList);
-                GUILayout.Label(label);
+
+                using (new RGUI.EnabledScope(false))
+                {
+                    EditorGUILayout.ObjectField(gp.go, typeof(GameObject), true);
+                }
 
                 const char separator = '.';
                 var prefix = prefsList.Select(p => p.key.Split(separator)).Where(sepKeys => sepKeys.Length > 1).FirstOrDefault()?.First();
@@ -177,10 +156,11 @@ namespace PrefsGUI
                 var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
                 if (prefix != prefixNew)
                 {
+                    var go = gp.go;
                     Undo.RecordObject(go, "Change PrefsGUI Prefix");
-                    
+
                     var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
-                    prefsList.ForEach(p =>
+                    prefsList.ToList().ForEach(p =>
                     {
                         p.key = prefixWithSeparator + p.key.Split(separator).Last();
                     });
@@ -210,23 +190,20 @@ namespace PrefsGUI
             }
         }
 
-        void SyncToggleList(PrefsGUISync sync, List<PrefsParam> prefsList)
+        void SyncToggleList(PrefsGUISync sync, IEnumerable<PrefsParam> prefsList)
         {
             if (sync != null)
             {
                 var keys = prefsList.Select(p => p.key).ToList();
                 var syncKeys = keys.Except(sync.ignoreKeys);
-                var syncKeysCount = syncKeys.Count();
-                var isSync = syncKeys.Any();
-                var mixed = syncKeysCount != 0 && syncKeysCount != prefsList.Count;
 
-                if (isSync != GUILayout.Toggle(isSync, "", mixed ? "ToggleMixed" : GUI.skin.toggle))
-                {
-                    isSync = !isSync;
+                var isSync = ToggleMixed(syncKeys.Count(), keys.Count);
+                if ( isSync.HasValue)
+                {                
                     Undo.RecordObject(sync, "Change PrefsGUIs sync flag");
                     EditorUtility.SetDirty(sync);
 
-                    if (!isSync)
+                    if (!isSync.Value)
                     {
                         sync.ignoreKeys.AddRange(syncKeys);
                     }
