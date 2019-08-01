@@ -1,11 +1,13 @@
 ﻿using System;
 using UnityEditor;
 using UnityEngine;
+using RapidGUI;
 
 namespace PrefsGUI
 {
     public abstract class PrefsGUIEditorBase : EditorWindow
     {
+        #region Type Define 
 
         // GUI.skin is not same in Editor and runtime.
         // StyleScope set style like runtime in Editor;
@@ -26,23 +28,33 @@ namespace PrefsGUI
 
             GUIStyle labelOrig;
             GUIStyle buttonOrig;
+            float prefixLabelWidth;
 
             public StyleScope()
             {
                 labelOrig = GUI.skin.label;
                 buttonOrig = GUI.skin.button;
+                prefixLabelWidth = RGUI.PrefixLabelSetting.width;
 
                 GUI.skin.label = label;
                 GUI.skin.button = button;
+
+                RGUI.PrefixLabelSetting.width = 200f;
             }
 
             public void Dispose()
             {
                 GUI.skin.label = labelOrig;
                 GUI.skin.button = buttonOrig;
+
+                RGUI.PrefixLabelSetting.width = prefixLabelWidth;
             }
         }
 
+        #endregion
+
+
+        static protected GUILayoutOption ToggleWidth = GUILayout.Width(8f);
 
         protected void Update()
         {
@@ -69,7 +81,7 @@ namespace PrefsGUI
         protected bool? ToggleMixed(bool? mixedFlag)
         {
             var value = (mixedFlag == null) || mixedFlag.Value;
-            if (value != GUILayout.Toggle(value, "", (mixedFlag==null) ? "ToggleMixed" : GUI.skin.toggle, GUILayout.Width(16f)))
+            if (value != GUILayout.Toggle(value, "", (mixedFlag==null) ? "ToggleMixed" : GUI.skin.toggle, ToggleWidth))
             {
                 return !value;
             }

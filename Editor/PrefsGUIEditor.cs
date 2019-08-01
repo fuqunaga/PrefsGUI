@@ -88,7 +88,7 @@ namespace PrefsGUI
             //needUpdateLayout = GUILayout.Toggle(needUpdateLayout, nameof(needUpdateLayout));
 
             var sync = FindObjectOfType<PrefsGUISync>();
-            if (sync != null) GUILayout.Label("sync");
+            if (sync != null) GUILayout.Label("Sync");
 
             switch (order)
             {
@@ -102,7 +102,7 @@ namespace PrefsGUI
                                 var key = prefs.key;
                                 var isSync = !sync.ignoreKeys.Contains(key);
 
-                                if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
+                                if (isSync != GUILayout.Toggle(isSync, GUIContent.none, ToggleWidth))
                                 {
                                     Undo.RecordObject(sync, "Change PrefsGUI sync flag");
 
@@ -176,7 +176,7 @@ namespace PrefsGUI
                 const char separator = '.';
                 var prefix = prefsList.Select(p => p.key.Split(separator)).Where(sepKeys => sepKeys.Length > 1).FirstOrDefault()?.First();
 
-                GUILayout.Label("KeyPrefix: ");
+                GUILayout.Label("KeyPrefix");
 
                 var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
                 if (prefix != prefixNew)
@@ -204,7 +204,7 @@ namespace PrefsGUI
                 var key = prefs.key;
                 var isSync = !sync.ignoreKeys.Contains(key);
 
-                if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
+                if (isSync != GUILayout.Toggle(isSync, GUIContent.none, ToggleWidth))
                 {
                     Undo.RecordObject(sync, "Change PrefsGUI sync flag");
                     EditorUtility.SetDirty(sync);

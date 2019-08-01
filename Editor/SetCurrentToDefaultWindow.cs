@@ -96,11 +96,7 @@ namespace PrefsGUI
                     using (new GUILayout.HorizontalScope())
                     {
                         var keys = gp.keys.ToList();
-                        /*
-                        bool check = keys.Any(key => checkedList[key]);
 
-                        if (check != GUILayout.Toggle(check, "", GUILayout.Width(16f)))
-                        */
                         var check = ToggleMixed(keys.Where(key => checkedList[key]).Count(), keys.Count);
                         if (check.HasValue)
                         {
@@ -123,7 +119,7 @@ namespace PrefsGUI
 
                             using (new GUILayout.HorizontalScope())
                             {
-                                if (check != GUILayout.Toggle(check, "", GUILayout.Width(16f))) checkedList[key] = !check;
+                                if (check != GUILayout.Toggle(check, GUIContent.none, ToggleWidth)) checkedList[key] = !check;
                                 prefs.DoGUI();
                             }
                         });
