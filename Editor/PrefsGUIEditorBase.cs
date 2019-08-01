@@ -1,10 +1,49 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace PrefsGUI
 {
     public abstract class PrefsGUIEditorBase : EditorWindow
     {
+
+        // GUI.skin is not same in Editor and runtime.
+        // StyleScope set style like runtime in Editor;
+        public class StyleScope : IDisposable
+        {
+            static GUIStyle label;
+            static GUIStyle button;
+            
+            static StyleScope()
+            {
+                label = new GUIStyle(GUI.skin.label);
+                label.wordWrap = true;
+
+                button = new GUIStyle(GUI.skin.button);
+                button.richText = true;
+            }
+
+
+            GUIStyle labelOrig;
+            GUIStyle buttonOrig;
+
+            public StyleScope()
+            {
+                labelOrig = GUI.skin.label;
+                buttonOrig = GUI.skin.button;
+
+                GUI.skin.label = label;
+                GUI.skin.button = button;
+            }
+
+            public void Dispose()
+            {
+                GUI.skin.label = labelOrig;
+                GUI.skin.button = buttonOrig;
+            }
+        }
+
+
         protected void Update()
         {
             GameObjectPrefsUtility.UpdateGoPrefs();
@@ -12,14 +51,10 @@ namespace PrefsGUI
 
         void OnGUI()
         {
-            var buttunStyleOrig = GUI.skin.button;
-            var buttonStyle = new GUIStyle(buttunStyleOrig);
-            buttonStyle.richText = true;
-            GUI.skin.button = buttonStyle;
-
-            OnGUIInternal();
-
-            GUI.skin.button = buttunStyleOrig;
+            using (new StyleScope())
+            {
+                OnGUIInternal();
+            }
         }
 
         protected abstract void OnGUIInternal();
