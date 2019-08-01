@@ -5,7 +5,7 @@ namespace PrefsGUI
 {
     public abstract class PrefsGUIEditorBase : EditorWindow
     {
-        void Update()
+        protected void Update()
         {
             GameObjectPrefsUtility.UpdateGoPrefs();
         }

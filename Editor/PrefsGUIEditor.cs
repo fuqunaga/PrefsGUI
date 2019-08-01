@@ -22,8 +22,28 @@ namespace PrefsGUI
 
         Order order;
 
-        Vector2 scrollPosition;
         SetCurrentToDefaultWindow setCurrentToDefaultWindow;
+
+        FastScrollViewVertical scrollViewAtoZ = new FastScrollViewVertical();
+        FastScrollViewVertical scrollViewGameObject = new FastScrollViewVertical();
+
+
+
+        private void Awake()
+        {
+            GameObjectPrefsUtility.onGoPrefsListChanged += OnGpListChanged;
+        }
+
+        private void OnDestroy()
+        {
+            GameObjectPrefsUtility.onGoPrefsListChanged -= OnGpListChanged;
+        }
+
+        void OnGpListChanged()
+        {
+            scrollViewAtoZ.SetNeedUpdateLayout();
+            scrollViewGameObject.SetNeedUpdateLayout();
+        }
 
 
         protected override void OnGUIInternal()
@@ -65,14 +85,64 @@ namespace PrefsGUI
             }
 
             GUILayout.Space(8f);
+            //needUpdateLayout = GUILayout.Toggle(needUpdateLayout, nameof(needUpdateLayout));
+
+            var sync = FindObjectOfType<PrefsGUISync>();
+            if (sync != null) GUILayout.Label("sync");
+
+
+#if true
+            switch (order)
+            {
+                case Order.AtoZ:
+                    scrollViewAtoZ.DoGUI(prefsAll.OrderBy(p => p.key), (prefs) =>
+                    {
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            if (sync != null)
+                            {
+                                var key = prefs.key;
+                                var isSync = !sync.ignoreKeys.Contains(key);
+
+                                if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
+                                {
+                                    Undo.RecordObject(sync, "Change PrefsGUI sync flag");
+
+                                    if (isSync) sync.ignoreKeys.Add(key);
+                                    else sync.ignoreKeys.Remove(key);
+                                }
+                            }
+
+                            prefs.DoGUI();
+                        }
+                    });
+                    break;
+
+                case Order.GameObject:
+                    scrollViewGameObject.DoGUI(GameObjectPrefsUtility.goPrefsList, (gp) =>
+                    {
+                        LabelWithEditPrefix(sync, gp);
+
+                        using (new RGUI.IndentScope())
+                        {
+                            gp.prefsList.ToList().ForEach(prefs =>
+                            {
+                                using (new GUILayout.HorizontalScope())
+                                {
+                                    SyncToggle(sync, prefs);
+                                    prefs.DoGUI();
+                                }
+                            });
+                        }
+                    });
+                    break;
+            }
+#else
+            var evType = Event.current.type;
 
             using (var sc = new GUILayout.ScrollViewScope(scrollPosition))
             {
                 scrollPosition = sc.scrollPosition;
-
-                var sync = FindObjectOfType<PrefsGUISync>();
-                if (sync != null) GUILayout.Label("sync");
-
 
                 switch (order)
                 {
@@ -83,136 +153,180 @@ namespace PrefsGUI
                         break;
 
                     default:
-                        prefsAll.OrderBy(p => p.key).ToList().ForEach(prefs =>
                         {
-                            using (new GUILayout.HorizontalScope())
+                            var updateLayout = false;
+                            var startIdx = 0;
+                            var endIdx = prefsAll.Count - 1;
+
+                            if (needUpdateLayout)
                             {
-                                if (sync != null)
+                                updateLayout = Event.current.type == EventType.Repaint;
+                                if (updateLayout) yMaxList.Clear();
+                            }
+                            else
+                            {
+                                startIdx = Mathf.Max(0, yMaxList.FindIndex(y => y > scrollPosition.y));
+                                var endPos = scrollPosition.y + scrollViewHeight;
+                                endIdx = Mathf.Min(yMaxList.Count - 1, yMaxList.FindLastIndex(y => y < endPos) + 1);
+                            }
+
+
+                            if (startIdx > 0) GUILayout.Space(yMaxList[startIdx - 1]);
+
+                            prefsAll.OrderBy(p => p.key)
+                                .Skip(startIdx)
+                                .Take(endIdx - startIdx+1)
+                                .ToList().ForEach(prefs =>
+                            {
+                                using (new GUILayout.HorizontalScope())
                                 {
-                                    var key = prefs.key;
-                                    var isSync = !sync.ignoreKeys.Contains(key);
-
-                                    if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
+                                    if (sync != null)
                                     {
-                                        Undo.RecordObject(sync, "Change PrefsGUI sync flag");
+                                        var key = prefs.key;
+                                        var isSync = !sync.ignoreKeys.Contains(key);
 
-                                        if (isSync) sync.ignoreKeys.Add(key);
-                                        else sync.ignoreKeys.Remove(key);
+                                        if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
+                                        {
+                                            Undo.RecordObject(sync, "Change PrefsGUI sync flag");
+
+                                            if (isSync) sync.ignoreKeys.Add(key);
+                                            else sync.ignoreKeys.Remove(key);
+                                        }
                                     }
+
+                                    prefs.DoGUI();
                                 }
 
-                                prefs.DoGUI();
+                                if (updateLayout)
+                                {
+                                    var rect = GUILayoutUtility.GetLastRect();
+                                    yMaxList.Add(rect.yMax);
+                                }
+                            });
+
+                            if (endIdx < prefsAll.Count - 1) GUILayout.Space(yMaxList.Last() - yMaxList[endIdx]);
+
+                            if (updateLayout)
+                            {
+                                needUpdateLayout = false;
                             }
-                        });
+                        }
                         break;
 
                 }
 
                 if ((setCurrentToDefaultWindow != null) && Event.current.type == EventType.Repaint) setCurrentToDefaultWindow.Repaint();
             }
-        }
 
 
-        public void DoGUIGameObject(PrefsGUISync sync)
-        {
-            GameObjectPrefsUtility.goPrefsList.ForEach(gp =>
+            if (evType == EventType.Repaint)
             {
-                LabelWithEditPrefix(sync, gp);
+                scrollViewHeight = GUILayoutUtility.GetLastRect().height;
+            }
+#endif
+            }
 
-                using (new RGUI.IndentScope())
+
+            public void DoGUIGameObject(PrefsGUISync sync)
+            {
+                GameObjectPrefsUtility.goPrefsList.ForEach(gp =>
                 {
-                    gp.prefsList.ToList().ForEach(prefs =>
+                    LabelWithEditPrefix(sync, gp);
+
+                    using (new RGUI.IndentScope())
                     {
-                        using (new GUILayout.HorizontalScope())
+                        gp.prefsList.ToList().ForEach(prefs =>
                         {
-                            SyncToggle(sync, prefs);
-                            prefs.DoGUI();
-                        }
-                    });
-                }
-            });
-
-        }
-
-
-
-        void LabelWithEditPrefix(PrefsGUISync sync, GameObjectPrefsUtility.GoPrefs gp)
-        {
-            var prefsList = gp.prefsList;
-            using (new GUILayout.HorizontalScope())
-            {
-                SyncToggleList(sync, prefsList);
-
-                using (new RGUI.EnabledScope(false))
-                {
-                    EditorGUILayout.ObjectField(gp.go, typeof(GameObject), true);
-                }
-
-                const char separator = '.';
-                var prefix = prefsList.Select(p => p.key.Split(separator)).Where(sepKeys => sepKeys.Length > 1).FirstOrDefault()?.First();
-
-                GUILayout.Label("KeyPrefix:");
-
-                var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
-                if (prefix != prefixNew)
-                {
-                    var go = gp.go;
-                    Undo.RecordObject(go, "Change PrefsGUI Prefix");
-
-                    var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
-                    prefsList.ToList().ForEach(p =>
-                    {
-                        p.key = prefixWithSeparator + p.key.Split(separator).Last();
-                    });
-
-                    go.GetComponents<Component>().ToList().ForEach(c => EditorUtility.SetDirty(c));
-                }
-
-                GUILayout.FlexibleSpace();
-            }
-        }
-
-        void SyncToggle(PrefsGUISync sync, PrefsParam prefs)
-        {
-            if (sync != null)
-            {
-                var key = prefs.key;
-                var isSync = !sync.ignoreKeys.Contains(key);
-
-                if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
-                {
-                    Undo.RecordObject(sync, "Change PrefsGUI sync flag");
-                    EditorUtility.SetDirty(sync);
-
-                    if (isSync) sync.ignoreKeys.Add(key);
-                    else sync.ignoreKeys.Remove(key);
-                }
-            }
-        }
-
-        void SyncToggleList(PrefsGUISync sync, IEnumerable<PrefsParam> prefsList)
-        {
-            if (sync != null)
-            {
-                var keys = prefsList.Select(p => p.key).ToList();
-                var syncKeys = keys.Except(sync.ignoreKeys);
-
-                var isSync = ToggleMixed(syncKeys.Count(), keys.Count);
-                if ( isSync.HasValue)
-                {                
-                    Undo.RecordObject(sync, "Change PrefsGUIs sync flag");
-                    EditorUtility.SetDirty(sync);
-
-                    if (!isSync.Value)
-                    {
-                        sync.ignoreKeys.AddRange(syncKeys);
+                            using (new GUILayout.HorizontalScope())
+                            {
+                                SyncToggle(sync, prefs);
+                                prefs.DoGUI();
+                            }
+                        });
                     }
-                    else
+                });
+
+            }
+
+
+
+            void LabelWithEditPrefix(PrefsGUISync sync, GameObjectPrefsUtility.GoPrefs gp)
+            {
+                var prefsList = gp.prefsList;
+                using (new GUILayout.HorizontalScope())
+                {
+                    SyncToggleList(sync, prefsList);
+
+                    using (new RGUI.EnabledScope(false))
                     {
-                        keys.ForEach(k => sync.ignoreKeys.Remove(k));
+                        EditorGUILayout.ObjectField(gp.go, typeof(GameObject), true);
+                    }
+
+                    const char separator = '.';
+                    var prefix = prefsList.Select(p => p.key.Split(separator)).Where(sepKeys => sepKeys.Length > 1).FirstOrDefault()?.First();
+
+                    GUILayout.Label("KeyPrefix:");
+
+                    var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
+                    if (prefix != prefixNew)
+                    {
+                        var go = gp.go;
+                        Undo.RecordObject(go, "Change PrefsGUI Prefix");
+
+                        var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
+                        prefsList.ToList().ForEach(p =>
+                        {
+                            p.key = prefixWithSeparator + p.key.Split(separator).Last();
+                        });
+
+                        go.GetComponents<Component>().ToList().ForEach(c => EditorUtility.SetDirty(c));
+                    }
+
+                    GUILayout.FlexibleSpace();
+                }
+            }
+
+            void SyncToggle(PrefsGUISync sync, PrefsParam prefs)
+            {
+                if (sync != null)
+                {
+                    var key = prefs.key;
+                    var isSync = !sync.ignoreKeys.Contains(key);
+
+                    if (isSync != GUILayout.Toggle(isSync, "", GUILayout.Width(16f)))
+                    {
+                        Undo.RecordObject(sync, "Change PrefsGUI sync flag");
+                        EditorUtility.SetDirty(sync);
+
+                        if (isSync) sync.ignoreKeys.Add(key);
+                        else sync.ignoreKeys.Remove(key);
+                    }
+                }
+            }
+
+            void SyncToggleList(PrefsGUISync sync, IEnumerable<PrefsParam> prefsList)
+            {
+                if (sync != null)
+                {
+                    var keys = prefsList.Select(p => p.key).ToList();
+                    var syncKeys = keys.Except(sync.ignoreKeys);
+
+                    var isSync = ToggleMixed(syncKeys.Count(), keys.Count);
+                    if (isSync.HasValue)
+                    {
+                        Undo.RecordObject(sync, "Change PrefsGUIs sync flag");
+                        EditorUtility.SetDirty(sync);
+
+                        if (!isSync.Value)
+                        {
+                            sync.ignoreKeys.AddRange(syncKeys);
+                        }
+                        else
+                        {
+                            keys.ForEach(k => sync.ignoreKeys.Remove(k));
+                        }
                     }
                 }
             }
         }
     }
-}

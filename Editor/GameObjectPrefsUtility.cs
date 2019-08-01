@@ -36,8 +36,10 @@ namespace PrefsGUI
 
         public static List<GoPrefs> goPrefsList = new List<GoPrefs>();
 
-        static float interaval = 1f;
+        static readonly float interaval = 1f;
         static float lastTime;
+
+        public static Action onGoPrefsListChanged;
 
 
         public static void UpdateGoPrefs()
@@ -46,6 +48,7 @@ namespace PrefsGUI
             if (time - lastTime > interaval)
             {
                 DoUpdateGoPrefs();
+                onGoPrefsListChanged?.Invoke();
 
                 lastTime = time;
             }
@@ -136,9 +139,27 @@ namespace PrefsGUI
             return ret;
         }
 
+
+        static HashSet<object> circularReferenceGuard = new HashSet<object>();
         public static HashSet<PrefsParam> SearchChildPrefsParams(object obj)
         {
             var ret = new HashSet<PrefsParam>();
+
+            if (obj == null) return ret;
+            if (circularReferenceGuard.Contains(obj)) return ret;
+            circularReferenceGuard.Add(obj);
+
+
+            // is IEnumerable
+            var enumerable = obj as IEnumerable;
+            if (enumerable != null)
+            {
+                foreach (var elem in enumerable)
+                {
+                    AddChildPrefsParam(elem);
+                }
+            }
+
 
             var type = obj.GetType();
             if (HasContainPrefs(type))
@@ -162,36 +183,27 @@ namespace PrefsGUI
                             }
                             else
                             {
-                                var enumerable = fieldObj as IEnumerable;
-                                if (enumerable != null)
-                                {
-                                    foreach (var elem in enumerable)
-                                    {
-                                        if (elem != null)
-                                        {
-                                            var elemPrefs = elem as PrefsParam;
-                                            if (elemPrefs != null)
-                                            {
-                                                ret.Add(elemPrefs);
-                                            }
-                                            else
-                                            {
-                                                ret.UnionWith(SearchChildPrefsParams(elem));
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    ret.UnionWith(SearchChildPrefsParams(fieldObj));
-                                }
+                                AddChildPrefsParam(fieldObj);
                             }
                         }
                     }
                 }
             }
 
+
+            circularReferenceGuard.Remove(obj);
+
             return ret;
+
+
+            void AddChildPrefsParam(object child)
+            {
+                // ignore child MonoBehavior
+                if ((child != null) && !(child is MonoBehaviour))
+                {
+                    ret.UnionWith(SearchChildPrefsParams(child));
+                }
+            }
         }
 
         #endregion
