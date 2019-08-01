@@ -24,8 +24,8 @@ namespace PrefsGUI
 
         SetCurrentToDefaultWindow setCurrentToDefaultWindow;
 
-        FastScrollViewVertical scrollViewAtoZ = new FastScrollViewVertical();
-        FastScrollViewVertical scrollViewGameObject = new FastScrollViewVertical();
+        FastScrollView scrollViewAtoZ = new FastScrollView();
+        FastScrollView scrollViewGameObject = new FastScrollView();
 
 
 
@@ -85,7 +85,6 @@ namespace PrefsGUI
             }
 
             GUILayout.Space(8f);
-            //needUpdateLayout = GUILayout.Toggle(needUpdateLayout, nameof(needUpdateLayout));
 
             var sync = FindObjectOfType<PrefsGUISync>();
             if (sync != null) GUILayout.Label("Sync");
@@ -117,22 +116,22 @@ namespace PrefsGUI
                     break;
 
                 case Order.GameObject:
-                    scrollViewGameObject.DoGUI(GameObjectPrefsUtility.goPrefsList, (gp) =>
-                    {
-                        LabelWithEditPrefix(sync, gp);
+                   scrollViewGameObject.DoGUI(GameObjectPrefsUtility.goPrefsList, (gp) =>
+                   {
+                       LabelWithEditPrefix(sync, gp);
 
-                        using (new RGUI.IndentScope())
-                        {
-                            gp.prefsList.ToList().ForEach(prefs =>
-                            {
-                                using (new GUILayout.HorizontalScope())
-                                {
-                                    SyncToggle(sync, prefs);
-                                    prefs.DoGUI();
-                                }
-                            });
-                        }
-                    });
+                       using (new RGUI.IndentScope())
+                       {
+                           gp.prefsList.ToList().ForEach(prefs =>
+                           {
+                               using (new GUILayout.HorizontalScope())
+                               {
+                                   SyncToggle(sync, prefs);
+                                   prefs.DoGUI();
+                               }
+                           });
+                       }
+                   });
                     break;
             }
         }
