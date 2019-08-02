@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -58,6 +59,7 @@ namespace PrefsGUI
         static void DoUpdateGoPrefs()
         {
             var all = Resources.FindObjectsOfTypeAll<GameObject>()
+                .Where(go => PrefabStageUtility.GetPrefabStage(go) == null) // ignore GameObject in  PrefabStage
                 .Select(go => new GoPrefs()
                 {
                     go = go,
