@@ -29,6 +29,19 @@ namespace PrefsGUI
             public List<PrefsParam> prefsList;
         }
 
+        class GoPrefsComparer : IEqualityComparer<GoPrefs>
+        {
+            public bool Equals(GoPrefs x, GoPrefs y)
+            {
+                return x.go.Equals(y.go);
+            }
+
+            public int GetHashCode(GoPrefs obj)
+            {
+                return obj.go.GetHashCode();
+            }
+        }
+
         #endregion
 
 
@@ -37,7 +50,7 @@ namespace PrefsGUI
 
         public static List<GoPrefs> goPrefsList = new List<GoPrefs>();
 
-        static readonly float interaval = 1f;
+        static readonly float interaval = 3f;
         static float lastTime;
 
         public static Action onGoPrefsListChanged;
@@ -48,15 +61,17 @@ namespace PrefsGUI
             var time = (float)EditorApplication.timeSinceStartup;
             if (time - lastTime > interaval)
             {
-                DoUpdateGoPrefs();
-                onGoPrefsListChanged?.Invoke();
+                if (DoUpdateGoPrefs())
+                {
+                    onGoPrefsListChanged?.Invoke();
+                }
 
-                lastTime = time;
+                lastTime = (float)EditorApplication.timeSinceStartup; ;
             }
         }
 
 
-        static void DoUpdateGoPrefs()
+        static bool DoUpdateGoPrefs()
         {
             var all = Resources.FindObjectsOfTypeAll<GameObject>()
                 .Where(go => PrefabStageUtility.GetPrefabStage(go) == null) // ignore GameObject in  PrefabStage
@@ -83,9 +98,18 @@ namespace PrefsGUI
                 .Where(gp => !prefabSources.Contains(gp.go)) // ignore prefabs that the child is in the hierarchy
                 ;
 
-            goPrefsList = inHierarchy.Concat(inProject)
+            var newList = inHierarchy.Concat(inProject)
                 .OrderBy(gp => gp.go.name)
                 .ToList();
+
+            var change = !goPrefsList.SequenceEqual(newList, new GoPrefsComparer());
+
+            if (change)
+            {
+                goPrefsList = newList;
+            }
+
+            return change;
         }
 
         #endregion
