@@ -54,9 +54,6 @@ namespace PrefsGUI
         public PrefsMinMaxVector4 prefsMinMaxVector4 = new PrefsMinMaxVector4("PrefsMinMaxVector4");
         public PrefsMinMaxVector2Int prefsMinMaxVector2Int = new PrefsMinMaxVector2Int("PrefsMinMaxVector2Int");
         public PrefsMinMaxVector3Int prefsMinMaxVector3Int = new PrefsMinMaxVector3Int("PrefsMinMaxVector3Int");
-        public PrefsMinMaxRect prefsMinMaxRect = new PrefsMinMaxRect("PrefsMinMaxRect");
-        public PrefsMinMaxBounds prefsMinMaxBounds = new PrefsMinMaxBounds("PrefsMinMaxBounds");
-        public PrefsMinMaxBoundsInt prefsMinMaxBoundsInt = new PrefsMinMaxBoundsInt("PrefsMinMaxBoundsInt");
 
         protected override void DoGUI()
         {
@@ -123,9 +120,6 @@ namespace PrefsGUI
                     prefsMinMaxVector4.DoGUISlider();
                     prefsMinMaxVector2Int.DoGUISlider();
                     prefsMinMaxVector3Int.DoGUISlider();
-                    prefsMinMaxRect.DoGUISlider();
-                    prefsMinMaxBounds.DoGUISlider();
-                    prefsMinMaxBoundsInt.DoGUISlider();
                 }
             }
 

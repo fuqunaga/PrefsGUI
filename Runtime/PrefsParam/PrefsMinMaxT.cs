@@ -3,15 +3,8 @@
 namespace PrefsGUI
 {
     public abstract class PrefsMinMax<T, MinMaxT> : PrefsAny<MinMaxT>, IPrefsSlider<T>   
-        where MinMaxT : PrefsMinMax<T, MinMaxT>.MinMaxBase, new()
+        where MinMaxT : MinMax<T>, new()
     {
-        // can't use directly because unity don't serialize generic type
-        public abstract class MinMaxBase
-        {
-            public T min;
-            public T max;
-        }
-
         public T min => Get().min;
         public T max => Get().max;
 

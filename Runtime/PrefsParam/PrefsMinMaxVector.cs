@@ -4,8 +4,8 @@ using System;
 namespace PrefsGUI
 {
     public abstract class PrefsMinMaxVector<T, MinMaxT> : PrefsMinMax<T, MinMaxT>
-        where T : struct
-        where MinMaxT : PrefsMinMax<T, MinMaxT>.MinMaxBase, new()
+        //where T : struct
+        where MinMaxT : MinMax<T>, new()
     {
         public PrefsMinMaxVector(string key, T defaultValueMax = default) : base(key, defaultValueMax) { }
 
