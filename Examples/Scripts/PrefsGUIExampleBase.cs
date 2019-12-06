@@ -1,7 +1,7 @@
 ﻿using RapidGUI;
 using UnityEngine;
 
-namespace PrefsGUI
+namespace PrefsGUI.Example
 {
     public abstract class PrefsGUIExampleBase : MonoBehaviour
     {

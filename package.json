@@ -2,8 +2,8 @@
     "name": "ga.fuquna.prefsgui",
     "displayName": "PrefsGUI",
     "version": "2.0.0",
-    "unity": "2019.1",
-    "description": "Preference Library: Accessor, GUI and store to JSON",
+    "unity": "2019.2",
+    "description": "Accessors and GUIs for persistent preference values using JSON file",
     "keywords": ["Preference", "GUI"],
     "category": "Tool",
     "dependencies": { 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using RapidGUI;
 
-namespace PrefsGUI
+namespace PrefsGUI.Editor
 {
     public interface IPrefsGUIEditorExtension
     {

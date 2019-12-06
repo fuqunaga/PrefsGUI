@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static PrefsGUI.GameObjectPrefsUtility;
+using static PrefsGUI.Editor.GameObjectPrefsUtility;
 
-namespace PrefsGUI
+namespace PrefsGUI.Editor
 {
     public class SetCurrentToDefaultWindow : PrefsGUIEditorBase
     {

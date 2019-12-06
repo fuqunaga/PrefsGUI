@@ -1,6 +1,5 @@
-﻿namespace PrefsGUI
+﻿namespace PrefsGUI.Example
 {
-
     public class MaterialPropertyDebugMenuExample : PrefsGUIExampleBase
     {
         MaterialPropertyDebugMenu debugMenu;

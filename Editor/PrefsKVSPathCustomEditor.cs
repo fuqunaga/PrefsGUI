@@ -1,10 +1,10 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace PrefsGUI.KVS
+namespace PrefsGUI.KVS.Editor
 {
     [CustomEditor(typeof(PrefsKVSPathCustom))]
-    public class PrefsKVSPathCustomEditor : Editor
+    public class PrefsKVSPathCustomEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {

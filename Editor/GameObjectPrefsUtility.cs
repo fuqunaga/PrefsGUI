@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
 
-namespace PrefsGUI
+namespace PrefsGUI.Editor
 {
 
     public static class GameObjectPrefsUtility

@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using RapidGUI;
 
-namespace PrefsGUI
+namespace PrefsGUI.Editor
 {
     public abstract class PrefsGUIEditorBase : EditorWindow
     {

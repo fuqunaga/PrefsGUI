@@ -2,7 +2,7 @@
 using System.Net;
 using UnityEngine;
 
-namespace PrefsGUI
+namespace PrefsGUI.Example
 {
     public class PrefsGUIExample : PrefsGUIExampleBase
     {

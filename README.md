@@ -1,8 +1,8 @@
 # PrefsGUI
 
-Accessor and GUI set for Unity PlayerPrefs / JSON file
+Accessors and GUIs for persistent preference values using JSON file
 
-![](Docs/PrefsGUI.gif)
+![](Documentation~/PrefsGUI.gif)
 
 ```csharp
 public class PrefsGUISample : PrefsGUISampleBase
@@ -75,7 +75,7 @@ Add following line to the `dependencies` section in the `Packages/manifest.json`
 
 # EditorWindow
 
-![](Docs/PrefsGUIEditor.gif)
+![](Documentation~/PrefsGUIEditor.gif)
 - List up Prefs and can modify 
 - You can also feed back the current value as default value
 - You can edit the key prefix for each GameObject by displaying it in order of GameObject
@@ -83,7 +83,7 @@ Add following line to the `dependencies` section in the `Packages/manifest.json`
 
 # SyncOverUNET
 
-![](Docs/SyncOverUNET.gif)
+![](Documentation~/SyncOverUNET.gif)
 - auto sync All Prefs
 - You can ignore it by specifying it with EditorWindow
 
@@ -112,7 +112,7 @@ also can use the Special folders and enviroment variables.
 
 Auto create material GUI menu
 
-![](Docs/MaterialPropertyDebugMenu.gif)
+![](Documentation~/MaterialPropertyDebugMenu.gif)
 
 
 # References
