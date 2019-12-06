@@ -54,7 +54,7 @@ namespace PrefsGUI
         #endregion
 
 
-        static protected GUILayoutOption ToggleWidth = GUILayout.Width(8f);
+        public static readonly GUILayoutOption ToggleWidth = GUILayout.Width(8f);
 
         protected void Update()
         {
@@ -72,13 +72,13 @@ namespace PrefsGUI
         protected abstract void OnGUIInternal();
 
 
-        protected bool? ToggleMixed(int count, int maxCount)
+        public static  bool? ToggleMixed(int count, int maxCount)
         {
             var mixedFlag = (count == 0) ? false : ((count == maxCount) ? (bool?)true : null);
             return ToggleMixed(mixedFlag);
         }
 
-        protected bool? ToggleMixed(bool? mixedFlag)
+        public static bool? ToggleMixed(bool? mixedFlag)
         {
             var value = (mixedFlag == null) || mixedFlag.Value;
             if (value != GUILayout.Toggle(value, "", (mixedFlag==null) ? "ToggleMixed" : GUI.skin.toggle, ToggleWidth))

@@ -6,13 +6,28 @@ using RapidGUI;
 
 namespace PrefsGUI
 {
+    public interface IPrefsGUIEditorExtension
+    {
+        void GUIHeadLine();
+        void GUIPrefsLeft(PrefsParam param);
+        void GUIGroupLabelLeft(List<PrefsParam> prefsList);
+    }
+
     public class PrefsGUIEditor : PrefsGUIEditorBase
     {
+        #region static
+
+        private static IPrefsGUIEditorExtension extension;
+        public static void RegistExtension(IPrefsGUIEditorExtension ext) => extension = ext;
+
         [MenuItem("Window/PrefsGUI")]
         public static void ShowWindow()
         {
             GetWindow<PrefsGUIEditor>("PrefsGUI");
         }
+
+        #endregion
+
 
         public enum Order
         {
@@ -28,7 +43,6 @@ namespace PrefsGUI
         FastScrollView scrollViewGameObject = new FastScrollView();
 
 
-
         private void Awake()
         {
             GameObjectPrefsUtility.onGoPrefsListChanged += OnGpListChanged;
@@ -36,7 +50,8 @@ namespace PrefsGUI
 
         private void OnDestroy()
         {
-            GameObjectPrefsUtility.onGoPrefsListChanged -= OnGpListChanged;
+            if (GameObjectPrefsUtility.onGoPrefsListChanged != null)
+                GameObjectPrefsUtility.onGoPrefsListChanged -= OnGpListChanged;
         }
 
         void OnGpListChanged()
@@ -54,7 +69,8 @@ namespace PrefsGUI
                 if (GUILayout.Button("Load")) Prefs.Load();
                 if (GUILayout.Button("DeleteAll"))
                 {
-                    if (EditorUtility.DisplayDialog("DeleteAll", "Are you sure to delete all current prefs parameters?", "DeleteAll", "Don't Delete"))
+                    if (EditorUtility.DisplayDialog("DeleteAll", "Are you sure to delete all current prefs parameters?",
+                        "DeleteAll", "Don't Delete"))
                     {
                         Prefs.DeleteAll();
                     }
@@ -67,7 +83,8 @@ namespace PrefsGUI
             {
                 if (GUILayout.Button("Open Current To Default Window"))
                 {
-                    if (setCurrentToDefaultWindow == null) setCurrentToDefaultWindow = CreateInstance<SetCurrentToDefaultWindow>();
+                    if (setCurrentToDefaultWindow == null)
+                        setCurrentToDefaultWindow = CreateInstance<SetCurrentToDefaultWindow>();
                     setCurrentToDefaultWindow.parentWindow = this;
                     setCurrentToDefaultWindow.ShowUtility();
                 }
@@ -77,17 +94,15 @@ namespace PrefsGUI
 
             using (new GUILayout.HorizontalScope())
             {
-
                 GUILayout.Label("Order");
 
-                order = (Order)GUILayout.Toolbar((int)order, System.Enum.GetNames(typeof(Order)));
+                order = (Order) GUILayout.Toolbar((int) order, System.Enum.GetNames(typeof(Order)));
                 EditorGUILayout.Space();
             }
 
             GUILayout.Space(8f);
 
-            var sync = FindObjectOfType<PrefsGUISync>();
-            if (sync != null) GUILayout.Label("Sync");
+            extension?.GUIHeadLine();
 
             switch (order)
             {
@@ -96,47 +111,41 @@ namespace PrefsGUI
                     {
                         using (new GUILayout.HorizontalScope())
                         {
-                            if (sync != null)
-                            {
-                                var key = prefs.key;
-                                var isSync = !sync.ignoreKeys.Contains(key);
-
-                                if (isSync != GUILayout.Toggle(isSync, GUIContent.none, ToggleWidth))
-                                {
-                                    Undo.RecordObject(sync, "Change PrefsGUI sync flag");
-
-                                    if (isSync) sync.ignoreKeys.Add(key);
-                                    else sync.ignoreKeys.Remove(key);
-                                }
-                            }
-
+                            extension?.GUIPrefsLeft(prefs);
                             prefs.DoGUI();
                         }
                     });
                     break;
 
                 case Order.GameObject:
-                   scrollViewGameObject.DoGUI(GameObjectPrefsUtility.goPrefsList, (gp) =>
-                   {
-                       LabelWithEditPrefix(sync, gp);
+                    scrollViewGameObject.DoGUI(GameObjectPrefsUtility.goPrefsList, (gp) =>
+                    {
+                        LabelWithEditPrefix(gp);
 
-                       using (new RGUI.IndentScope())
-                       {
-                           gp.prefsList.ToList().ForEach(prefs =>
-                           {
-                               using (new GUILayout.HorizontalScope())
-                               {
-                                   SyncToggle(sync, prefs);
-                                   prefs.DoGUI();
-                               }
-                           });
-                       }
-                   });
+                        using (new RGUI.IndentScope())
+                        {
+                            gp.prefsList.ToList().ForEach(prefs =>
+                            {
+                                using (new GUILayout.HorizontalScope())
+                                {
+
+#if true
+                                    extension?.GUIPrefsLeft(prefs);
+                                    prefs.DoGUI();
+#else
+                                    SyncToggle(sync, prefs);
+                                    prefs.DoGUI();
+
+#endif
+                                }
+                            });
+                        }
+                    });
                     break;
             }
         }
 
-
+#if false
         public void DoGUIGameObject(PrefsGUISync sync)
         {
             GameObjectPrefsUtility.goPrefsList.ForEach(gp =>
@@ -157,15 +166,17 @@ namespace PrefsGUI
             });
 
         }
+#endif
 
 
-
-        void LabelWithEditPrefix(PrefsGUISync sync, GameObjectPrefsUtility.GoPrefs gp)
+        //void LabelWithEditPrefix(PrefsGUISync sync, GameObjectPrefsUtility.GoPrefs gp)
+        void LabelWithEditPrefix(GameObjectPrefsUtility.GoPrefs gp)
         {
-            var prefsList = gp.prefsList;
+            var prefsList = gp.prefsList.ToList();
             using (new GUILayout.HorizontalScope())
             {
-                SyncToggleList(sync, prefsList);
+                extension?.GUIGroupLabelLeft(prefsList);
+                //SyncToggleList(sync, prefsList);
 
                 using (new RGUI.EnabledScope(false))
                 {
@@ -173,7 +184,8 @@ namespace PrefsGUI
                 }
 
                 const char separator = '.';
-                var prefix = prefsList.Select(p => p.key.Split(separator)).Where(sepKeys => sepKeys.Length > 1).FirstOrDefault()?.First();
+                var prefix = prefsList.Select(p => p.key.Split(separator))
+                    .FirstOrDefault(sepKeys => sepKeys.Length > 1)?.First();
 
                 GUILayout.Label("KeyPrefix");
 
@@ -184,10 +196,7 @@ namespace PrefsGUI
                     Undo.RecordObject(go, "Change PrefsGUI Prefix");
 
                     var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
-                    prefsList.ToList().ForEach(p =>
-                    {
-                        p.key = prefixWithSeparator + p.key.Split(separator).Last();
-                    });
+                    prefsList.ToList().ForEach(p => { p.key = prefixWithSeparator + p.key.Split(separator).Last(); });
 
                     go.GetComponents<Component>().ToList().ForEach(c => EditorUtility.SetDirty(c));
                 }
@@ -196,6 +205,7 @@ namespace PrefsGUI
             }
         }
 
+#if false
         void SyncToggle(PrefsGUISync sync, PrefsParam prefs)
         {
             if (sync != null)
@@ -238,5 +248,6 @@ namespace PrefsGUI
                 }
             }
         }
+#endif
     }
 }
