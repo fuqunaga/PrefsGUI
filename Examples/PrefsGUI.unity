@@ -94,8 +94,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 0
 --- !u!196 &4
@@ -211,6 +211,84 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &72857432
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 72857433}
+  - component: {fileID: 72857434}
+  m_Layer: 0
+  m_Name: Part3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &72857433
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72857432}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1408913455}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &72857434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72857432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99088179b88fc1d46adc2fc60ac2fbee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefsMinMaxInt:
+    key: PrefsMinMaxInt
+    defaultValue:
+      min: 0
+      max: 0
+  prefsMinMaxFloat:
+    key: PrefsMinMaxFloat
+    defaultValue:
+      min: 0
+      max: 0
+  prefsMinMaxVector2:
+    key: PrefsMinMaxVector2
+    defaultValue:
+      min: {x: 0, y: 0}
+      max: {x: 0, y: 0}
+  prefsMinMaxVector3:
+    key: PrefsMinMaxVector3
+    defaultValue:
+      min: {x: 0, y: 0, z: 0}
+      max: {x: 0, y: 0, z: 0}
+  prefsMinMaxVector4:
+    key: PrefsMinMaxVector4
+    defaultValue:
+      min: {x: 0, y: 0, z: 0, w: 0}
+      max: {x: 0, y: 0, z: 0, w: 0}
+  prefsMinMaxVector2Int:
+    key: PrefsMinMaxVector2Int
+    defaultValue:
+      min: {x: 0, y: 0}
+      max: {x: 0, y: 0}
+  prefsMinMaxVector3Int:
+    key: PrefsMinMaxVector3Int
+    defaultValue:
+      min: {x: 0, y: 0, z: 0}
+      max: {x: 0, y: 0, z: 0}
 --- !u!1 &352369114
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,7 +390,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1408913453
+--- !u!1 &683641768
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -320,26 +398,110 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1408913455}
-  - component: {fileID: 1408913454}
-  - component: {fileID: 1408913456}
+  - component: {fileID: 683641769}
+  - component: {fileID: 683641770}
   m_Layer: 0
-  m_Name: PrefsGUIExample
+  m_Name: Part2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1408913454
+--- !u!4 &683641769
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683641768}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1408913455}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &683641770
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1408913453}
+  m_GameObject: {fileID: 683641768}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7614bb62828319d4aacb15b5251cde29, type: 3}
+  m_Script: {fileID: 11500000, guid: 84e9b87159a01f64da8cb763532f1382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefsRect:
+    key: PrefsRect
+    defaultValue:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  prefsBounds:
+    key: PrefsBounds
+    defaultValue:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+  prefsBoundsInt:
+    key: PrefsBoundsInt
+    defaultValue:
+      m_Position: {x: 0, y: 0, z: 0}
+      m_Size: {x: 0, y: 0, z: 0}
+  prefsIPEndPoint:
+    prefs0:
+      key: PrefsIPEndPoint_address
+      defaultValue: localhost
+    prefs1:
+      key: PrefsIPEndPoint_port
+      defaultValue: 10000
+  prefsList:
+    key: PrefsList
+    defaultValue: []
+--- !u!1 &898092348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 898092349}
+  - component: {fileID: 898092350}
+  m_Layer: 0
+  m_Name: Part1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &898092349
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898092348}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1408913455}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &898092350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898092348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61933781acb3fb14faf7443efab03b2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefsBool:
@@ -375,102 +537,36 @@ MonoBehaviour:
   prefsVector3Int:
     key: PrefsVector3Int
     defaultValue: {x: 0, y: 0, z: 0}
-  prefsRect:
-    key: PrefsRect
-    defaultValue:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
-  prefsBounds:
-    key: PrefsBounds
-    defaultValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0, y: 0, z: 0}
-  prefsBoundsInt:
-    key: PrefsBoundsInt
-    defaultValue:
-      m_Position: {x: 0, y: 0, z: 0}
-      m_Size: {x: 0, y: 0, z: 0}
-  prefsIPEndPoint:
-    prefs0:
-      key: PrefsIPEndPoint_address
-      defaultValue: localhost
-    prefs1:
-      key: PrefsIPEndPoint_port
-      defaultValue: 10000
-  prefsList:
-    key: PrefsList
-    defaultValue: []
-  prefsMinMaxInt:
-    key: PrefsMinMaxInt
-    defaultValue:
-      min: 0
-      max: 0
-  prefsMinMaxFloat:
-    key: PrefsMinMaxFloat
-    defaultValue:
-      min: 0
-      max: 0
-  prefsMinMaxVector2:
-    key: PrefsMinMaxVector2
-    defaultValue:
-      min: {x: 0, y: 0}
-      max: {x: 0, y: 0}
-  prefsMinMaxVector3:
-    key: PrefsMinMaxVector3
-    defaultValue:
-      min: {x: 0, y: 0, z: 0}
-      max: {x: 0, y: 0, z: 0}
-  prefsMinMaxVector4:
-    key: PrefsMinMaxVector4
-    defaultValue:
-      min: {x: 0, y: 0, z: 0, w: 0}
-      max: {x: 0, y: 0, z: 0, w: 0}
-  prefsMinMaxVector2Int:
-    key: PrefsMinMaxVector2Int
-    defaultValue:
-      min: {x: 0, y: 0}
-      max: {x: 0, y: 0}
-  prefsMinMaxVector3Int:
-    key: PrefsMinMaxVector3Int
-    defaultValue:
-      min: {x: 0, y: 0, z: 0}
-      max: {x: 0, y: 0, z: 0}
-  prefsMinMaxRect:
-    key: PrefsMinMaxRect
-    defaultValue:
-      min:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
-      max:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
-  prefsMinMaxBounds:
-    key: PrefsMinMaxBounds
-    defaultValue:
-      min:
-        m_Center: {x: 0, y: 0, z: 0}
-        m_Extent: {x: 0, y: 0, z: 0}
-      max:
-        m_Center: {x: 0, y: 0, z: 0}
-        m_Extent: {x: 0, y: 0, z: 0}
-  prefsMinMaxBoundsInt:
-    key: PrefsMinMaxBoundsInt
-    defaultValue:
-      min:
-        m_Position: {x: 0, y: 0, z: 0}
-        m_Size: {x: 0, y: 0, z: 0}
-      max:
-        m_Position: {x: 0, y: 0, z: 0}
-        m_Size: {x: 0, y: 0, z: 0}
+--- !u!1 &1408913453
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1408913455}
+  - component: {fileID: 1408913454}
+  - component: {fileID: 1408913456}
+  m_Layer: 0
+  m_Name: PrefsGUIExample
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1408913454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408913453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7614bb62828319d4aacb15b5251cde29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1408913455
 Transform:
   m_ObjectHideFlags: 0
@@ -481,7 +577,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 898092349}
+  - {fileID: 683641769}
+  - {fileID: 72857433}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

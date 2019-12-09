@@ -5,52 +5,45 @@ Accessors and GUIs for persistent preference values using JSON file
 ![](Documentation~/PrefsGUI.gif)
 
 ```csharp
-public class PrefsGUISample : PrefsGUISampleBase
+// define PrefsParams with key.
+public PrefsBool prefsBool = new PrefsBool("PrefsBool");
+public PrefsInt prefsInt = new PrefsInt("PrefsInt");
+public PrefsFloat prefsFloat = new PrefsFloat("PrefsFloat");
+public PrefsString prefsString = new PrefsString("PrefsString");
+public PrefsEnum prefsEnum = new PrefsEnum("PrefsEnum");
+public PrefsColor prefsColor = new PrefsColor("PrefsColor");
+public PrefsVector2 prefsVector2 = new PrefsVector2("PrefsVector2");
+public PrefsVector3 prefsVector3 = new PrefsVector3("PrefsVector3");
+public PrefsVector4 prefsVector4 = new PrefsVector4("PrefsVector4");
+public PrefsClass prefsClass = new PrefsClass("PrefsClass");
+public PrefsList prefsList = new PrefsList("PrefsList");
+
+public void DoGUI()
 {
-    [System.Serializable]
-    public class PrefsEnum : PrefsParam<EnumSample>
+    prefsBool.DoGUI();
+
+    // Return true if value was changed
+    var changed = prefsInt.DoGUI();
+    if (changed)
     {
-        public PrefsEnum(string key, EnumSample defaultValue = default(EnumSample)) : base(key, defaultValue) { }
+        // Implicitly convert
+        int intValue = prefsInt;
+        Debug.Log("Changed. " + intValue);
     }
 
-    // define PrefsParams with key.
-    public PrefsEnum _prefsEnum = new PrefsEnum("PrefsEnum");
-    public PrefsString _prefsString = new PrefsString("PrefsString");
-    public PrefsInt _prefsInt = new PrefsInt("PrefsInt");
-    public PrefsFloat _prefsFloat = new PrefsFloat("PrefsFloat");
-    public PrefsBool _prefsBool = new PrefsBool("PrefsBool");
-    public PrefsVector2 _prefsVector2 = new PrefsVector2("PrefsVector2");
-    public PrefsVector3 _prefsVector3 = new PrefsVector3("PrefsVector3");
-    public PrefsVector4 _prefsVector4 = new PrefsVector4("PrefsVector4");
-    public PrefsColor _prefsColor = new PrefsColor("PrefsColor");
-
-    protected override void OnGUIInternal()
-    {
-        _prefsEnum.OnGUI();
-        _prefsString.OnGUI();
-        _prefsInt.OnGUI();
-        _prefsFloat.OnGUI();
-        _prefsFloat.OnGUISlider();
-        _prefsBool.OnGUI();
-        _prefsVector2.OnGUI();
-        _prefsVector2.OnGUISlider();
-        _prefsVector3.OnGUI();
-        _prefsVector3.OnGUISlider();
-        _prefsVector4.OnGUI();
-        _prefsVector4.OnGUISlider();
-        _prefsColor.OnGUI();
-
-        // return true if value was changed
-        if ( _prefsColor.OnGUISlider())
-        {
-            // use as native type
-            Color color = _prefsColor;
-            Debug.Log("Changed. " + color);
-        }
-
-        if (GUILayout.Button("Save")) Prefs.Save();
-        if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
-    }
+    prefsFloat.DoGUI();
+    prefsFloat.DoGUISlider();
+    prefsString.DoGUI();
+    prefsEnum.DoGUI();
+    prefsColor.DoGUI();
+    prefsVector2.DoGUI();
+    prefsVector2.DoGUISlider();
+    prefsVector3.DoGUI();
+    prefsVector3.DoGUISlider();
+    prefsVector4.DoGUI();
+    prefsVector4.DoGUISlider();
+    prefsClass.DoGUI();
+    prefsList.DoGUI();
 }
 ```
 
@@ -58,7 +51,6 @@ public class PrefsGUISample : PrefsGUISampleBase
 
 ## Install dependencies
 
-- MultiPlayer HLAPI from PackageManager
 - [RapidGUI](https://github.com/fuqunaga/RapidGUI)
 
 ## Intall PrefsGUI
@@ -76,29 +68,16 @@ Add following line to the `dependencies` section in the `Packages/manifest.json`
 # EditorWindow
 
 ![](Documentation~/PrefsGUIEditor.gif)
-- List up Prefs and can modify 
+- Display all loaded prefs that can be modiefied
 - You can also feed back the current value as default value
 - You can edit the key prefix for each GameObject by displaying it in order of GameObject
-
-
-# SyncOverUNET
-
-![](Documentation~/SyncOverUNET.gif)
-- auto sync All Prefs
-- You can ignore it by specifying it with EditorWindow
-
-
-# Switch PlayerPrefs / JSON
-
-Switch using at PrefsWrapper.cs
-https://github.com/fuqunaga/PrefsGUI/blob/master/Assets/Packages/PrefsGUI/Scripts/PrefsWrapper.cs#L5-L6
 
 ## JSON file path
 ```
 Application.persistentDataPath + "/Prefs.json"
 ```
 
-You can customize by placing PrefsWrapperPathCustom in the scene and set _path field.  
+You can customize by placing PrefsWrapperPathCustom in the scene and set `_path` field.  
 also can use the Special folders and enviroment variables.
 ```
 - %dataPath% -> Application.dataPath
@@ -116,5 +95,6 @@ Auto create material GUI menu
 
 
 # References
-MiniJSON  
-https://gist.github.com/darktable/1411710
+
+- **RapidGUI**  
+https://github.com/fuqunaga/RapidGUI

@@ -33,8 +33,7 @@ namespace PrefsGUI.KVS
                 {
                     matches.ToList().ForEach(m => p = p.Replace(m.Value, Environment.GetEnvironmentVariable(m.Value.Trim('%'))));
                 }
-
-
+                
                 return p;
             }
         }

@@ -5,14 +5,6 @@ namespace PrefsGUI.Example
 {
     public abstract class PrefsGUIExampleBase : MonoBehaviour
     {
-        public enum EnumSample
-        {
-            One,
-            Two,
-            Three
-        }
-
-
         Rect windowRect = new Rect()
         {
             width = 500f
@@ -25,7 +17,7 @@ namespace PrefsGUI.Example
                 DoGUI();
                 GUI.DragWindow();
             },
-            "");
+            "PrefsGUI");
         }
 
         protected abstract void DoGUI();
