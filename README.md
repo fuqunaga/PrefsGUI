@@ -58,7 +58,7 @@ Download a `.unitypackage` file from [Release page](https://github.com/fuqunaga/
 
 or
 
-Using Pacakge Manager:  
+**Using Pacakge Manager**  
 Add following line to the `dependencies` section in the `Packages/manifest.json`.
 ```
 "ga.fuquna.prefsgui": "https://github.com/fuqunaga/PrefsGUI.git"
@@ -68,6 +68,7 @@ Add following line to the `dependencies` section in the `Packages/manifest.json`
 # EditorWindow
 
 ![](Documentation~/PrefsGUIEditor.gif)
+- **Window -> PrefsGUI**
 - Display all loaded prefs that can be modiefied
 - You can also feed back the current value as default value
 - You can edit the key prefix for each GameObject by displaying it in order of GameObject
