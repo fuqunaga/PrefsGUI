@@ -1,12 +1,11 @@
 {
     "name": "ga.fuquna.prefsgui",
     "displayName": "PrefsGUI",
-    "version": "1.0.1",
-    "unity": "2018.3",
-    "description": "Accessor and GUI set for Unity PlayerPrefs / JSON file",
-    "keywords": ["PlayerPrefs", "GUI"],
+    "version": "2.0.0",
+    "unity": "2019.2",
+    "description": "Accessors and GUIs for persistent preference values using JSON file",
+    "keywords": ["Preference", "GUI"],
     "category": "Tool",
     "dependencies": { 
-        "com.unity.multiplayer-hlapi": "1.0.2"
     }
 }

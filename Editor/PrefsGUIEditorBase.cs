@@ -1,26 +1,92 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEditor;
-using System.Linq;
-using System.Collections.Generic;
+using UnityEngine;
+using RapidGUI;
 
-namespace PrefsGUI
+namespace PrefsGUI.Editor
 {
     public abstract class PrefsGUIEditorBase : EditorWindow
     {
-        protected IEnumerable<PrefsParam> PrefsList { get { return PrefsParam.all.Values.OrderBy(prefs => prefs.key); } }
+        #region Type Define 
+
+        // GUI.skin is not same in Editor and runtime.
+        // StyleScope set style like runtime in Editor;
+        public class StyleScope : IDisposable
+        {
+            static GUIStyle label;
+            static GUIStyle button;
+            
+            static StyleScope()
+            {
+                label = new GUIStyle(GUI.skin.label);
+                label.wordWrap = true;
+
+                button = new GUIStyle(GUI.skin.button);
+                button.richText = true;
+            }
+
+
+            GUIStyle labelOrig;
+            GUIStyle buttonOrig;
+            float prefixLabelWidth;
+
+            public StyleScope()
+            {
+                labelOrig = GUI.skin.label;
+                buttonOrig = GUI.skin.button;
+                prefixLabelWidth = RGUI.PrefixLabelSetting.width;
+
+                GUI.skin.label = label;
+                GUI.skin.button = button;
+
+                RGUI.PrefixLabelSetting.width = 200f;
+            }
+
+            public void Dispose()
+            {
+                GUI.skin.label = labelOrig;
+                GUI.skin.button = buttonOrig;
+
+                RGUI.PrefixLabelSetting.width = prefixLabelWidth;
+            }
+        }
+
+        #endregion
+
+
+        public static readonly GUILayoutOption ToggleWidth = GUILayout.Width(8f);
+
+        protected void Update()
+        {
+            GameObjectPrefsUtility.UpdateGoPrefs();
+        }
 
         void OnGUI()
         {
-            var buttunStyleOrig = GUI.skin.button;
-            var buttonStyle = new GUIStyle(buttunStyleOrig);
-            buttonStyle.richText = true;
-            GUI.skin.button = buttonStyle;
-
-            OnGUIInternal();
-
-            GUI.skin.button = buttunStyleOrig;
+            using (new StyleScope())
+            {
+                OnGUIInternal();
+            }
         }
 
         protected abstract void OnGUIInternal();
+
+
+        public static  bool? ToggleMixed(int count, int maxCount)
+        {
+            var mixedFlag = (count == 0) ? false : ((count == maxCount) ? (bool?)true : null);
+            return ToggleMixed(mixedFlag);
+        }
+
+        public static bool? ToggleMixed(bool? mixedFlag)
+        {
+            var value = (mixedFlag == null) || mixedFlag.Value;
+            if (value != GUILayout.Toggle(value, "", (mixedFlag==null) ? "ToggleMixed" : GUI.skin.toggle, ToggleWidth))
+            {
+                return !value;
+            }
+
+            return null;
+        }
     }
 }
