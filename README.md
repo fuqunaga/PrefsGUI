@@ -95,6 +95,12 @@ Auto create material GUI menu
 ![](Documentation~/MaterialPropertyDebugMenu.gif)
 
 
+# Sync Prefs over network
+
+**PrefsGUISyncUNET**  
+https://github.com/fuqunaga/PrefsGUISyncUNET
+
+
 # References
 
 - **RapidGUI**  
