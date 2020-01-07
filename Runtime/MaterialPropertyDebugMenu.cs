@@ -15,7 +15,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
     public class PrefsTexEnv : PrefsVector4
     {
         public PrefsTexEnv(string key, Vector2 tiling, Vector2 offset = default) : base(key, new Vector4(tiling.x, tiling.y, offset.x, offset.y)) { }
-        public Vector2 GetScale() { var v = Get();  return new Vector2(v.x, v.y); }
+        public Vector2 GetScale() { var v = Get(); return new Vector2(v.x, v.y); }
         public Vector2 GetOffset() { var v = Get(); return new Vector2(v.z, v.w); }
 
         static Dictionary<string, string> customLabel = new Dictionary<string, string> {
@@ -31,7 +31,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
     #endregion
 
     static bool _update;
-    public static bool update { get { return _update; } set { _update = value; }  }
+    public static bool update { get { return _update; } set { _update = value; } }
 
     [SerializeField]
     List<PrefsColor> _colors = new List<PrefsColor>();
@@ -45,15 +45,17 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
     List<PrefsTexEnv> _texEnvs = new List<PrefsTexEnv>();
 
 
-    string keyPrefix { get
+    string keyPrefix
+    {
+        get
         {
             Assert.IsNotNull(_material);
             return _material.name + "-";
         }
     }
 
-    string PropertyNameToKey(string n){ return keyPrefix + n; }
-    string KeyToPropertyName(string key){ return key.Replace(keyPrefix, "");  }
+    string PropertyNameToKey(string n) { return keyPrefix + n; }
+    string KeyToPropertyName(string key) { return key.Replace(keyPrefix, ""); }
 
     public void Start()
     {
@@ -61,39 +63,39 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
     }
 
 
-    public override void Update()
+    public void Update()
     {
-        base.Update();
-
-#if UNITY_EDITOR
-        UpdatePrefs();
-#endif
-
-        if ( update)
+        if (update)
         {
             UpdateMaterial();
         }
     }
 
+    private void OnValidate()
+    {
+        UpdatePrefs();
+    }
+
     void UpdatePrefs()
     {
-        var colorKeys  = _propertySet.colors.Select(name => PropertyNameToKey(name)).ToList();
-        var vectorKeys = _propertySet.vectors.Select(name => PropertyNameToKey(name)).ToList();
-        var floatKeys  = _propertySet.floats.Select(name => PropertyNameToKey(name)).ToList();
-        var rangeKeys  = _propertySet.ranges.Select(range => PropertyNameToKey(range.name)).ToList();
-        var texEnvKeys = _propertySet.texEnvs.Select(name => PropertyNameToKey(name)).ToList();
+#if UNITY_EDITOR
+        var colorKeys = _propertySet.colors.Select(PropertyNameToKey).ToList();
+        var vectorKeys = _propertySet.vectors.Select(PropertyNameToKey).ToList();
+        var floatKeys = _propertySet.floats.Select(PropertyNameToKey).ToList();
+        var rangeKeys = _propertySet.ranges.Select(range => PropertyNameToKey(range.name)).ToList();
+        var texEnvKeys = _propertySet.texEnvs.Select(PropertyNameToKey).ToList();
 
 
-        _colors.RemoveAll ( c => !colorKeys.Contains  ( c.key ));
-        _vectors.RemoveAll( v => !vectorKeys.Contains ( v.key ));
-        _floats.RemoveAll ( f => !floatKeys.Contains  ( f.key ));
-        _ranges.RemoveAll ( r => !rangeKeys.Contains  ( r.key ));
-        _texEnvs.RemoveAll( t => !texEnvKeys.Contains(t.key));
+        _colors.RemoveAll(c => !colorKeys.Contains(c.key));
+        _vectors.RemoveAll(v => !vectorKeys.Contains(v.key));
+        _floats.RemoveAll(f => !floatKeys.Contains(f.key));
+        _ranges.RemoveAll(r => !rangeKeys.Contains(r.key));
+        _texEnvs.RemoveAll(t => !texEnvKeys.Contains(t.key));
 
-        _colors.AddRange (colorKeys.Except (_colors.Select (c => c.key)).Select(n => new PrefsColor(n, _material.GetColor(KeyToPropertyName(n)))));
+        _colors.AddRange(colorKeys.Except(_colors.Select(c => c.key)).Select(n => new PrefsColor(n, _material.GetColor(KeyToPropertyName(n)))));
         _vectors.AddRange(vectorKeys.Except(_vectors.Select(v => v.key)).Select(n => new PrefsVector4(n, _material.GetVector(KeyToPropertyName(n)))));
-        _floats.AddRange (floatKeys.Except (_floats.Select (f => f.key)).Select(n => new PrefsFloat  (n, _material.GetFloat(KeyToPropertyName(n)))));
-        _ranges.AddRange (rangeKeys.Except (_ranges.Select (r => r.key)).Select(n => new PrefsFloat  (n, _material.GetFloat(KeyToPropertyName(n)))));
+        _floats.AddRange(floatKeys.Except(_floats.Select(f => f.key)).Select(n => new PrefsFloat(n, _material.GetFloat(KeyToPropertyName(n)))));
+        _ranges.AddRange(rangeKeys.Except(_ranges.Select(r => r.key)).Select(n => new PrefsFloat(n, _material.GetFloat(KeyToPropertyName(n)))));
         _texEnvs.AddRange(texEnvKeys.Except(_texEnvs.Select(t => t.key)).Select(n =>
         {
             var pn = KeyToPropertyName(n);
@@ -101,6 +103,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
             var offset = _material.GetTextureOffset(pn);
             return new PrefsTexEnv(n, tiling, offset);
         }));
+#endif
     }
 
     void UpdateMaterial()
@@ -123,13 +126,13 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
     public static Dictionary<string, System.Func<PrefsVector4, string, bool>> customVectorGUI = new Dictionary<string, System.Func<PrefsVector4, string, bool>>();
 
     public void DoGUI() => DoGUI(true);
-    
+
     public void DoGUI(bool labelEnable = true)
     {
         if ((_material != null) && _propertySet.Any())
         {
             if (labelEnable) GUILayout.Label(_material.name);
-            using(new RGUI.IndentScope())
+            using (new RGUI.IndentScope())
             {
                 _colors.ForEach(c => c.DoGUI(KeyToPropertyName(c.key)));
                 _vectors.ForEach(v =>

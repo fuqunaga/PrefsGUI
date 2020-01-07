@@ -50,12 +50,9 @@ namespace MaterialPropertyAccessor
         public PropertySet _propertySet = new PropertySet();
 
 
-
-        public virtual void Update()
+        private void OnValidate()
         {
-#if UNITY_EDITOR
             UpdatePropertySet();
-#endif
         }
 
         void UpdatePropertySet()
