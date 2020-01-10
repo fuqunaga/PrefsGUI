@@ -10,9 +10,9 @@ namespace PrefsGUI
     /// </summary>
     public abstract class PrefsParam : ISerializationCallbackReceiver
     {
-        public string key;
         public static Color syncedColor = new Color32(255, 143, 63, 255);
-        public static bool enableWarning = true;
+
+        public string key;
 
         public PrefsParam(string key)
         {
@@ -39,13 +39,23 @@ namespace PrefsGUI
 
         #region RegistAllInstance
 
-        public static Dictionary<string, PrefsParam> all = new Dictionary<string, PrefsParam>();
+        public static readonly List<PrefsParam> all = new List<PrefsParam>();
+        public static readonly Dictionary<string, PrefsParam> allDic = new Dictionary<string, PrefsParam>();
 
         public void OnBeforeSerialize() { }
 
         public void OnAfterDeserialize() { Regist(); } // To Regist Array/List In Inspector. Constructor not called.
 
-        void Regist() { all[key] = this; }
+        void Regist()
+        {
+            if ( allDic.TryGetValue(key, out var prev) )
+            {
+                all.Remove(prev);
+            }
+
+            allDic[key] = this;
+            all.Add(this);
+        }
 
         #endregion
     }
