@@ -63,7 +63,7 @@ namespace PrefsGUI
             this.synced = synced;
         }
 
-        protected virtual bool Compare(InnerT lhs, InnerT rhs) => lhs.Equals(rhs);
+        protected virtual bool Compare(InnerT lhs, InnerT rhs) => EqualityComparer<InnerT>.Default.Equals(lhs, rhs);
 
         protected virtual Dictionary<string, string> GetCustomLabel() => null;
 
