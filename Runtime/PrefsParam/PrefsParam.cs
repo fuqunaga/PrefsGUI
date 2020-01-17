@@ -1,8 +1,9 @@
 ﻿using PrefsGUI.KVS;
-using RapidGUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace PrefsGUI
 {
@@ -13,15 +14,23 @@ namespace PrefsGUI
     {
         public static Color syncedColor = new Color32(255, 143, 63, 255);
 
-        public string key;
+        [SerializeField]
+        [FormerlySerializedAs("key")]
+        string _key;
+
+        public string key
+        {
+            get => _key;
+            set => ChangeKey(value);
+        }
 
         public PrefsParam(string key)
         {
-            this.key = key;
+            _key = key;
             Regist();
         }
 
-        public virtual void Delete() { PrefsKVS.DeleteKey(key); }
+        public virtual void Delete() => PrefsKVS.DeleteKey(key);
 
 
 
@@ -40,8 +49,11 @@ namespace PrefsGUI
 
         #region RegistAllInstance
 
-        public static readonly List<PrefsParam> all = new List<PrefsParam>();
-        public static readonly Dictionary<string, PrefsParam> allDic = new Dictionary<string, PrefsParam>();
+        public static IReadOnlyCollection<PrefsParam> all => _all;
+        public static IReadOnlyDictionary<string, PrefsParam> allDic => _allDic;
+
+        static readonly HashSet<PrefsParam> _all = new HashSet<PrefsParam>();
+        static readonly Dictionary<string, PrefsParam> _allDic = new Dictionary<string, PrefsParam>();
 
         public void OnBeforeSerialize() { }
 
@@ -49,13 +61,38 @@ namespace PrefsGUI
 
         void Regist()
         {
-            if (allDic.TryGetValue(key, out var prev))
+            if (!string.IsNullOrEmpty(key))
             {
-                all.Remove(prev);
-            }
+                if (_allDic.TryGetValue(key, out var prev))
+                {
+                    _all.Remove(prev);
+                }
 
-            allDic[key] = this;
-            all.Add(this);
+                var alreadyExist = !_all.Add(this);
+                if (alreadyExist)
+                {
+                    _allDic.Where(pair => pair.Value == this)
+                        .Select(pair => pair.Key)
+                        .ToList()
+                        .ForEach(removeKey =>
+                    {
+                        _allDic.Remove(removeKey);
+                    });
+                }
+
+                _allDic[key] = this;
+            }
+        }
+
+        void ChangeKey(string newKey)
+        {
+            if (key != newKey && !string.IsNullOrEmpty(newKey))
+            {
+                _allDic.Remove(key);
+
+                _key = newKey;
+                Regist();
+            }
         }
 
         #endregion

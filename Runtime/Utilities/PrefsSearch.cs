@@ -52,6 +52,8 @@ namespace PrefsGUI
             {
                 var lword = word.ToLower();
                 prefsList = PrefsParam.all.Where(prefs => prefs.key.ToLower().Contains(lword)).OrderBy(prefs => prefs.key).ToList();
+
+                //Debug.Log("InvalidKey:" + string.Join("\n", PrefsParam.allDic.Where(pair => pair.Key != pair.Value.key).Select(pair => pair.Key + ":" + pair.Value.key).ToArray()));
             }
 
             scrollView.SetNeedUpdateLayout();
