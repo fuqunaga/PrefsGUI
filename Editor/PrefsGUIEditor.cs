@@ -128,15 +128,8 @@ namespace PrefsGUI.Editor
                             {
                                 using (new GUILayout.HorizontalScope())
                                 {
-
-#if true
                                     extension?.GUIPrefsLeft(prefs);
                                     prefs.DoGUI();
-#else
-                                    SyncToggle(sync, prefs);
-                                    prefs.DoGUI();
-
-#endif
                                 }
                             });
                         }
@@ -145,31 +138,7 @@ namespace PrefsGUI.Editor
             }
         }
 
-#if false
-        public void DoGUIGameObject(PrefsGUISync sync)
-        {
-            GameObjectPrefsUtility.goPrefsList.ForEach(gp =>
-            {
-                LabelWithEditPrefix(sync, gp);
 
-                using (new RGUI.IndentScope())
-                {
-                    gp.prefsList.ToList().ForEach(prefs =>
-                    {
-                        using (new GUILayout.HorizontalScope())
-                        {
-                            SyncToggle(sync, prefs);
-                            prefs.DoGUI();
-                        }
-                    });
-                }
-            });
-
-        }
-#endif
-
-
-        //void LabelWithEditPrefix(PrefsGUISync sync, GameObjectPrefsUtility.GoPrefs gp)
         void LabelWithEditPrefix(GameObjectPrefsUtility.GoPrefs gp)
         {
             var prefsList = gp.prefsList.ToList();
@@ -204,50 +173,5 @@ namespace PrefsGUI.Editor
                 GUILayout.FlexibleSpace();
             }
         }
-
-#if false
-        void SyncToggle(PrefsGUISync sync, PrefsParam prefs)
-        {
-            if (sync != null)
-            {
-                var key = prefs.key;
-                var isSync = !sync.ignoreKeys.Contains(key);
-
-                if (isSync != GUILayout.Toggle(isSync, GUIContent.none, ToggleWidth))
-                {
-                    Undo.RecordObject(sync, "Change PrefsGUI sync flag");
-                    EditorUtility.SetDirty(sync);
-
-                    if (isSync) sync.ignoreKeys.Add(key);
-                    else sync.ignoreKeys.Remove(key);
-                }
-            }
-        }
-
-        void SyncToggleList(PrefsGUISync sync, IEnumerable<PrefsParam> prefsList)
-        {
-            if (sync != null)
-            {
-                var keys = prefsList.Select(p => p.key).ToList();
-                var syncKeys = keys.Except(sync.ignoreKeys);
-
-                var isSync = ToggleMixed(syncKeys.Count(), keys.Count);
-                if (isSync.HasValue)
-                {
-                    Undo.RecordObject(sync, "Change PrefsGUIs sync flag");
-                    EditorUtility.SetDirty(sync);
-
-                    if (!isSync.Value)
-                    {
-                        sync.ignoreKeys.AddRange(syncKeys);
-                    }
-                    else
-                    {
-                        keys.ForEach(k => sync.ignoreKeys.Remove(k));
-                    }
-                }
-            }
-        }
-#endif
     }
 }

@@ -15,6 +15,7 @@ namespace PrefsGUI.Example
             windows.Add("Part1", typeof(PrefsGUIExample_Part1));
             windows.Add("Part2", typeof(PrefsGUIExample_Part2));
             windows.Add("Part3", typeof(PrefsGUIExample_Part3));
+            windows.Add("PrefsSearch", PrefsSearch.DoGUI).SetWidth(600f).SetHeight(800f);
         }
 
 

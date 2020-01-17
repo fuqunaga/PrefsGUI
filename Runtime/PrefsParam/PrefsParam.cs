@@ -1,4 +1,5 @@
 ﻿using PrefsGUI.KVS;
+using RapidGUI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,7 +49,7 @@ namespace PrefsGUI
 
         void Regist()
         {
-            if ( allDic.TryGetValue(key, out var prev) )
+            if (allDic.TryGetValue(key, out var prev))
             {
                 all.Remove(prev);
             }
