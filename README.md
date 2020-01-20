@@ -64,6 +64,12 @@ Add following line to the `dependencies` section in the `Packages/manifest.json`
 "ga.fuquna.prefsgui": "https://github.com/fuqunaga/PrefsGUI.git"
 ```
 
+# PrefsSearch
+
+![](Documentation~/PrefsSearch.gif)
+
+Display loaded PrefsParams with partial key match
+
 
 # EditorWindow
 
