@@ -94,8 +94,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 0
 --- !u!196 &4
@@ -408,44 +408,44 @@ MonoBehaviour:
       max: 1
     texEnvs: []
   _colors:
-  - key: Sample-_Color
+  - _key: Sample-_Color
     defaultValue: {r: 0, g: 1, b: 1, a: 1}
-  - key: Sample-_EmissionColor
+  - _key: Sample-_EmissionColor
     defaultValue: {r: 0, g: 0, b: 0.5, a: 1}
   _vectors: []
   _floats:
-  - key: Sample-_SmoothnessTextureChannel
+  - _key: Sample-_SmoothnessTextureChannel
     defaultValue: 0
-  - key: Sample-_SpecularHighlights
+  - _key: Sample-_SpecularHighlights
     defaultValue: 1
-  - key: Sample-_GlossyReflections
+  - _key: Sample-_GlossyReflections
     defaultValue: 1
-  - key: Sample-_BumpScale
+  - _key: Sample-_BumpScale
     defaultValue: 1
-  - key: Sample-_DetailNormalMapScale
+  - _key: Sample-_DetailNormalMapScale
     defaultValue: 1
-  - key: Sample-_UVSec
+  - _key: Sample-_UVSec
     defaultValue: 0
-  - key: Sample-_Mode
+  - _key: Sample-_Mode
     defaultValue: 0
-  - key: Sample-_SrcBlend
+  - _key: Sample-_SrcBlend
     defaultValue: 1
-  - key: Sample-_DstBlend
+  - _key: Sample-_DstBlend
     defaultValue: 0
-  - key: Sample-_ZWrite
+  - _key: Sample-_ZWrite
     defaultValue: 1
   _ranges:
-  - key: Sample-_Cutoff
+  - _key: Sample-_Cutoff
     defaultValue: 0.5
-  - key: Sample-_Glossiness
+  - _key: Sample-_Glossiness
     defaultValue: 0.5
-  - key: Sample-_GlossMapScale
+  - _key: Sample-_GlossMapScale
     defaultValue: 1
-  - key: Sample-_Metallic
+  - _key: Sample-_Metallic
     defaultValue: 0
-  - key: Sample-_Parallax
+  - _key: Sample-_Parallax
     defaultValue: 0.02
-  - key: Sample-_OcclusionStrength
+  - _key: Sample-_OcclusionStrength
     defaultValue: 1
   _texEnvs: []
 --- !u!1 &1586495334
@@ -491,6 +491,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

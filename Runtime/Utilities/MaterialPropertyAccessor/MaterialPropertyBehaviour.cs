@@ -50,7 +50,7 @@ namespace MaterialPropertyAccessor
         public PropertySet _propertySet = new PropertySet();
 
 
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             UpdatePropertySet();
         }

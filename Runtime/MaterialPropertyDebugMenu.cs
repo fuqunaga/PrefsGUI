@@ -71,8 +71,9 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
         }
     }
 
-    private void OnValidate()
+    protected override void OnValidate()
     {
+        base.OnValidate();
         UpdatePrefs();
     }
 
