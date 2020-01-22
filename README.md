@@ -47,31 +47,31 @@ public void DoGUI()
 }
 ```
 
-# Install
+## Install
 
-## Install dependencies
+### Install dependencies
 
 - [RapidGUI](https://github.com/fuqunaga/RapidGUI)
 
-## Intall PrefsGUI
+### Install PrefsGUI
 Download a `.unitypackage` file from [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
 
 or
 
-**Using Pacakge Manager**  
+**Using Package Manager**
 Add following line to the `dependencies` section in the `Packages/manifest.json`.
 ```
 "ga.fuquna.prefsgui": "https://github.com/fuqunaga/PrefsGUI.git"
 ```
 
-# PrefsSearch
+## PrefsSearch
 
 ![](Documentation~/PrefsSearch.gif)
 
 Display loaded PrefsParams with partial key match
 
 
-# EditorWindow
+## EditorWindow
 
 ![](Documentation~/PrefsGUIEditor.gif)
 - **Window -> PrefsGUI**
@@ -79,12 +79,12 @@ Display loaded PrefsParams with partial key match
 - You can also feed back the current value as default value
 - You can edit the key prefix for each GameObject by displaying it in order of GameObject
 
-## JSON file path
+### JSON file path
 ```
 Application.persistentDataPath + "/Prefs.json"
 ```
 
-You can customize by placing PrefsWrapperPathCustom in the scene and set `_path` field.  
+You can customize by placing PrefsWrapperPathCustom in the scene and set `_path` field.
 also can use the Special folders and enviroment variables.
 ```
 - %dataPath% -> Application.dataPath
@@ -94,24 +94,24 @@ also can use the Special folders and enviroment variables.
 ```
 
 
-# MaterialPropertyDebugMenu
+## MaterialPropertyDebugMenu
 
 Auto create material GUI menu
 
 ![](Documentation~/MaterialPropertyDebugMenu.gif)
 
 
-# Sync Prefs over network
+## Sync Prefs over network
 
-**PrefsGUISyncUNET**  
+**PrefsGUISyncUNET**
 https://github.com/fuqunaga/PrefsGUISyncUNET
 
 
-# References
+## References
 
-- **RapidGUI**  
+- **RapidGUI**
 https://github.com/fuqunaga/RapidGUI
 <br>
 
-- **PrefsGUISyncUNET**  
+- **PrefsGUISyncUNET**
 https://github.com/fuqunaga/PrefsGUISyncUNET
