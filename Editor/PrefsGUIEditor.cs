@@ -10,7 +10,7 @@ namespace PrefsGUI.Editor
     {
         void GUIHeadLine();
         void GUIPrefsLeft(PrefsParam param);
-        void GUIGroupLabelLeft(List<PrefsParam> prefsList);
+        void GUIGroupLabelLeft(IEnumerable<PrefsParam> prefsList);
     }
 
     public class PrefsGUIEditor : PrefsGUIEditorBase
@@ -45,13 +45,13 @@ namespace PrefsGUI.Editor
 
         private void Awake()
         {
-            GameObjectPrefsUtility.onGoPrefsListChanged += OnGpListChanged;
+            ObjectPrefsUtility.onGoPrefsListChanged += OnGpListChanged;
         }
 
         private void OnDestroy()
         {
-            if (GameObjectPrefsUtility.onGoPrefsListChanged != null)
-                GameObjectPrefsUtility.onGoPrefsListChanged -= OnGpListChanged;
+            if (ObjectPrefsUtility.onGoPrefsListChanged != null)
+                ObjectPrefsUtility.onGoPrefsListChanged -= OnGpListChanged;
         }
 
         void OnGpListChanged()
@@ -77,7 +77,7 @@ namespace PrefsGUI.Editor
                 }
             }
 
-            var prefsAll = GameObjectPrefsUtility.goPrefsList.SelectMany(gp => gp.prefsList).ToList();
+            var prefsAll = ObjectPrefsUtility.objPrefsList.SelectMany(gp => gp.prefsList).ToList();
             var currentToDefaultEnable = !Application.isPlaying && prefsAll.Any(prefs => !prefs.IsDefault);
             using (new RGUI.EnabledScope(currentToDefaultEnable))
             {
@@ -96,7 +96,7 @@ namespace PrefsGUI.Editor
             {
                 GUILayout.Label("Order");
 
-                order = (Order) GUILayout.Toolbar((int) order, System.Enum.GetNames(typeof(Order)));
+                order = (Order)GUILayout.Toolbar((int)order, System.Enum.GetNames(typeof(Order)));
                 EditorGUILayout.Space();
             }
 
@@ -118,7 +118,7 @@ namespace PrefsGUI.Editor
                     break;
 
                 case Order.GameObject:
-                    scrollViewGameObject.DoGUI(GameObjectPrefsUtility.goPrefsList, (gp) =>
+                    scrollViewGameObject.DoGUI(ObjectPrefsUtility.objPrefsList, (gp) =>
                     {
                         LabelWithEditPrefix(gp);
 
@@ -139,17 +139,16 @@ namespace PrefsGUI.Editor
         }
 
 
-        void LabelWithEditPrefix(GameObjectPrefsUtility.GoPrefs gp)
+        void LabelWithEditPrefix(ObjectPrefsUtility.ObjPrefs objPrefs)
         {
-            var prefsList = gp.prefsList.ToList();
+            var prefsList = objPrefs.prefsList;
             using (new GUILayout.HorizontalScope())
             {
                 extension?.GUIGroupLabelLeft(prefsList);
-                //SyncToggleList(sync, prefsList);
 
                 using (new RGUI.EnabledScope(false))
                 {
-                    EditorGUILayout.ObjectField(gp.go, typeof(GameObject), true);
+                    EditorGUILayout.ObjectField(objPrefs.obj, typeof(Object), true);
                 }
 
                 const char separator = '.';
@@ -161,13 +160,16 @@ namespace PrefsGUI.Editor
                 var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
                 if (prefix != prefixNew)
                 {
-                    var go = gp.go;
+                    var go = objPrefs.obj;
                     Undo.RecordObject(go, "Change PrefsGUI Prefix");
 
                     var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
-                    prefsList.ToList().ForEach(p => { p.key = prefixWithSeparator + p.key.Split(separator).Last(); });
 
-                    go.GetComponents<Component>().ToList().ForEach(c => EditorUtility.SetDirty(c));
+                    foreach (var prefs in prefsList)
+                    {
+                        prefs.key = prefixWithSeparator + prefs.key.Split(separator).Last();
+                        EditorUtility.SetDirty(objPrefs.GetPrefsParent(prefs));
+                    }
                 }
 
                 GUILayout.FlexibleSpace();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,49 +7,57 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PrefsGUI.Editor
 {
-
-    public static class GameObjectPrefsUtility
+    public static class ObjectPrefsUtility
     {
         #region Type Define
 
-        public class GoPrefs
+        public class ObjPrefs
         {
-            public GameObject go;
-            public List<MonoPrefs> monoPrefsList;
+            public Object obj;
+            readonly Dictionary<PrefsParam, Object> prefsToParent;
 
-            public IEnumerable<PrefsParam> prefsList => monoPrefsList.SelectMany(mp => mp.prefsList);
-            public IEnumerable<(GameObject, PrefsParam)> keys => prefsList.Select(p => (go, p));
-        }
-
-        public class MonoPrefs
-        {
-            public MonoBehaviour mono;
-            public List<PrefsParam> prefsList;
-        }
-
-        class GoPrefsComparer : IEqualityComparer<GoPrefs>
-        {
-            public bool Equals(GoPrefs x, GoPrefs y)
+            public ObjPrefs(Object obj, IEnumerable<(PrefsParam, Object)> prefsAndParents)
             {
-                return x.go.Equals(y.go);
+                this.obj = obj;
+                prefsToParent = prefsAndParents.ToDictionary(pp => pp.Item1, pp => pp.Item2);
             }
 
-            public int GetHashCode(GoPrefs obj)
+            public IEnumerable<PrefsParam> prefsList => prefsToParent.Keys;
+
+            public Object GetPrefsParent(PrefsParam prefs)
             {
-                return obj.go.GetHashCode();
+                prefsToParent.TryGetValue(prefs, out var ret);
+                return ret;
             }
         }
+
+        class ObjPrefsComparer : IEqualityComparer<ObjPrefs>
+        {
+            public static ObjPrefsComparer Instance = new ObjPrefsComparer();
+
+            public bool Equals(ObjPrefs x, ObjPrefs y)
+            {
+                return x.obj.Equals(y.obj);
+            }
+
+            public int GetHashCode(ObjPrefs obj)
+            {
+                return obj.obj.GetHashCode();
+            }
+        }
+
+        public static bool IsInScene(GameObject go) => go.scene.name != null;
 
         #endregion
 
 
+        #region ObjPrefsList
 
-        #region GoPrefsList
-
-        public static List<GoPrefs> goPrefsList = new List<GoPrefs>();
+        public static List<ObjPrefs> objPrefsList = new List<ObjPrefs>();
 
         static readonly float interaval = 3f;
         static float lastTime;
@@ -73,19 +82,56 @@ namespace PrefsGUI.Editor
 
         static bool DoUpdateGoPrefs()
         {
-            var all = Resources.FindObjectsOfTypeAll<GameObject>()
-                .Where(go => PrefabStageUtility.GetPrefabStage(go) == null) // ignore GameObject in  PrefabStage
-                .Select(go => new GoPrefs()
+            var gameObjects = Resources.FindObjectsOfTypeAll<GameObject>()
+                .Where(go => PrefabStageUtility.GetPrefabStage(go) == null); // ignore GameObject in  PrefabStage
+
+            var prefabSources = new HashSet<GameObject>(gameObjects.Where(IsInScene).Select(PrefabUtility.GetCorrespondingObjectFromOriginalSource));
+
+
+            var objPrefsOfGameObjects = gameObjects
+                .Except(prefabSources)  // ignore prefabs that the child is in the scene
+                .Select(go =>
                 {
-                    go = go,
-                    monoPrefsList = go.GetComponents<MonoBehaviour>()
+                    var prefsFields = go.GetComponents<MonoBehaviour>()
+                            .Where(mono => !Assembly.GetAssembly(mono.GetType()).GetName().Name.StartsWith("UnityEngine.")) // skip unity classes
+                            .SelectMany(mono => SearchChildPrefsParams(mono).Select(prefs => (prefs, parent: (Object)mono)));
+
+                    return (go, prefsFields);
+                })
+                .Where(pair => pair.prefsFields.Any())
+                .Select(pair => new ObjPrefs(
+                    pair.go,
+                    pair.prefsFields
+                ));
+
+            var objPrefsOfScriptableObjects = Resources.FindObjectsOfTypeAll(typeof(ScriptableObject))
+                .Where(so =>
+                {
+                    var asmName = Assembly.GetAssembly(so.GetType()).GetName().Name;
+                    return !asmName.StartsWith("Unity.") && !asmName.StartsWith("UnityEditor") && !asmName.StartsWith("UnityEngine");
+                })
+                .Select(so => (so, prefsList: SearchChildPrefsParams(so)))
+                .Where(pair => pair.prefsList.Any())
+                .Select(pair => new ObjPrefs(
+                    pair.so,
+                    pair.prefsList.Select(prefs => (prefs, pair.so))
+                    )
+                );
+
+
+#if false
+                .Select(go => new ObjPrefs(
+                    go,
+                    go.GetComponents<MonoBehaviour>()
                         .Where(mono => !Assembly.GetAssembly(mono.GetType()).GetName().Name.StartsWith("UnityEngine.")) // skip unity classes
-                        .Select(mono => new MonoPrefs() { mono = mono, prefsList = SearchChildPrefsParams(mono).ToList() })
+                        .Select(mono => new ObjPrefsField() { obj = mono, prefsList = SearchChildPrefsParams(mono).ToList() })
                         .Where(mp => mp.prefsList.Any())
                         .ToList()
-                })
-                .Where(gp => gp.monoPrefsList.Any())
+                        )
+                )
+                .Where(gp => gp.objPrefsList.Any())
                 .ToList();
+                */
 
             var inHierarchy = all
                 .Where(gp => gp.go.scene.name != null)
@@ -101,21 +147,26 @@ namespace PrefsGUI.Editor
             var newList = inHierarchy.Concat(inProject)
                 .OrderBy(gp => gp.go.name)
                 .ToList();
+#else
+            var newList = objPrefsOfGameObjects
+                .Concat(objPrefsOfScriptableObjects)
+                .OrderBy(op => op.obj.name);
+#endif
 
-            var change = !goPrefsList.SequenceEqual(newList, new GoPrefsComparer());
+            var change = !objPrefsList.SequenceEqual(newList, ObjPrefsComparer.Instance);
 
             if (change)
             {
-                goPrefsList = newList;
+                objPrefsList = newList.ToList();
             }
 
             return change;
         }
 
-        #endregion
+#endregion
 
 
-        #region SearchChildPrefsParams() 
+#region SearchChildPrefsParams() 
 
         static Dictionary<Type, FieldInfo[]> typeToFields = new Dictionary<Type, FieldInfo[]>();
 
@@ -186,7 +237,6 @@ namespace PrefsGUI.Editor
                 }
             }
 
-
             var type = obj.GetType();
             if (HasContainPrefs(type))
             {
@@ -232,6 +282,6 @@ namespace PrefsGUI.Editor
             }
         }
 
-        #endregion
+#endregion
     }
 }

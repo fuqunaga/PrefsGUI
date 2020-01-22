@@ -58,7 +58,7 @@ namespace PrefsGUI.Editor
 
         protected void Update()
         {
-            GameObjectPrefsUtility.UpdateGoPrefs();
+            ObjectPrefsUtility.UpdateGoPrefs();
         }
 
         void OnGUI()

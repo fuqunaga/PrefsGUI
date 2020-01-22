@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static PrefsGUI.Editor.GameObjectPrefsUtility;
 
 namespace PrefsGUI.Editor
 {
@@ -13,46 +12,51 @@ namespace PrefsGUI.Editor
 
         protected override void OnGUIInternal()
         {
-            var gpListNonDeffault = goPrefsList.Select(gp => new GoPrefs()
-            {
-                go = gp.go,
-                monoPrefsList = gp.monoPrefsList
-                    .Select(mp => new MonoPrefs() { mono = mp.mono, prefsList = mp.prefsList.Where(p => !p.IsDefault).ToList() })
-                    .Where(mp => mp.prefsList.Any())
-                   .ToList()
-            })
-            .Where(gp => gp.monoPrefsList.Any())
-            .ToList();
+            var objPrefsKeysList = ObjectPrefsUtility.objPrefsList
+                .Select(objPrefs => ( objPrefs, prefsList: objPrefs.prefsList.Where(prefs => !prefs.IsDefault)))
+                .Where(pair => pair.prefsList.Any())
+                .Select(pair =>
+                {
+                    var objPrefs = pair.objPrefs;
+                    return (objPrefs, keys : pair.prefsList.Select(prefs => (objPrefs.obj, prefs)).ToList());
+                })
+                .ToList();
 
 
             EditorGUILayout.HelpBox("\nSelect Prefs to change Default.\n", MessageType.None);
 
 
-            CheckGoPrefsListGUI(gpListNonDeffault);
+            CheckGoPrefsListGUI(objPrefsKeysList);
 
 
-            var checkedMonoPrefs = gpListNonDeffault
-                .SelectMany(gp => gp.monoPrefsList.SelectMany(mpList => mpList.prefsList.Where(p => checkedList[(gp.go, p)]).Select(p => (mpList.mono, p))));
-
+            var checkedPrefsExists = objPrefsKeysList.Any(objPrefsKeys => objPrefsKeys.keys.Any(key => checkedList[key]));
 
             GUILayout.Space(8f);
 
-            using (new RGUI.EnabledScope(checkedMonoPrefs.Any()))
+            using (new RGUI.EnabledScope(checkedPrefsExists))
             {
                 if (GUILayout.Button("SetCurrentToDefault"))
                 {
-                    var monos = checkedMonoPrefs.Select(mp => mp.mono).ToArray();
-                    var checkedPrefs = checkedMonoPrefs.Select(mp => mp.p).ToList();
+                    foreach (var objPrefsKeys in objPrefsKeysList)
+                    {
+                        var checkedPrefsList = objPrefsKeys.keys.Where(key => checkedList[key]).Select(key => key.prefs).ToList();
+                        var objs = checkedPrefsList.Select(prefs => objPrefsKeys.objPrefs.GetPrefsParent(prefs)).Distinct().ToArray();
+
+                        Undo.RecordObjects(objs, "Set PrefsGUI default value");
 
 
-                    Undo.RecordObjects(monos, "Set PrefsGUI default value");
+                        // SetCurrent To Default
+                        foreach (var prefs in checkedPrefsList)
+                        {
+                            prefs.SetCurrentToDefault();
+                        }
 
+                        foreach (var o in objs)
+                        {
+                            EditorUtility.SetDirty(o);
+                        }
 
-                    // SetCurrent To Default
-                    checkedPrefs.ForEach(prefs => prefs.SetCurrentToDefault());
-
-                    monos.ToList().ForEach(mono => EditorUtility.SetDirty(mono));
-
+                    }
 
                     Close();
                     parentWindow.Repaint();
@@ -63,18 +67,20 @@ namespace PrefsGUI.Editor
 
         Vector2 scrollPosition;
 
-        protected Dictionary<(GameObject, PrefsParam), bool> checkedList = new Dictionary<(GameObject, PrefsParam), bool>();
+        protected Dictionary<(Object, PrefsParam), bool> checkedList = new Dictionary<(Object, PrefsParam), bool>();
 
 
-        public void CheckGoPrefsListGUI(List<GoPrefs> gpList)
+        public void CheckGoPrefsListGUI(List<(ObjectPrefsUtility.ObjPrefs objPrefs, List<(Object, PrefsParam prefs)> keys)>  objPrefsKeysList)
         {
             // set new keys true
-            gpList
-                .SelectMany(gp => gp.keys)
-                .Except(checkedList.Keys)
-                .ToList()
-                .ForEach(key => checkedList[key] = true);
+            var newKeys = objPrefsKeysList
+                .SelectMany(ok => ok.keys)
+                .Except(checkedList.Keys);
 
+            foreach (var key in newKeys)
+            {
+                checkedList[key] = true;
+            }
 
 
             // check all
@@ -83,48 +89,53 @@ namespace PrefsGUI.Editor
             var checkAll = ToggleMixed(trueCount, checkedList.Count);
             if (checkAll.HasValue)
             {
-                checkedList.Keys.ToList().ForEach(key => checkedList[key] = checkAll.Value);
+                foreach (var key in checkedList.Keys.ToList())
+                {
+                    checkedList[key] = checkAll.Value;
+                }
             }
 
-            // per gameobject
+            // per object
             using (var sc = new GUILayout.ScrollViewScope(scrollPosition))
             {
                 scrollPosition = sc.scrollPosition;
 
-                gpList.ForEach(gp =>
+                foreach (var objPrefsKeys in objPrefsKeysList)
                 {
                     using (new GUILayout.HorizontalScope())
                     {
-                        var keys = gp.keys.ToList();
+                        var keys = objPrefsKeys.keys;
 
                         var check = ToggleMixed(keys.Where(key => checkedList[key]).Count(), keys.Count);
                         if (check.HasValue)
                         {
-                            keys.ForEach(key => checkedList[key] = check.Value);
+                            foreach (var key in keys)
+                            {
+                                checkedList[key] = check.Value;
+                            }
                         }
 
                         using (new RGUI.EnabledScope(false))
                         {
-                            EditorGUILayout.ObjectField(gp.go, typeof(GameObject), true);
+                            EditorGUILayout.ObjectField(objPrefsKeys.objPrefs.obj, typeof(Object), true);
                         }
                     }
 
 
                     using (new RGUI.IndentScope())
                     {
-                        gp.prefsList.ToList().ForEach(prefs =>
+                        foreach(var key in objPrefsKeys.keys)
                         {
-                            var key = (gp.go, prefs);
                             bool check = checkedList[key];
 
                             using (new GUILayout.HorizontalScope())
                             {
                                 if (check != GUILayout.Toggle(check, GUIContent.none, ToggleWidth)) checkedList[key] = !check;
-                                prefs.DoGUI();
+                                key.prefs.DoGUI();
                             }
-                        });
+                        }
                     }
-                });
+                }
             }
         }
     }
