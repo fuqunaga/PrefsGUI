@@ -1,4 +1,5 @@
 # PrefsGUI
+[![openupm](https://img.shields.io/npm/v/ga.fuquna.prefsgui?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/ga.fuquna.prefsgui/)
 
 Accessors and GUIs for persistent preference values using JSON file
 
@@ -47,22 +48,31 @@ public void DoGUI()
 }
 ```
 
-## Install
+## Installation
 
-### Install dependencies
+### Dependencies
 
 - [RapidGUI](https://github.com/fuqunaga/RapidGUI)
 
-### Install PrefsGUI
-Download a `.unitypackage` file from [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
+### Install via OpenUPM
 
-or
+The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
 
-**Using Package Manager**
-Add following line to the `dependencies` section in the `Packages/manifest.json`.
 ```
+openupm add ga.fuquna.rapidgui ga.fuquna.prefsgui
+```
+
+### Install via git URL
+
+Add following lines to the `dependencies` section of the `Packages/manifest.json`.
+```
+"ga.fuquna.rapidgui": "https://github.com/fuqunaga/RapidGUI.git",
 "ga.fuquna.prefsgui": "https://github.com/fuqunaga/PrefsGUI.git"
 ```
+
+### Install via traditional `.unitypackage`
+
+Download a `.unitypackage` file from the [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
 
 ## PrefsSearch
 
@@ -85,7 +95,7 @@ Application.persistentDataPath + "/Prefs.json"
 ```
 
 You can customize by placing PrefsWrapperPathCustom in the scene and set `_path` field.
-also can use the Special folders and enviroment variables.
+also can use the Special folders and environment variables.
 ```
 - %dataPath% -> Application.dataPath
 - %companyName% -> Application.companyName
@@ -111,7 +121,5 @@ https://github.com/fuqunaga/PrefsGUISyncUNET
 
 - **RapidGUI**
 https://github.com/fuqunaga/RapidGUI
-<br>
-
 - **PrefsGUISyncUNET**
 https://github.com/fuqunaga/PrefsGUISyncUNET
