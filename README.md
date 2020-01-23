@@ -1,4 +1,5 @@
 # PrefsGUI
+[![openupm](https://img.shields.io/npm/v/ga.fuquna.prefsgui?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/ga.fuquna.prefsgui/)
 
 Accessors and GUIs for persistent preference values using JSON file
 
@@ -47,31 +48,40 @@ public void DoGUI()
 }
 ```
 
-# Install
+## Installation
 
-## Install dependencies
+### Dependencies
 
 - [RapidGUI](https://github.com/fuqunaga/RapidGUI)
 
-## Intall PrefsGUI
-Download a `.unitypackage` file from [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
+### Install via OpenUPM
 
-or
+The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
 
-**Using Pacakge Manager**  
-Add following line to the `dependencies` section in the `Packages/manifest.json`.
 ```
+openupm add ga.fuquna.rapidgui ga.fuquna.prefsgui
+```
+
+### Install via git URL
+
+Add following lines to the `dependencies` section of the `Packages/manifest.json`.
+```
+"ga.fuquna.rapidgui": "https://github.com/fuqunaga/RapidGUI.git",
 "ga.fuquna.prefsgui": "https://github.com/fuqunaga/PrefsGUI.git"
 ```
 
-# PrefsSearch
+### Install via traditional `.unitypackage`
+
+Download a `.unitypackage` file from the [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
+
+## PrefsSearch
 
 ![](Documentation~/PrefsSearch.gif)
 
 Display loaded PrefsParams with partial key match
 
 
-# EditorWindow
+## EditorWindow
 
 ![](Documentation~/PrefsGUIEditor.gif)
 - **Window -> PrefsGUI**
@@ -79,13 +89,13 @@ Display loaded PrefsParams with partial key match
 - You can also feed back the current value as default value
 - You can edit the key prefix for each GameObject by displaying it in order of GameObject
 
-## JSON file path
+### JSON file path
 ```
 Application.persistentDataPath + "/Prefs.json"
 ```
 
-You can customize by placing PrefsWrapperPathCustom in the scene and set `_path` field.  
-also can use the Special folders and enviroment variables.
+You can customize by placing PrefsWrapperPathCustom in the scene and set `_path` field.
+also can use the Special folders and environment variables.
 ```
 - %dataPath% -> Application.dataPath
 - %companyName% -> Application.companyName
@@ -94,24 +104,22 @@ also can use the Special folders and enviroment variables.
 ```
 
 
-# MaterialPropertyDebugMenu
+## MaterialPropertyDebugMenu
 
 Auto create material GUI menu
 
 ![](Documentation~/MaterialPropertyDebugMenu.gif)
 
 
-# Sync Prefs over network
+## Sync Prefs over network
 
-**PrefsGUISyncUNET**  
+**PrefsGUISyncUNET**
 https://github.com/fuqunaga/PrefsGUISyncUNET
 
 
-# References
+## References
 
-- **RapidGUI**  
+- **RapidGUI**
 https://github.com/fuqunaga/RapidGUI
-<br>
-
-- **PrefsGUISyncUNET**  
+- **PrefsGUISyncUNET**
 https://github.com/fuqunaga/PrefsGUISyncUNET
