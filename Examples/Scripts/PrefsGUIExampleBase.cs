@@ -20,6 +20,14 @@ namespace PrefsGUI.Example
             "PrefsGUI");
         }
 
-        protected abstract void DoGUI();
+
+        protected virtual void DoGUI()
+        {
+            GUILayout.Space(50f);
+            GUILayout.Label($"file path: {KVS.PrefsKVSPathSelector.path}");
+
+            if (GUILayout.Button("Save")) Prefs.Save();
+            if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
+        }
     }
 }

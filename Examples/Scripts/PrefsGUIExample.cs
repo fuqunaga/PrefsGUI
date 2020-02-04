@@ -18,15 +18,10 @@ namespace PrefsGUI.Example
             windows.Add("PrefsSearch", PrefsSearch.DoGUI).SetWidth(600f).SetHeight(800f);
         }
 
-
         protected override void DoGUI()
         {
             windows.DoGUI();
-            GUILayout.Space(50f);
-            GUILayout.Label($"file path: {KVS.PrefsKVSPathSelector.path}");
-
-            if (GUILayout.Button("Save")) Prefs.Save();
-            if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();
+            base.DoGUI();
         }
     }
 }

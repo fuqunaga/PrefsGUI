@@ -163,10 +163,10 @@ namespace PrefsGUI.Editor
             return change;
         }
 
-#endregion
+        #endregion
 
 
-#region SearchChildPrefsParams() 
+        #region SearchChildPrefsParams() 
 
         static Dictionary<Type, FieldInfo[]> typeToFields = new Dictionary<Type, FieldInfo[]>();
 
@@ -233,7 +233,7 @@ namespace PrefsGUI.Editor
             {
                 foreach (var elem in enumerable)
                 {
-                    AddChildPrefsParam(elem);
+                    CheckAndAddPrefs(ret, elem);
                 }
             }
 
@@ -249,6 +249,8 @@ namespace PrefsGUI.Editor
                     if (HasContainPrefs(fieldType))
                     {
                         var fieldObj = field.GetValue(obj);
+                        CheckAndAddPrefs(ret, fieldObj);
+                        /*
                         if (fieldObj != null)
                         {
                             var prefs = fieldObj as PrefsParam;
@@ -262,6 +264,7 @@ namespace PrefsGUI.Editor
                                 AddChildPrefsParam(fieldObj);
                             }
                         }
+                        */
                     }
                 }
             }
@@ -272,16 +275,23 @@ namespace PrefsGUI.Editor
             return ret;
 
 
-            void AddChildPrefsParam(object child)
+            void CheckAndAddPrefs(HashSet<PrefsParam> prefsSet, object o)
             {
                 // ignore child MonoBehavior
-                if ((child != null) && !(child is MonoBehaviour))
+                if ((o != null) && !(o is MonoBehaviour))
                 {
-                    ret.UnionWith(SearchChildPrefsParams(child));
+                    if (o is PrefsParam prefs)
+                    {
+                        prefsSet.Add(prefs);
+                    }
+                    else
+                    {
+                        prefsSet.UnionWith(SearchChildPrefsParams(o));
+                    }
                 }
             }
         }
 
-#endregion
+        #endregion
     }
 }

@@ -12,6 +12,7 @@
         protected override void DoGUI()
         {
             debugMenu.DoGUI();
+            base.DoGUI();
         }
     }
 }

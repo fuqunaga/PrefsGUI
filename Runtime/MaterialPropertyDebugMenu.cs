@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 [ExecuteAlways]
 public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
@@ -30,8 +31,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
 
     #endregion
 
-    static bool _update;
-    public static bool update { get { return _update; } set { _update = value; } }
+    public static bool update { get; set; }
 
     [SerializeField]
     List<PrefsColor> _colors = new List<PrefsColor>();
@@ -54,8 +54,8 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
         }
     }
 
-    string PropertyNameToKey(string n) { return keyPrefix + n; }
-    string KeyToPropertyName(string key) { return key.Replace(keyPrefix, ""); }
+    string PropertyNameToKey(string n) => keyPrefix + n;
+    string KeyToPropertyName(string key) => key.Replace(keyPrefix, "");
 
     public void Start()
     {
