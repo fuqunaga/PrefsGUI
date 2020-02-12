@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,23 +14,28 @@ namespace PrefsGUI.Editor
     {
         #region Type Define
 
+        public class PrefsHolder
+        {
+            public Object parent;
+            public HashSet<PrefsParam> prefsSet;
+        }
+
         public class ObjPrefs
         {
-            public Object obj;
-            readonly Dictionary<PrefsParam, Object> prefsToParent;
+            public readonly Object obj;
+            public readonly List<PrefsHolder> holders;
 
-            public ObjPrefs(Object obj, IEnumerable<(PrefsParam, Object)> prefsAndParents)
+            public ObjPrefs(Object obj, IEnumerable<PrefsHolder> holders)
             {
                 this.obj = obj;
-                prefsToParent = prefsAndParents.ToDictionary(pp => pp.Item1, pp => pp.Item2);
+                this.holders = holders.ToList();
             }
 
-            public IEnumerable<PrefsParam> prefsList => prefsToParent.Keys;
+            public IEnumerable<PrefsParam> prefsList => holders.SelectMany(h => h.prefsSet);
 
             public Object GetPrefsParent(PrefsParam prefs)
             {
-                prefsToParent.TryGetValue(prefs, out var ret);
-                return ret;
+                return holders.FirstOrDefault(h => h.prefsSet.Contains(prefs))?.parent;
             }
         }
 
@@ -92,16 +96,18 @@ namespace PrefsGUI.Editor
                 .Except(prefabSources)  // ignore prefabs that the child is in the scene
                 .Select(go =>
                 {
-                    var prefsFields = go.GetComponents<MonoBehaviour>()
+                    var holders = go.GetComponents<MonoBehaviour>()
+                            .Where(mono => mono != null)
                             .Where(mono => !Assembly.GetAssembly(mono.GetType()).GetName().Name.StartsWith("UnityEngine.")) // skip unity classes
-                            .SelectMany(mono => SearchChildPrefsParams(mono).Select(prefs => (prefs, parent: (Object)mono)));
+                            .Select(mono => new PrefsHolder() { parent = mono, prefsSet = SearchChildPrefsParams(mono) })
+                            .Where(holder => holder.prefsSet.Any());
 
-                    return (go, prefsFields);
+                    return (go, holders);
                 })
-                .Where(pair => pair.prefsFields.Any())
+                .Where(pair => pair.holders.Any(holder => holder.prefsSet.Any()))
                 .Select(pair => new ObjPrefs(
                     pair.go,
-                    pair.prefsFields
+                    pair.holders
                 ));
 
             var objPrefsOfScriptableObjects = Resources.FindObjectsOfTypeAll(typeof(ScriptableObject))
@@ -114,7 +120,7 @@ namespace PrefsGUI.Editor
                 .Where(pair => pair.prefsList.Any())
                 .Select(pair => new ObjPrefs(
                     pair.so,
-                    pair.prefsList.Select(prefs => (prefs, pair.so))
+                    new[] { new PrefsHolder() { parent = pair.so, prefsSet = pair.prefsList } }
                     )
                 );
 
