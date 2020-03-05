@@ -130,7 +130,7 @@ namespace PrefsGUI.Editor
                     {
                         scrollViewGameObject.DoGUI(ObjectPrefsUtility.objPrefsList, (gp) =>
                         {
-                            var prefixGo = LabelWithEditPrefix(gp.obj, gp.prefsList, 0);
+                            var prefixGo = LabelWithEditPrefix(gp.obj, gp.prefsList, !showComponent);
 
                             using (new RGUI.IndentScope(16))
                             {
@@ -138,7 +138,7 @@ namespace PrefsGUI.Editor
                                 {
                                     if (showComponent)
                                     {
-                                        LabelWithEditPrefix(holder.parent, holder.prefsSet, 1, prefixGo);
+                                        LabelWithEditPrefix(holder.parent, holder.prefsSet, true);
                                     }
 
                                     using (new RGUI.IndentScope(16))
@@ -163,40 +163,16 @@ namespace PrefsGUI.Editor
 
         const char separator = '.';
 
-
-        static (string prefix, int idx) GetPrefixAndIdx(string key, int prefixLevel, string parentPrefix)
+        static string GetPrefix(IEnumerable<string> keys)
         {
-            var elems = key.Split(separator);
-            var prefixNum = elems.Length - 1;
-            if (prefixNum >= prefixLevel + 1)
-            {
-                return (elems[prefixLevel], prefixLevel);
-            }
-            else if (prefixNum > 0)
-            {
-                return (elems.First() == parentPrefix)
-                    ? (null, prefixLevel)
-                    : (elems.First(), 0);
-            }
-
-            return (null, 0);
+            return keys.Select(key => key.Split(separator))
+                    .FirstOrDefault(sepKeys => sepKeys.Length > 1)?.First();
         }
 
-
-        static string GetPrefix(IEnumerable<string> keys, int prefixLevel, string parentPrefix)
-        {
-            var prefixes = keys
-                .Select(key => GetPrefixAndIdx(key, prefixLevel, parentPrefix).prefix)
-                .Where(prefix => (prefixLevel > 0 && prefix != null)) // 空のPrefix：level0有効（複数のPrefixが競合している扱い）、level>0無視
-                .Distinct();
-
-            return prefixes.Count() == 1 ? prefixes.First() : "";
-        }
-
-        string LabelWithEditPrefix(UnityEngine.Object obj, IEnumerable<PrefsParam> prefsSet, int prefixLevel, string parentPrefix = "")
+        string LabelWithEditPrefix(UnityEngine.Object obj, IEnumerable<PrefsParam> prefsSet, bool editPrefix)
         {
             var keys = prefsSet.Select(prefs => prefs.key);
-            var prefix = GetPrefix(keys, prefixLevel, parentPrefix);
+            var prefix = GetPrefix(keys);
 
             using (new GUILayout.HorizontalScope())
             {
@@ -207,37 +183,26 @@ namespace PrefsGUI.Editor
                     EditorGUILayout.ObjectField(obj, typeof(UnityEngine.Object), true);
                 }
 
-                GUILayout.Label("KeyPrefix");
-
-                var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
-                if (prefix != prefixNew)
+                if (editPrefix)
                 {
-                    Undo.RecordObject(obj, "Change PrefsGUI Prefix");
+                    GUILayout.Label("KeyPrefix");
 
-
-                    foreach (var prefs in prefsSet)
+                    var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
+                    if (prefix != prefixNew)
                     {
-                        var elems = prefs.key.Split(separator).ToList();
-                        var (p, idx) = GetPrefixAndIdx(prefs.key, prefixLevel, parentPrefix);
+                        var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
 
+                        Undo.RecordObject(obj, "Change PrefsGUI Prefix");
 
-                        if (!string.IsNullOrEmpty(p))
+                        foreach (var prefs in prefsSet)
                         {
-
-                            elems[idx] = prefixNew; // replace
-                        }
-                        else
-                        {
-                            elems.Insert(idx, prefixNew);
+                            prefs.key = prefixWithSeparator + prefs.key.Split(separator).Last();
                         }
 
-                        prefs.key = string.Join(separator.ToString(), elems.Where(str => !string.IsNullOrEmpty(str)).ToArray());
+                        prefix = prefixNew;
+                        EditorUtility.SetDirty(obj);
                     }
-
-                    prefix = prefixNew;
-                    EditorUtility.SetDirty(obj);
                 }
-
 
                 GUILayout.FlexibleSpace();
             }

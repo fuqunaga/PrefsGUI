@@ -255,37 +255,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefsMinMaxInt:
-    key: PrefsMinMaxInt
+    _key: PrefsMinMaxInt
     defaultValue:
       min: 0
       max: 0
   prefsMinMaxFloat:
-    key: PrefsMinMaxFloat
+    _key: PrefsMinMaxFloat
     defaultValue:
       min: 0
       max: 0
   prefsMinMaxVector2:
-    key: PrefsMinMaxVector2
+    _key: PrefsMinMaxVector2
     defaultValue:
       min: {x: 0, y: 0}
       max: {x: 0, y: 0}
   prefsMinMaxVector3:
-    key: PrefsMinMaxVector3
+    _key: PrefsMinMaxVector3
     defaultValue:
       min: {x: 0, y: 0, z: 0}
       max: {x: 0, y: 0, z: 0}
   prefsMinMaxVector4:
-    key: PrefsMinMaxVector4
+    _key: PrefsMinMaxVector4
     defaultValue:
       min: {x: 0, y: 0, z: 0, w: 0}
       max: {x: 0, y: 0, z: 0, w: 0}
   prefsMinMaxVector2Int:
-    key: PrefsMinMaxVector2Int
+    _key: PrefsMinMaxVector2Int
     defaultValue:
       min: {x: 0, y: 0}
       max: {x: 0, y: 0}
   prefsMinMaxVector3Int:
-    key: PrefsMinMaxVector3Int
+    _key: PrefsMinMaxVector3Int
     defaultValue:
       min: {x: 0, y: 0, z: 0}
       max: {x: 0, y: 0, z: 0}
@@ -433,8 +433,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e9b87159a01f64da8cb763532f1382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefsVector2Int:
+    _key: PrefsVector2Int
+    defaultValue: {x: 0, y: 0}
+  prefsVector3Int:
+    _key: PrefsVector3Int
+    defaultValue: {x: 0, y: 0, z: 0}
   prefsRect:
-    key: PrefsRect
+    _key: PrefsRect
     defaultValue:
       serializedVersion: 2
       x: 0
@@ -442,25 +448,22 @@ MonoBehaviour:
       width: 0
       height: 0
   prefsBounds:
-    key: PrefsBounds
+    _key: PrefsBounds
     defaultValue:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0, y: 0, z: 0}
   prefsBoundsInt:
-    key: PrefsBoundsInt
+    _key: PrefsBoundsInt
     defaultValue:
       m_Position: {x: 0, y: 0, z: 0}
       m_Size: {x: 0, y: 0, z: 0}
   prefsIPEndPoint:
     prefs0:
-      key: PrefsIPEndPoint_address
+      _key: PrefsIPEndPoint_address
       defaultValue: localhost
     prefs1:
-      key: PrefsIPEndPoint_port
+      _key: PrefsIPEndPoint_port
       defaultValue: 10000
-  prefsList:
-    key: PrefsList
-    defaultValue: []
 --- !u!1 &898092348
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,38 +508,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefsBool:
-    key: PrefsBool
+    _key: PrefsBool
     defaultValue: 0
   prefsInt:
-    key: PrefsInt
+    _key: PrefsInt
     defaultValue: 0
   prefsFloat:
-    key: PrefsFloat
+    _key: PrefsFloat
     defaultValue: 0
   prefsString:
-    key: PrefsString
+    _key: PrefsString
     defaultValue: 
   prefsEnum:
-    key: PrefsEnum
+    _key: PrefsEnum
     defaultValue: 0
   prefsColor:
-    key: PrefsColor
+    _key: PrefsColor
     defaultValue: {r: 0, g: 0, b: 0, a: 0}
   prefsVector2:
-    key: PrefsVector2
+    _key: PrefsVector2
     defaultValue: {x: 0, y: 0}
   prefsVector3:
-    key: PrefsVector3
+    _key: PrefsVector3
     defaultValue: {x: 0, y: 0, z: 0}
   prefsVector4:
-    key: PrefsVector4
+    _key: PrefsVector4
     defaultValue: {x: 0, y: 0, z: 0, w: 0}
-  prefsVector2Int:
-    key: PrefsVector2Int
-    defaultValue: {x: 0, y: 0}
-  prefsVector3Int:
-    key: PrefsVector3Int
-    defaultValue: {x: 0, y: 0, z: 0}
+  prefsClass:
+    _key: PrefsClass
+    defaultValue:
+      name: 
+      intValue: 0
+  prefsList:
+    _key: PrefsList
+    defaultValue: []
 --- !u!1 &1408913453
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,3 +602,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _path: '%dataPath%/../../%productName%Prefs'
+--- !u!1 &2034953174
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2034953176}
+  - component: {fileID: 2034953175}
+  m_Layer: 0
+  m_Name: RapidGUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2034953175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034953174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f0506a520a6cc49be398953e3972f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closeFocusedWindowKey: 113
+  prefixLabelSlideButton: 1
+--- !u!4 &2034953176
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034953174}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
