@@ -131,7 +131,7 @@ namespace PrefsGUI
 
         #region GUI Implement
 
-        protected delegate InnerT GUIFunc(InnerT v);
+        protected delegate OuterT GUIFunc(OuterT v);
 
         protected bool DoGUIStrandard(GUIFunc func)
         {
@@ -175,11 +175,15 @@ namespace PrefsGUI
                 changed = true;
             }
 
-            var prev = _Get();
+            var prev = Get();
             var next = func(prev);
-            if (!Compare(prev, next))
+
+            var prevInner = ToInner(prev);
+            var nextInner = ToInner(next);
+            
+            if (!Compare(prevInner, nextInner))
             {
-                _Set(next);
+                _Set(nextInner);
                 changed = true;
             }
 

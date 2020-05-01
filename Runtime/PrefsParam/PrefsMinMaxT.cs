@@ -22,9 +22,8 @@ namespace PrefsGUI
         {
             return DoGUIStrandard((v) =>
             {
-                var minMax = ToOuter(v);
-                RGUI.MinMaxSlider(ref minMax.min, ref minMax.max, rangeMin, rangeMax, label ?? key);
-                return ToInner(minMax);
+                RGUI.MinMaxSlider(ref v.min, ref v.max, rangeMin, rangeMax, label ?? key);
+                return v;
             });
         }
 

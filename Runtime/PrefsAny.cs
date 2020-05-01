@@ -5,7 +5,8 @@ namespace PrefsGUI
     /// <summary>
     /// PrefsParam for user type that has new(), serializable by Unity(JsonUtility)
     /// </summary>
-    public abstract class PrefsAny<OuterT> : PrefsParamOuterInner<OuterT, string> where OuterT : new()
+    public abstract class PrefsAny<OuterT> : PrefsParamOuterInner<OuterT, string> 
+        where OuterT : new()
     {
         public PrefsAny(string key, OuterT defaultValue = default) : base(key, defaultValue)
         {
@@ -30,7 +31,7 @@ namespace PrefsGUI
 
         public override bool DoGUI(string label = null)
         {
-            return DoGUIStrandard((v) => ToInner(RGUI.Field(Get(), label ?? key)));
+            return DoGUIStrandard((v) => RGUI.Field(v, label ?? key));
         }
     }
 }
