@@ -97,6 +97,11 @@ namespace PrefsGUI.Example
             prefsVector4.DoGUISlider();
             prefsClass.DoGUI();
             prefsList.DoGUI();
+
+            if (prefsList.Count > 0)
+            {
+                prefsList.DoGUIAt(0, "PrefsList element at 0");
+            }
         }
 
         void Update()

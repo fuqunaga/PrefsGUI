@@ -133,7 +133,7 @@ namespace PrefsGUI
 
         protected delegate OuterT GUIFunc(OuterT v);
 
-        protected bool DoGUIStrandard(GUIFunc func)
+        protected bool DoGUIStrandard(GUIFunc func, bool enableDefaultButton = true)
         {
             var customLabel = GetCustomLabel();
             if (customLabel != null) RGUI.BeginCustomLabel(customLabel);
@@ -143,7 +143,10 @@ namespace PrefsGUI
             using (new GUILayout.HorizontalScope())
             {
                 changed = DoGUICheckChanged(key, func);
-                changed |= DoGUIDefaultButton();
+                if (enableDefaultButton)
+                {
+                    changed |= DoGUIDefaultButton();
+                }
             }
 
             if (synced) RGUI.EndColor();
@@ -155,9 +158,7 @@ namespace PrefsGUI
         // public for Custom GUI
         public bool DoGUIDefaultButton()
         {
-            var label = Compare(_Get(), ToInner(defaultValue)) ? "default" : "<color=red>default</color>";
-
-            var ret = GUILayout.Button(label, GUILayout.ExpandWidth(false));
+            var ret = DoGUIDefaultButton(Compare(_Get(), ToInner(defaultValue)));
             if (ret)
             {
                 Set(defaultValue);
@@ -165,6 +166,14 @@ namespace PrefsGUI
 
             return ret;
         }
+
+        public static bool DoGUIDefaultButton(bool isDefault)
+        {
+            var label = isDefault ? "default" : "<color=red>default</color>";
+
+            return GUILayout.Button(label, GUILayout.ExpandWidth(false));
+        }
+
 
         protected bool DoGUICheckChanged(string key, GUIFunc func)
         {
@@ -180,7 +189,7 @@ namespace PrefsGUI
 
             var prevInner = ToInner(prev);
             var nextInner = ToInner(next);
-            
+
             if (!Compare(prevInner, nextInner))
             {
                 _Set(nextInner);
