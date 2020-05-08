@@ -33,6 +33,8 @@ namespace PrefsGUI
             {
                 var ret = list[idx];
                 ret = RGUI.Field(ret, label);
+
+                // defaultButton
                 if (idx < defaultValueCount)
                 {
                     var dv = defaultValue[idx];
@@ -52,15 +54,18 @@ namespace PrefsGUI
 
             var prevInner = PrefsAnyUtility.ToInner(prev);
 
-            var next = DoGUIAt_(Get(), idx, label);
-            
-            var changed = prevInner != PrefsAnyUtility.ToInner(next);
-            if (changed) list[idx] = next;
+            var next = DoGUIAt_(list, idx, label);
+            var nextInner = PrefsAnyUtility.ToInner(next);
+
+            var changed = (prevInner != nextInner);
+            if (changed)
+            {
+                list[idx] = next;
+                Set(list);
+            }
 
             return changed;
         }
-
-
 
 
 

@@ -185,9 +185,9 @@ namespace PrefsGUI
             }
 
             var prev = Get();
-            var next = func(prev);
-
             var prevInner = ToInner(prev);
+
+            var next = func(prev);
             var nextInner = ToInner(next);
 
             if (!Compare(prevInner, nextInner))
