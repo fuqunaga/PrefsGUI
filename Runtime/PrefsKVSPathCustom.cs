@@ -17,24 +17,41 @@ namespace PrefsGUI.KVS
     public class PrefsKVSPathCustom : MonoBehaviour, IPrefsKVSPath
     {
         [SerializeField]
+        protected ulong platformMask = MakePlatformMask(RuntimePlatform.WindowsEditor, RuntimePlatform.WindowsPlayer);
+
+
+        [SerializeField]
         protected string _path = "%dataPath%/../../%productName%Prefs";
+
+
+        static ulong MakePlatformMask(params RuntimePlatform[] platforms)
+        {
+            return platforms.Aggregate((ulong)0, (mask, platform) => mask | ((ulong)1 << (int)platform));
+        }
+
 
         public string path
         {
             get
             {
-                var p = _path
-                    .Replace("%dataPath%", Application.dataPath)
-                    .Replace("%companyName%", Application.companyName)
-                    .Replace("%productName%", Application.productName);
+                var enable = (platformMask & MakePlatformMask(Application.platform)) != 0;
+                string ret = null;
 
-                var matches = Regex.Matches(p, @"%\w+?%").Cast<Match>();
-                if ( matches.Any())
+                if (enable)
                 {
-                    matches.ToList().ForEach(m => p = p.Replace(m.Value, Environment.GetEnvironmentVariable(m.Value.Trim('%'))));
+                    ret = _path
+                        .Replace("%dataPath%", Application.dataPath)
+                        .Replace("%companyName%", Application.companyName)
+                        .Replace("%productName%", Application.productName);
+
+                    var matches = Regex.Matches(ret, @"%\w+?%").Cast<Match>();
+                    if (matches.Any())
+                    {
+                        matches.ToList().ForEach(m => ret = ret.Replace(m.Value, Environment.GetEnvironmentVariable(m.Value.Trim('%'))));
+                    }
                 }
-                
-                return p;
+
+                return ret;
             }
         }
     }
