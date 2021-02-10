@@ -45,13 +45,16 @@ namespace PrefsGUI
     }
 
     [Serializable]
-    public class PrefsInt : PrefsParam<int>
+    public class PrefsInt : PrefsSlider<int>
     {
+        public override int defaultMin => default;
+
+        public override int defaultMax => 100;
+
         public PrefsInt(string key, int defaultValue = default) : base(key, defaultValue) { }
 
-        public bool DoGUISlider(string label = null) => DoGUISlider(0, 100, label);
-        public bool DoGUISlider(int max, string label = null) => DoGUISlider(0, max, label);
-        public bool DoGUISlider(int min, int max, string label = null)
+
+        public override bool DoGUISlider(int min, int max, string label = null)
         {
             return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
         }
@@ -82,13 +85,15 @@ namespace PrefsGUI
     }
 
     [Serializable]
-    public class PrefsFloat : PrefsParam<float>
+    public class PrefsFloat : PrefsSlider<float>
     {
         public PrefsFloat(string key, float defaultValue = default) : base(key, defaultValue) { }
 
-        public bool DoGUISlider(string label = null) => DoGUISlider(0f, 1f, label);
-        public bool DoGUISlider(float max, string label = null) => DoGUISlider(0f, max, label);
-        public bool DoGUISlider(float min, float max, string label = null)
+        public override float defaultMin => default;
+
+        public override float defaultMax => 1f;
+
+        public override bool DoGUISlider(float min, float max, string label = null)
         {
             return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
         }
