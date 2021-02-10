@@ -10,6 +10,8 @@ namespace PrefsGUI
         [SerializeField]
         protected OuterT defaultValue;
 
+        public OuterT DefaultValue => defaultValue;
+
         public PrefsParamOuter(string key, OuterT defaultValue = default) : base(key)
         {
             this.defaultValue = defaultValue;
@@ -26,6 +28,13 @@ namespace PrefsGUI
         public abstract OuterT Get();
 
         public abstract void Set(OuterT v);
+
+        #endregion
+
+
+        #region override
+
+        public override void ResetToDefault() => Set(DefaultValue);
 
         #endregion
     }

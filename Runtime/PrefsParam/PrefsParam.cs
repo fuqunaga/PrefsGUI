@@ -43,6 +43,7 @@ namespace PrefsGUI
         public abstract bool DoGUI(string label = null);
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
+        public abstract void ResetToDefault();
 
         #endregion
 

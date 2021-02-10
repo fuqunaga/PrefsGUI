@@ -161,7 +161,7 @@ namespace PrefsGUI
             var ret = DoGUIDefaultButton(Compare(_Get(), ToInner(defaultValue)));
             if (ret)
             {
-                Set(defaultValue);
+                ResetToDefault();
             }
 
             return ret;
