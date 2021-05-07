@@ -11,13 +11,14 @@ public PrefsBool prefsBool = new PrefsBool("PrefsBool");
 public PrefsInt prefsInt = new PrefsInt("PrefsInt");
 public PrefsFloat prefsFloat = new PrefsFloat("PrefsFloat");
 public PrefsString prefsString = new PrefsString("PrefsString");
-public PrefsEnum prefsEnum = new PrefsEnum("PrefsEnum");
+public PrefsParam<EnumSample> prefsEnum = new PrefsParam<EnumSample>("PrefsEnum");
 public PrefsColor prefsColor = new PrefsColor("PrefsColor");
 public PrefsVector2 prefsVector2 = new PrefsVector2("PrefsVector2");
 public PrefsVector3 prefsVector3 = new PrefsVector3("PrefsVector3");
 public PrefsVector4 prefsVector4 = new PrefsVector4("PrefsVector4");
-public PrefsClass prefsClass = new PrefsClass("PrefsClass");
-public PrefsList prefsList = new PrefsList("PrefsList");
+public PrefsAny<CustomClass> prefsClass = new PrefsAny<CustomClass>("PrefsClass");
+public PrefsList<CustomClass> prefsList = new PrefsList<CustomClass>("PrefsList");
+
 
 public void DoGUI()
 {

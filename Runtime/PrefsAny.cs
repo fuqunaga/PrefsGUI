@@ -1,11 +1,13 @@
 ﻿using RapidGUI;
+using System;
 
 namespace PrefsGUI
 {
     /// <summary>
     /// PrefsParam for user type that has new(), serializable by Unity(JsonUtility)
     /// </summary>
-    public abstract class PrefsAny<OuterT> : PrefsParamOuterInner<OuterT, string> 
+    [Serializable]
+    public class PrefsAny<OuterT> : PrefsParamOuterInner<OuterT, string> 
         where OuterT : new()
     {
         public PrefsAny(string key, OuterT defaultValue = default) : base(key, defaultValue)

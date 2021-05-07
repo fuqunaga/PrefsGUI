@@ -1,6 +1,10 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [2.2.0] - 2021.5.07
+### Added
+- PrefsParam,PrefsAny,PrefsList - UnityEngine.Serializable attribute to support generic serialization.
+
 ## [2.1.0] - 2020.1.20
 ### Added
 - PrefsSearch - Display loaded PrefsParams with partial key match
