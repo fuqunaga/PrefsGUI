@@ -24,7 +24,28 @@ namespace PrefsGUI
         public override bool DoGUI(string label = null)
         {
             return DoGUIStrandard(
-                (v) => RGUI.ListField(v, label ?? key, (list, idx, elemLabel) => DoGUIAt_(list, idx, elemLabel)),
+                (v) => RGUI.ListField(
+                    v, 
+                    label ?? key, 
+                    customElementGUI: (list, idx, elemLabel) => DoGUIAt_(list, idx, elemLabel),
+                    customLabelRightFunc: (list) =>
+                    {
+                        list = RGUI.ListLabelRightFunc(list);
+                        if (DoGUIDefaultButton(defaultValueCount == list.Count))
+                        {
+                            var listCount = list.Count;
+                            if ( defaultValueCount > listCount)
+                            {
+                                list.AddRange(defaultValue.GetRange(listCount, defaultValueCount - listCount));
+                            }
+                            else if ( defaultValueCount < listCount)
+                            {
+                                list.RemoveRange(defaultValueCount, listCount - defaultValueCount);
+                            }
+                        }
+                        return list;
+                    }
+                ),
                 false);
         }
 
