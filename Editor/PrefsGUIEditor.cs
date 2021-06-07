@@ -64,6 +64,7 @@ namespace PrefsGUI.Editor
 
 
         bool showComponent;
+        string searchWord = "";
 
         protected override void OnGUIInternal()
         {
@@ -96,11 +97,14 @@ namespace PrefsGUI.Editor
 
             GUILayout.Space(8f);
 
+            searchWord = RGUI.Field(searchWord, "Search");
+            var searchWordLower = searchWord.ToLower();
+
             using (new GUILayout.HorizontalScope())
             {
-                GUILayout.Label("Order");
+                RGUI.PrefixLabel("Order");
 
-                order = (Order)GUILayout.Toolbar((int)order, System.Enum.GetNames(typeof(Order)));
+                order = (Order)GUILayout.Toolbar((int)order, Enum.GetNames(typeof(Order)));
                 EditorGUILayout.Space();
             }
 
@@ -111,44 +115,66 @@ namespace PrefsGUI.Editor
 
             GUILayout.Space(8f);
 
+            // horizontal line
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
             extension?.GUIHeadLine();
 
             switch (order)
             {
                 case Order.AtoZ:
-                    scrollViewAtoZ.DoGUI(prefsAll.OrderBy(p => p.key), (prefs) =>
                     {
-                        using (new GUILayout.HorizontalScope())
+                        var items = prefsAll.Where(p => IsContainWord(p.key, searchWordLower)).OrderBy(p => p.key);
+                        scrollViewAtoZ.DoGUI(items, (prefs) =>
                         {
-                            extension?.GUIPrefsLeft(prefs);
-                            prefs.DoGUI();
-                        }
-                    });
+                            using (new GUILayout.HorizontalScope())
+                            {
+                                extension?.GUIPrefsLeft(prefs);
+                                prefs.DoGUI();
+                            }
+                        });
+                    }
                     break;
 
                 case Order.GameObject:
                     {
                         scrollViewGameObject.DoGUI(ObjectPrefsUtility.objPrefsList, (gp) =>
                         {
-                            var prefixGo = LabelWithEditPrefix(gp.obj, gp.prefsList, !showComponent);
+                            var objNameHit = IsContainWord(gp.obj.name, searchWordLower);
+                            var componentNameHit = gp.holders.Any(holder => IsComponentContainWord(holder.parent, searchWordLower));
+                            var prefsHit = gp.prefsList.Any(p => IsContainWord(p.key, searchWordLower));
 
-                            using (new RGUI.IndentScope(16))
+                            if (objNameHit || (showComponent && componentNameHit) || prefsHit)
                             {
-                                foreach (var holder in gp.holders)
-                                {
-                                    if (showComponent)
-                                    {
-                                        LabelWithEditPrefix(holder.parent, holder.prefsSet, true);
-                                    }
+                                var prefixGo = LabelWithEditPrefix(gp.obj, gp.prefsList, !showComponent);
 
-                                    using (new RGUI.IndentScope(16))
+                                using (new RGUI.IndentScope(16))
+                                {
+                                    foreach (var holder in gp.holders)
                                     {
-                                        foreach (var prefs in holder.prefsSet)
+                                        bool needFilter = !objNameHit;
+
+                                        if (showComponent)
                                         {
-                                            using (new GUILayout.HorizontalScope())
+                                            LabelWithEditPrefix(holder.parent, holder.prefsSet, true);
+
+                                            needFilter &= !IsComponentContainWord(holder.parent, searchWordLower);
+                                        }
+
+                                        var prefsSet = needFilter
+                                            ? holder.prefsSet.Where(p => IsContainWord(p.key, searchWordLower))
+                                            : holder.prefsSet;
+
+
+                                        using (new RGUI.IndentScope(16))
+                                        {
+                                            foreach (var prefs in prefsSet)
                                             {
-                                                extension?.GUIPrefsLeft(prefs);
-                                                prefs.DoGUI();
+                                                using (new GUILayout.HorizontalScope())
+                                                {
+                                                    extension?.GUIPrefsLeft(prefs);
+                                                    prefs.DoGUI();
+                                                }
                                             }
                                         }
                                     }
@@ -157,6 +183,13 @@ namespace PrefsGUI.Editor
                         });
                     }
                     break;
+            }
+
+            static bool IsContainWord(string word, string searchWordLower) => word.ToLower().Contains(searchWordLower);
+            static bool IsComponentContainWord(UnityEngine.Object obj, string searchWordLower)
+            {
+                return obj.name.ToLower().Contains(searchWordLower)
+                    || obj.GetType().ToString().ToLower().Contains(searchWordLower);
             }
         }
 
