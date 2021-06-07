@@ -16,6 +16,29 @@ namespace PrefsGUI.KVS
     /// </summary>
     public class PrefsKVSPathCustom : MonoBehaviour, IPrefsKVSPath
     {
+        #region Static
+
+        public static ulong MakePlatformMask(params RuntimePlatform[] platforms) => platforms.Aggregate((ulong)0, (mask, platform) => mask | ((ulong)1 << (int)platform));
+
+        public string ReplaceMagicWord(string path)
+        {
+            var ret = path
+                .Replace("%dataPath%", Application.dataPath)
+                .Replace("%companyName%", Application.companyName)
+                .Replace("%productName%", Application.productName);
+
+            var matches = Regex.Matches(ret, @"%\w+?%").Cast<Match>();
+            foreach (var m in matches)
+            {
+                ret = ret.Replace(m.Value, Environment.GetEnvironmentVariable(m.Value.Trim('%')));
+            }
+
+            return ret;
+        }
+
+        #endregion
+
+
         [SerializeField]
         protected ulong platformMask = MakePlatformMask(RuntimePlatform.WindowsEditor, RuntimePlatform.WindowsPlayer);
 
@@ -23,32 +46,19 @@ namespace PrefsGUI.KVS
         [SerializeField]
         protected string _path = "%dataPath%/../../%productName%Prefs";
 
-
-        static ulong MakePlatformMask(params RuntimePlatform[] platforms)
-        {
-            return platforms.Aggregate((ulong)0, (mask, platform) => mask | ((ulong)1 << (int)platform));
-        }
+        protected virtual string rawPath => _path;
 
 
         public string path
         {
             get
             {
-                var enable = (platformMask & MakePlatformMask(Application.platform)) != 0;
                 string ret = null;
 
+                var enable = (platformMask & MakePlatformMask(Application.platform)) != 0;
                 if (enable)
                 {
-                    ret = _path
-                        .Replace("%dataPath%", Application.dataPath)
-                        .Replace("%companyName%", Application.companyName)
-                        .Replace("%productName%", Application.productName);
-
-                    var matches = Regex.Matches(ret, @"%\w+?%").Cast<Match>();
-                    if (matches.Any())
-                    {
-                        matches.ToList().ForEach(m => ret = ret.Replace(m.Value, Environment.GetEnvironmentVariable(m.Value.Trim('%'))));
-                    }
+                    ret = ReplaceMagicWord(rawPath);
                 }
 
                 return ret;

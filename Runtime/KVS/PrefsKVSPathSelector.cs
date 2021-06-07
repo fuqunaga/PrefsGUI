@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PrefsGUI.KVS
 {
-    interface IPrefsKVSPath
+    public interface IPrefsKVSPath
     {
         string path { get; }
     }
