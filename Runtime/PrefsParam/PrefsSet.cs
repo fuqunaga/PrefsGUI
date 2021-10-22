@@ -12,9 +12,9 @@ namespace PrefsGUI
         where Prefs0 : PrefsParamOuter<Outer0>
         where Prefs1 : PrefsParamOuter<Outer1>
     {
-        protected string key;
-        public Prefs0 prefs0;
-        public Prefs1 prefs1;
+        public readonly string key;
+        public readonly Prefs0 prefs0;
+        public readonly Prefs1 prefs1;
 
         protected abstract string[] paramNames { get; }
 
