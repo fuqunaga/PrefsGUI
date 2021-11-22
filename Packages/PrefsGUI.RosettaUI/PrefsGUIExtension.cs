@@ -4,17 +4,18 @@ using System.Linq;
 using System.Reflection;
 using RosettaUI;
 using UnityEngine;
+using Binder = RosettaUI.Binder;
 
 namespace PrefsGUI.RosettaUI
 {
-    public static class PrefsGUIExtensions
+    public static class PrefsGUIExtension
     {
         private static readonly Dictionary<Type, MethodInfo> CreateMinMaxSliderMethodTable =
             new Dictionary<Type, MethodInfo>();
 
 
         // TODO: dirty way. avoid boxing
-        private static readonly Dictionary<Type, (FieldInfo, FieldInfo)?> _minMaxFiedInfoTable =
+        private static readonly Dictionary<Type, (FieldInfo, FieldInfo)?> MinMaxFieldInfoTable =
             new Dictionary<Type, (FieldInfo, FieldInfo)?>();
 
         public static Element CreateElement<T>(this PrefsParamOuter<T> prefs, Action<T> onValueChanged = null)
@@ -70,10 +71,19 @@ namespace PrefsGUI.RosettaUI
             return CreateSlider(prefs, label, minGetter, maxGetter, onValueChanged);
         }
 
-        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, T min, T max,
-            Action<T> onValueChanged = null)
+        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, T max, Action<T> onValueChanged = null)
+        {
+            return CreateSlider<T>(prefs, null, default, max, onValueChanged);
+        }
+        
+        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, T min, T max, Action<T> onValueChanged = null)
         {
             return CreateSlider(prefs, null, min, max, onValueChanged);
+        }
+        
+        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label, T max, Action<T> onValueChanged = null)
+        {
+            return CreateSlider(prefs, label, default, max, onValueChanged);
         }
 
         public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label, T min, T max,
@@ -94,7 +104,7 @@ namespace PrefsGUI.RosettaUI
             {
                 if (!CreateMinMaxSliderMethodTable.TryGetValue(type, out var mi))
                 {
-                    mi = typeof(PrefsGUIExtensions)
+                    mi = typeof(PrefsGUIExtension)
                         .GetMethod(nameof(_CreateMinMaxSlider), BindingFlags.Static | BindingFlags.NonPublic)
                         ?.MakeGenericMethod(type, valueType);
 
@@ -133,26 +143,29 @@ namespace PrefsGUI.RosettaUI
         {
             return UI.Slider(
                 label ?? prefs.key,
-                () => prefs.Get(),
+                Binder.Create(
+                    prefs.Get,
+                    v =>
+                    {
+                        prefs.Set(v);
+                        onValueChanged?.Invoke(v);
+                    }
+                ),
                 minGetter,
-                maxGetter,
-                v =>
-                {
-                    prefs.Set(v);
-                    onValueChanged?.Invoke(v);
-                });
+                maxGetter
+            );
         }
 
         private static Element _CreateMinMaxSlider<T, TValue>(PrefsParamOuter<T> prefs, IGetter<TValue> minGetter,
             IGetter<TValue> maxGetter, Action<T> onValueChanged)
         {
             var type = typeof(T);
-            if (!_minMaxFiedInfoTable.TryGetValue(type, out var pair))
+            if (!MinMaxFieldInfoTable.TryGetValue(type, out var pair))
             {
                 var min = typeof(T).GetField("min");
                 var max = typeof(T).GetField("max");
 
-                _minMaxFiedInfoTable[type] = pair = (min, max);
+                MinMaxFieldInfoTable[type] = pair = (min, max);
             }
 
             var (minField, maxField) = pair.Value;
@@ -165,18 +178,19 @@ namespace PrefsGUI.RosettaUI
 
             return UI.MinMaxSlider(
                 prefs.key,
-                () => getFunc(),
-                minGetter,
-                maxGetter,
-                v =>
-                {
-                    var minMax = (T) Activator.CreateInstance(typeof(T));
-                    minField.SetValue(minMax, v.min);
-                    maxField.SetValue(minMax, v.max);
+                Binder.Create(
+                    () => getFunc(),
+                    v => {
+                        var minMax = (T) Activator.CreateInstance(typeof(T));
+                        minField.SetValue(minMax, v.min);
+                        maxField.SetValue(minMax, v.max);
 
-                    prefs.Set(minMax);
-                    onValueChanged?.Invoke(minMax);
-                });
+                        prefs.Set(minMax);
+                        onValueChanged?.Invoke(minMax);
+                    }),
+                minGetter,
+                maxGetter
+            );
         }
 
 

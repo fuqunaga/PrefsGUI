@@ -28,9 +28,9 @@ namespace PrefsGUI.RosettaUI
                     var prefsParamOuterType = GetPrefsParamOuterType(type);
                     var outerType = prefsParamOuterType.GetGenericArguments().First();
 
-                    var methodInfo = typeof(PrefsGUIExtensions)
+                    var methodInfo = typeof(PrefsGUIExtension)
                         .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                        .Where(mi => mi.Name == nameof(PrefsGUIExtensions.CreateElement) && mi.GetParameters().Length == 2)
+                        .Where(mi => mi.Name == nameof(PrefsGUIExtension.CreateElement) && mi.GetParameters().Length == 2)
                         .Select(mi => mi.MakeGenericMethod(outerType))
                         .FirstOrDefault();
 

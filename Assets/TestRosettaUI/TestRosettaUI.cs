@@ -4,15 +4,15 @@ using RosettaUI.UIToolkit;
 
 namespace PrefsGUI.RosettaUI.Example
 {
-    public class TestRosettaUI : RosettaUI_UIToolkitRoot
+    public class TestRosettaUI : RosettaUIRootUIToolkit
     {
         private void Start()
         {
             var window = UI.Window(
                 "RosettaUI",
-                UI.ElementCreatorWindowLauncher<PrefsGUIExample_Part1>("Part1"),
-                UI.ElementCreatorWindowLauncher<PrefsGUIExample_Part2>("Part2"),
-                UI.ElementCreatorWindowLauncher<PrefsGUIExample_Part3>("Part3")
+                UI.WindowLauncher<PrefsGUIExample_Part1>("Part1"),
+                UI.WindowLauncher<PrefsGUIExample_Part2>("Part2"),
+                UI.WindowLauncher<PrefsGUIExample_Part3>("Part3")
             );
 
             Build(window);
