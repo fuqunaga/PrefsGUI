@@ -44,6 +44,13 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
     [SerializeField]
     List<PrefsTexEnv> _texEnvs = new List<PrefsTexEnv>();
 
+    public List<PrefsColor> Colors => _colors;
+    public List<PrefsVector4> Vectors => _vectors;
+    public List<PrefsFloat> Floats => _floats;
+    public List<PrefsFloat> Ranges => _ranges;
+    public List<PrefsTexEnv> TexEnvs => _texEnvs;
+
+    public bool IsEnable => _material != null && _propertySet.Any();
 
     string keyPrefix
     {
@@ -55,7 +62,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
     }
 
     string PropertyNameToKey(string n) => keyPrefix + n;
-    string KeyToPropertyName(string key) => key.Replace(keyPrefix, "");
+    public string KeyToPropertyName(string key) => key.Replace(keyPrefix, "");
 
     public void Start()
     {
@@ -93,7 +100,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
         _ranges.RemoveAll(r => !rangeKeys.Contains(r.key));
         _texEnvs.RemoveAll(t => !texEnvKeys.Contains(t.key));
 
-        _colors.AddRange(colorKeys.Except(_colors.Select(c => c.key)).Select(n => new PrefsColor(n, _material.GetColor(KeyToPropertyName(n)))));
+        _colors.AddRange(colorKeys.Except(Colors.Select(c => c.key)).Select(n => new PrefsColor(n, _material.GetColor(KeyToPropertyName(n)))));
         _vectors.AddRange(vectorKeys.Except(_vectors.Select(v => v.key)).Select(n => new PrefsVector4(n, _material.GetVector(KeyToPropertyName(n)))));
         _floats.AddRange(floatKeys.Except(_floats.Select(f => f.key)).Select(n => new PrefsFloat(n, _material.GetFloat(KeyToPropertyName(n)))));
         _ranges.AddRange(rangeKeys.Except(_ranges.Select(r => r.key)).Select(n => new PrefsFloat(n, _material.GetFloat(KeyToPropertyName(n)))));
@@ -107,11 +114,11 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
 #endif
     }
 
-    void UpdateMaterial()
+    public void UpdateMaterial()
     {
-        if ((_material != null) && _propertySet.Any())
+        if (IsEnable)
         {
-            _colors.ForEach(c => _material.SetColor(KeyToPropertyName(c.key), c.Get()));
+            Colors.ForEach(c => _material.SetColor(KeyToPropertyName(c.key), c.Get()));
             _vectors.ForEach(v => _material.SetVector(KeyToPropertyName(v.key), v.Get()));
             _floats.ForEach(f => _material.SetFloat(KeyToPropertyName(f.key), f.Get()));
             _ranges.ForEach(r => _material.SetFloat(KeyToPropertyName(r.key), r.Get()));
@@ -130,12 +137,12 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
 
     public void DoGUI(bool labelEnable = true)
     {
-        if ((_material != null) && _propertySet.Any())
+        if (IsEnable)
         {
             if (labelEnable) GUILayout.Label(_material.name);
             using (new RGUI.IndentScope())
             {
-                _colors.ForEach(c => c.DoGUI(KeyToPropertyName(c.key)));
+                Colors.ForEach(c => c.DoGUI(KeyToPropertyName(c.key)));
                 _vectors.ForEach(v =>
                 {
                     var n = KeyToPropertyName(v.key);
