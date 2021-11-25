@@ -115,7 +115,7 @@ namespace PrefsGUI.Example
             return UI.Column(
                 UI.Slider(() => intValue),
                 prefsBool.CreateElement(),
-                prefsInt.CreateElement((v) => Debug.Log("CreateElement: Changed. " + v)),
+                prefsInt.CreateElement().RegisterValueChangeCallback(() => Debug.Log("CreateElement: Changed. " + prefsInt.Get())),
                 prefsFloat.CreateElement(),
                 prefsFloat.CreateSlider(),
                 prefsString.CreateElement(),

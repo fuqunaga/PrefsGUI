@@ -46,7 +46,7 @@ namespace PrefsGUI.Example
         public Element CreateElement()
         {
             return UI.Column(
-                prefsMinMaxInt.CreateSlider(),
+                prefsMinMaxInt.CreateSlider(10),
                 prefsMinMaxFloat.CreateSlider(),
                 prefsMinMaxVector2.CreateSlider(),
                 prefsMinMaxVector3.CreateSlider(),

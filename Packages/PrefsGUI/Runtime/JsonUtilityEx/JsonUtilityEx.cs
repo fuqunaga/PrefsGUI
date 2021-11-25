@@ -54,9 +54,8 @@ namespace PrefsGUI
             return obj;
         }
 
-        
-        
-        protected abstract class ValueWrapper
+
+        internal abstract class ValueWrapper
         {
             public static Type GetWrapperType(Type type) => typeof(ValueWrapper<>).MakeGenericType(type);
 
@@ -81,7 +80,7 @@ namespace PrefsGUI
             public abstract object obj { get; }
         }
 
-        protected class ValueWrapper<T> : ValueWrapper
+        internal class ValueWrapper<T> : ValueWrapper
         {
             public T value;
             public override object obj => value;
