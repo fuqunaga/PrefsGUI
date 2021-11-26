@@ -58,7 +58,7 @@ namespace PrefsGUI.RosettaUI
         {
             return UI.Row(
                 _CreateMinMaxSlider(prefs,label, minGetter, maxGetter),
-                prefs.CreateDefaultButton()
+                prefs.CreateDefaultButtonElement()
             );
         }
 

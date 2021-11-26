@@ -20,7 +20,7 @@ namespace PrefsGUI.RosettaUI
                     prefs.Get,
                     prefs.Set
                 ),
-                prefs.CreateDefaultButton()
+                prefs.CreateDefaultButtonElement()
             );
         }
 
@@ -39,7 +39,7 @@ namespace PrefsGUI.RosettaUI
         #endregion
         
         
-        public static Element CreateDefaultButton(this PrefsParam prefs)
+        public static Element CreateDefaultButtonElement(this PrefsParam prefs)
         {
             var button = UI.Button(
                 "default",
