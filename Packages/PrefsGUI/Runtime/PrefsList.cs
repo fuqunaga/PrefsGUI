@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -114,6 +115,11 @@ namespace PrefsGUI
         }
         public IEnumerator<T> GetEnumerator() => Get().GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => Get().GetEnumerator();
+
+        #endregion
+        
+        #region List like
+        public void RemoveAll(Predicate<T> predicate) => UpdateValue(v => v.RemoveAll(predicate));
 
         #endregion
     }
