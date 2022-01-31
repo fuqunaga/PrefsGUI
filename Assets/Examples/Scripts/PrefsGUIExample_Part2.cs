@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using PrefsGUI.RosettaUI;
 using RapidGUI;
 using RosettaUI;
@@ -44,7 +43,6 @@ namespace PrefsGUI.Example
                 prefsBounds.CreateElement(),
                 prefsBounds.CreateSlider(),
                 prefsBoundsInt.CreateElement(),
-                prefsBoundsInt.CreateSlider(),
                 prefsIPEndPoint.CreateElement()
             );
         }

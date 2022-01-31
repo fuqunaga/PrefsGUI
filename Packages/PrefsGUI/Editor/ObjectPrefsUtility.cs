@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
+
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -87,7 +87,7 @@ namespace PrefsGUI.Editor
         static bool DoUpdateGoPrefs()
         {
             var gameObjects = Resources.FindObjectsOfTypeAll<GameObject>()
-                .Where(go => PrefabStageUtility.GetPrefabStage(go) == null); // ignore GameObject in  PrefabStage
+                .Where(go => UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(go) == null); // ignore GameObject in  PrefabStage
 
             var prefabSources = new HashSet<GameObject>(gameObjects.Where(IsInScene).Select(PrefabUtility.GetCorrespondingObjectFromOriginalSource));
 

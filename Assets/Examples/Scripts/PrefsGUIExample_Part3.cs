@@ -46,13 +46,13 @@ namespace PrefsGUI.Example
         public Element CreateElement()
         {
             return UI.Column(
-                prefsMinMaxInt.CreateSlider(10),
-                prefsMinMaxFloat.CreateSlider(),
-                prefsMinMaxVector2.CreateSlider(),
-                prefsMinMaxVector3.CreateSlider(),
-                prefsMinMaxVector4.CreateSlider(),
-                prefsMinMaxVector2Int.CreateSlider(),
-                prefsMinMaxVector3Int.CreateSlider()
+                prefsMinMaxInt.CreateMinMaxSlider(),
+                prefsMinMaxFloat.CreateMinMaxSlider(),
+                prefsMinMaxVector2.CreateMinMaxSlider(),
+                prefsMinMaxVector3.CreateMinMaxSlider(),
+                prefsMinMaxVector4.CreateMinMaxSlider(),
+                prefsMinMaxVector2Int.CreateMinMaxSlider(),
+                prefsMinMaxVector3Int.CreateMinMaxSlider()
             );
         }
     }

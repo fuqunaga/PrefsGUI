@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using RosettaUI;
-using UnityEngine;
-using Binder = RosettaUI.Binder;
+﻿using RosettaUI;
 
 namespace PrefsGUI.RosettaUI
 {
@@ -49,7 +43,6 @@ namespace PrefsGUI.RosettaUI
                 _CreateSlider(prefs, label, minGetter, maxGetter),
                 prefs.CreateDefaultButtonElement()
             );
-            
         }
 
         private static Element _CreateSlider<T>(PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)
