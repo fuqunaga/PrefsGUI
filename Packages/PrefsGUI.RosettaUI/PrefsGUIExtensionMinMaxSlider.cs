@@ -16,7 +16,36 @@ namespace PrefsGUI.RosettaUI
             );
         }
 
-
+        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, T max)
+            where TMinMax : RapidGUI.MinMax<T>, new()
+        {
+            return CreateMinMaxSlider(prefs, null, max);
+        }
+        
+        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, T min, T max)
+            where TMinMax : RapidGUI.MinMax<T>, new()
+        {
+            return CreateMinMaxSlider(prefs, null, min, max);
+        }
+        
+        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, LabelElement label, T max)
+            where TMinMax : RapidGUI.MinMax<T>, new()
+        {
+            return CreateMinMaxSlider(prefs, label, default, max);
+        }
+        
+        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, LabelElement label, T min, T max)
+            where TMinMax : RapidGUI.MinMax<T>, new()
+        {
+            var range = new TMinMax()
+            {
+                min = min,
+                max = max
+            };
+            
+            return CreateMinMaxSlider(prefs, label, range);
+        }
+        
         public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, LabelElement label,
             TMinMax range)
             where TMinMax : RapidGUI.MinMax<T>, new()
