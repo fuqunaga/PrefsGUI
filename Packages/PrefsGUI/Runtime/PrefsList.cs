@@ -1,8 +1,7 @@
-﻿using RapidGUI;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using RapidGUI;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -15,13 +14,34 @@ namespace PrefsGUI
     {
         public PrefsList(string key, List<T> defaultValue = default) : base(key, defaultValue) { }
 
-        protected int defaultValueCount => defaultValue?.Count ?? 0;
+        public int DefaultValueCount => defaultValue?.Count ?? 0;
 
         protected virtual bool IsEqual(T lhs, T rhs)
         {
             return PrefsAnyUtility.ToInner(lhs) == PrefsAnyUtility.ToInner(rhs);
         }
 
+        public bool IsDefaultAt(int idx)
+        {
+            if (idx < DefaultValueCount)
+            {
+                var current = Get()[idx];
+                return IsEqual(current, defaultValue[idx]);
+            }
+
+            return false;
+        }
+
+        public void ResetToDefaultAt(int idx)
+        {
+            if (idx < DefaultValueCount)
+            {
+                var list = Get();
+                list[idx] = defaultValue[idx];
+                Set(list);
+            }
+        }
+        
         public override bool DoGUI(string label = null)
         {
             return DoGUIStrandard(
@@ -32,16 +52,16 @@ namespace PrefsGUI
                     customLabelRightFunc: (list) =>
                     {
                         list = RGUI.ListLabelRightFunc(list);
-                        if (DoGUIDefaultButton(defaultValueCount == list.Count))
+                        if (DoGUIDefaultButton(DefaultValueCount == list.Count))
                         {
                             var listCount = list.Count;
-                            if ( defaultValueCount > listCount)
+                            if ( DefaultValueCount > listCount)
                             {
-                                list.AddRange(defaultValue.GetRange(listCount, defaultValueCount - listCount));
+                                list.AddRange(defaultValue.GetRange(listCount, DefaultValueCount - listCount));
                             }
-                            else if ( defaultValueCount < listCount)
+                            else if ( DefaultValueCount < listCount)
                             {
-                                list.RemoveRange(defaultValueCount, listCount - defaultValueCount);
+                                list.RemoveRange(DefaultValueCount, listCount - DefaultValueCount);
                             }
                         }
                         return list;
@@ -58,7 +78,7 @@ namespace PrefsGUI
                 ret = RGUI.Field(ret, label);
 
                 // defaultButton
-                if (idx < defaultValueCount)
+                if (idx < DefaultValueCount)
                 {
                     var dv = defaultValue[idx];
                     if (DoGUIDefaultButton(IsEqual(ret, dv)))

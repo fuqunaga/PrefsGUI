@@ -5,8 +5,9 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionField
     {
+
         #region CreateElement
-        
+
         public static Element CreateElement<T>(this PrefsParamOuter<T> prefs)
         {
             return CreateElement(prefs, null);
@@ -37,22 +38,11 @@ namespace PrefsGUI.RosettaUI
         }
 
         #endregion
-        
-        
-        public static Element CreateDefaultButtonElement(this PrefsParam prefs)
+
+
+        public static ButtonElement CreateDefaultButtonElement(this PrefsParam prefs)
         {
-            var button = UI.Button(
-                "default",
-                prefs.ResetToDefault
-            );
-
-            button.onUpdate += _ =>
-            {
-                var color = prefs.IsDefault ? new Color(0.76f, 0.76f, 0.76f, 1f) : Color.red;
-                button.SetColor(color);
-            };
-
-            return button;
+            return PrefsGUIElement.CreateDefaultButtonElement(prefs.ResetToDefault, () => prefs.IsDefault);
         }
     }
 }

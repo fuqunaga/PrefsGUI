@@ -9,7 +9,7 @@ namespace PrefsGUI.RosettaUI
 {
     public static class UICustomPrefsGUI
     {
-        private static readonly Dictionary<Type, Func<PrefsParam, Element>> CreationFuncTable = new Dictionary<Type, Func<PrefsParam, Element>>();
+        private static readonly Dictionary<Type, Func<PrefsParam, Element>> CreationFuncTable = new();
 
         [RuntimeInitializeOnLoadMethod]
         public static void RegisterUICustom()
