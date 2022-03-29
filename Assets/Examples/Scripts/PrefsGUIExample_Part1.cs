@@ -112,7 +112,6 @@ namespace PrefsGUI.Example
         public Element CreateElement()
         {
             return UI.Column(
-                /*
                 prefsBool.CreateElement(),
                 prefsInt.CreateElement().RegisterValueChangeCallback(() => Debug.Log("CreateElement: Changed. " + prefsInt.Get())),
                 prefsFloat.CreateElement(),
@@ -127,7 +126,6 @@ namespace PrefsGUI.Example
                 prefsVector4.CreateElement(),
                 prefsVector4.CreateSlider(),
                 prefsClass.CreateElement(),
-                */
                 prefsList.CreateElement()
             );
         }

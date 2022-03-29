@@ -1,42 +1,47 @@
-using System.Collections.Generic;
 using RosettaUI;
 
 namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionList
     {
-        public static Element CreateElement<T>(this PrefsList<T> prefs)
+        public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label = null)
         {
-            return CreateElement(prefs, null);
-        }
+            var listBinder = Binder.Create(prefs.Get, prefs.Set);
 
-        public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label)
-        {
-            return UI.Row(
-                UI.List(
+            return UI.Fold(
+                UI.Row(
                     label ?? prefs.key,
-                    prefs.Get,
-                    iList => prefs.Set((List<T>)iList),
-                    (binder, idx) =>
-                    {
-                        var field = BinderToElement.CreateListViewItemDefaultElement(binder, idx);
-                        var ret = field;
-                        
-                        if (idx < prefs.DefaultValueCount)
+                    UI.Space(),
+                    UI.ListCounterField(listBinder),
+                    PrefsGUIElement.CreateDefaultButtonElement(
+                        onClick: prefs.ResetToDefaultCount,
+                        isDefault: () => prefs.IsDefaultCount
+                    )
+                ),
+                new[]
+                {
+                    UI.ListItemContainer(
+                        listBinder,
+                        (binder, idx) =>
                         {
-                            ret = UI.Row(
-                                field,
-                                PrefsGUIElement.CreateDefaultButtonElement(
-                                    onClick: () => prefs.ResetToDefaultAt(idx),
-                                    isDefault: () => prefs.IsDefaultAt(idx)
-                                    )
-                         
-                            );
-                        }
+                            var field = UI.ListItemDefault(binder, idx);
+                            var ret = field;
 
-                        return ret;
-                    }),
-                prefs.CreateDefaultButtonElement()
+                            if (idx < prefs.DefaultValueCount)
+                            {
+                                ret = UI.Row(
+                                    field,
+                                    PrefsGUIElement.CreateDefaultButtonElement(
+                                        onClick: () => prefs.ResetToDefaultAt(idx),
+                                        isDefault: () => prefs.IsDefaultAt(idx)
+                                    )
+                                );
+                            }
+
+                            return ret;
+                        }
+                    )
+                }
             );
         }
     }

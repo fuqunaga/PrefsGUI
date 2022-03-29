@@ -15,12 +15,35 @@ namespace PrefsGUI
         public PrefsList(string key, List<T> defaultValue = default) : base(key, defaultValue) { }
 
         public int DefaultValueCount => defaultValue?.Count ?? 0;
+        
+        public bool IsDefaultCount => DefaultValueCount == Count;
 
         protected virtual bool IsEqual(T lhs, T rhs)
         {
             return PrefsAnyUtility.ToInner(lhs) == PrefsAnyUtility.ToInner(rhs);
         }
 
+
+        public void ResetToDefaultCount()
+        {
+            if (!IsDefaultCount)
+            {
+                var list = Get();
+                var listCount = list.Count;
+
+                if (DefaultValueCount > listCount)
+                {
+                    list.AddRange(defaultValue.GetRange(listCount, DefaultValueCount - listCount));
+                }
+                else if (DefaultValueCount < listCount)
+                {
+                    list.RemoveRange(DefaultValueCount, listCount - DefaultValueCount);
+                }
+                
+                Set(list);
+            }
+        }
+        
         public bool IsDefaultAt(int idx)
         {
             if (idx < DefaultValueCount)
