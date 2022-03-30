@@ -13,7 +13,7 @@ namespace PrefsGUI
     {
         #region static
 
-        static PrefsSearch Instance = new PrefsSearch();
+        public static readonly PrefsSearch Instance = new();
 
         PrefsSearch() { }
 
@@ -25,38 +25,49 @@ namespace PrefsGUI
 
         #endregion
 
+        
+        private string _lastSearchWord;
 
-        string word;
-        FastScrollView scrollView = new FastScrollView();
-        List<PrefsParam> prefsList = new List<PrefsParam>();
+        public string SearchWord
+        {
+            get => _lastSearchWord;
+            set
+            {
+                if (_lastSearchWord != value)
+                {
+                    _lastSearchWord = value;
+                    UpdateList();
+                }
+            }
+        }
+
+        public List<PrefsParam> PrefsList { get; protected set; } = new();
+
+        readonly FastScrollView _scrollView = new();
+        
 
         void DoGUI_()
         {
-            var newWord = GUILayout.TextField(word);
-            if (word != newWord)
-            {
-                word = newWord;
-                UpdateList();
-            }
+            SearchWord = GUILayout.TextField(SearchWord);
 
-            scrollView.DoGUI(prefsList, (prefs) => prefs.DoGUI());
+            _scrollView.DoGUI(PrefsList, (prefs) => prefs.DoGUI());
         }
 
         void UpdateList()
         {
-            if (string.IsNullOrEmpty(word))
+            if (string.IsNullOrEmpty(SearchWord))
             {
-                prefsList.Clear();
+                PrefsList.Clear();
             }
             else
             {
-                var lword = word.ToLower();
-                prefsList = PrefsParam.all.Where(prefs => prefs.key.ToLower().Contains(lword)).OrderBy(prefs => prefs.key).ToList();
+                var lowerWord = SearchWord.ToLower();
+                PrefsList = PrefsParam.all.Where(prefs => prefs.key.ToLower().Contains(lowerWord)).OrderBy(prefs => prefs.key).ToList();
 
                 //Debug.Log("InvalidKey:" + string.Join("\n", PrefsParam.allDic.Where(pair => pair.Key != pair.Value.key).Select(pair => pair.Key + ":" + pair.Value.key).ToArray()));
             }
 
-            scrollView.SetNeedUpdateLayout();
+            _scrollView.SetNeedUpdateLayout();
         }
     }
 }

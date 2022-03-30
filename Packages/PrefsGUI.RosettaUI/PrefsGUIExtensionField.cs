@@ -5,15 +5,7 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionField
     {
-
-        #region CreateElement
-
-        public static Element CreateElement<T>(this PrefsParamOuter<T> prefs)
-        {
-            return CreateElement(prefs, null);
-        }
-
-        public static Element CreateElement<T>(this PrefsParamOuter<T> prefs, LabelElement label)
+        public static Element CreateElement<T>(this PrefsParamOuter<T> prefs, LabelElement label = null)
         {
             return UI.Row(
                 UI.Field(
@@ -35,14 +27,6 @@ namespace PrefsGUI.RosettaUI
                 prefs.prefs0.CreateElement(),
                 prefs.prefs1.CreateElement()
             );
-        }
-
-        #endregion
-
-
-        public static ButtonElement CreateDefaultButtonElement(this PrefsParam prefs)
-        {
-            return PrefsGUIElement.CreateDefaultButtonElement(prefs.ResetToDefault, () => prefs.IsDefault);
         }
     }
 }
