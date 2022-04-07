@@ -1,10 +1,13 @@
-﻿namespace PrefsGUI.Example
+﻿using UnityEngine;
+
+namespace PrefsGUI.Example
 {
+    [RequireComponent(typeof(MaterialPropertyDebugMenu))]
     public class MaterialPropertyDebugMenuExample : PrefsGUIExampleBase
     {
-        MaterialPropertyDebugMenu debugMenu;
+        protected MaterialPropertyDebugMenu debugMenu;
 
-        public void Start()
+        public virtual void Start()
         {
             debugMenu = GetComponent<MaterialPropertyDebugMenu>();
         }

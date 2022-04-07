@@ -30,7 +30,7 @@ namespace PrefsGUI.RosettaUI
         public static Element CreateElementRaw(this MaterialPropertyDebugMenu menu)
         {
             List<Element> texEnvs;
-            using (new UICustomScopePropertyOrFieldLabelModifier(
+            using (new UICustom.PropertyOrFieldLabelModifierScope(
                 ("x", "Tiling.x"),
                 ("y", "Tiling.y"),
                 ("z", "Offset.x"),

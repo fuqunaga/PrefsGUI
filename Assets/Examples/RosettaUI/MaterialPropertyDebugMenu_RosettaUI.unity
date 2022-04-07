@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 45827205467a62b4985add6760282c57,
+  m_LightingSettings: {fileID: 4890085278179872738, guid: c73b2ccfea68f7649acf6f79b2d5d931,
     type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -302,7 +302,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1408913455}
-  - component: {fileID: 1408913454}
+  - component: {fileID: 1408913458}
+  - component: {fileID: 1408913457}
+  - component: {fileID: 1408913459}
   - component: {fileID: 1408913456}
   m_Layer: 0
   m_Name: MaterialPropertyDebugMenuSample
@@ -311,18 +313,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1408913454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1408913453}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea2e4ffaf96fe60428b7e63abbe8dde5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1408913455
 Transform:
   m_ObjectHideFlags: 0
@@ -430,6 +420,46 @@ MonoBehaviour:
   - _key: Sample-_OcclusionStrength
     defaultValue: 1
   _texEnvs: []
+--- !u!114 &1408913457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408913453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de292b76e20316349842181a7da14d32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1408913458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408913453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 31bb79ed14350b047bcd78d547e6a59b, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 0}
+  m_SortingOrder: 0
+--- !u!114 &1408913459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408913453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cb3d186d399f0d4f8e5e5b6cf7ff179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1586495334
 GameObject:
   m_ObjectHideFlags: 0
