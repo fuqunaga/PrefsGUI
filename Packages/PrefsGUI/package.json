@@ -1,8 +1,8 @@
 {
     "name": "ga.fuquna.prefsgui",
     "displayName": "PrefsGUI",
-    "version": "2.2.1",
-    "unity": "2020.3",
+    "version": "2.2.2",
+    "unity": "2021.2",
     "description": "Accessors and GUIs for persistent preference values using JSON file",
     "keywords": ["Preference", "GUI"],
     "category": "Tool",
