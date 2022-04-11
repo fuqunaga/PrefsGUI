@@ -1,0 +1,32 @@
+name: Publish
+
+on: workflow_dispatch
+    
+    
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pkg_root: [./Packages/PrefsGUI, ./Packages/PrefsGUI.RosettaUI]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      #if: steps.semantic.outputs.new_release_published == 'true'
+      uses: actions/setup-node@v2
+      with:
+        node-version: '12.x'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Publish on npmjs
+      #if: steps.semantic.outputs.new_release_published == 'true'
+      run: |
+        npm install
+        npm publish
+      working-directory: ${{ matrix.pkg_root }}
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
