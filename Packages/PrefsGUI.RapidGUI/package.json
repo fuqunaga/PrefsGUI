@@ -1,0 +1,26 @@
+{
+  "name": "ga.fuquna.prefsgui.rapidgui",
+  "displayName": "PrefsGUI - RapidGUI",
+  "version": "0.0.0",
+  "unity": "2021.2",
+  "description": "RapidGUI implementation of PrefsGUI",
+  "keywords": [
+    "unity",
+    "gui",
+    "imgui",
+    "prefsgui",
+    "rapidgui"
+  ],
+  "category": "Tool",
+  "dependencies": {
+    "ga.fuquna.prefsgui": "3.0.0",
+    "ga.fuquna.rapidgui": "1.2.2"
+  },
+  "author": {
+    "name": "fuqunaga",
+    "email": "fukhid@gmail.com",
+    "url": "https://fuquna.ga"
+  },
+  "repository": "github:fuqunaga/PrefsGUI",
+  "license": "MIT"
+}
