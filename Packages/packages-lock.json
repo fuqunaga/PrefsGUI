@@ -123,18 +123,20 @@
       "dependencies": {}
     },
     "ga.fuquna.rosettaui": {
-      "version": "file:C:/unity/RosettaUI/Packages/RosettaUI",
+      "version": "0.0.2",
       "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui.uitoolkit": {
-      "version": "file:C:/unity/RosettaUI/Packages/RosettaUI.UIToolkit",
+      "version": "0.0.2",
       "depth": 0,
-      "source": "local",
+      "source": "registry",
       "dependencies": {
         "ga.fuquna.rosettaui": "0.0.0"
-      }
+      },
+      "url": "https://registry.npmjs.com"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
