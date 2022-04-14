@@ -1,17 +1,20 @@
 {
     "name": "ga.fuquna.prefsgui",
     "displayName": "PrefsGUI",
-    "version": "2.2.2",
+    "version": "3.0.0",
     "unity": "2021.2",
     "description": "Accessors and GUIs for persistent preference values using JSON file",
-    "keywords": ["Preference", "GUI"],
+    "keywords": [
+        "unity",
+        "gui",
+        "preference"
+    ],
     "category": "Tool",
-    "dependencies": { 
-        "ga.fuquna.rapidgui": "1.2.2"
-    },
     "author": {
         "name": "fuqunaga",
         "email": "fukhid@gmail.com",
         "url": "https://fuquna.ga"
-    }
+    },
+    "repository": "github:fuqunaga/PrefsGUI",
+    "license": "MIT"
 }

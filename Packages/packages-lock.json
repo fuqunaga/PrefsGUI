@@ -103,7 +103,14 @@
       "version": "file:PrefsGUI",
       "depth": 0,
       "source": "embedded",
+      "dependencies": {}
+    },
+    "ga.fuquna.prefsgui.rapidgui": {
+      "version": "file:PrefsGUI.RapidGUI",
+      "depth": 0,
+      "source": "embedded",
       "dependencies": {
+        "ga.fuquna.prefsgui": "3.0.0",
         "ga.fuquna.rapidgui": "1.2.2"
       }
     },
@@ -112,7 +119,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "ga.fuquna.prefsgui": "2.2.2",
+        "ga.fuquna.prefsgui": "3.0.0",
         "ga.fuquna.rosettaui": "0.0.0"
       }
     },
