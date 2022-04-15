@@ -4,8 +4,7 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionMinMaxSlider
     {
-        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, LabelElement label = null)
-            where TMinMax : RapidGUI.MinMax<T>, new()
+        public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, LabelElement label = null)
         {
             return WithDefaultButton(prefs,
                 UI.MinMaxSlider(
@@ -16,28 +15,26 @@ namespace PrefsGUI.RosettaUI
             );
         }
 
-        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, T max)
-            where TMinMax : RapidGUI.MinMax<T>, new()
+        public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, T max)
         {
             return CreateMinMaxSlider(prefs, null, max);
         }
         
-        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, T min, T max)
-            where TMinMax : RapidGUI.MinMax<T>, new()
+        public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, T min, T max)
+
         {
             return CreateMinMaxSlider(prefs, null, min, max);
         }
         
-        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, LabelElement label, T max)
-            where TMinMax : RapidGUI.MinMax<T>, new()
+        public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, LabelElement label, T max)
+
         {
             return CreateMinMaxSlider(prefs, label, default, max);
         }
         
-        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, LabelElement label, T min, T max)
-            where TMinMax : RapidGUI.MinMax<T>, new()
+        public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, LabelElement label, T min, T max)
         {
-            var range = new TMinMax()
+            var range = new PrefsMinMax<T>.MinMax()
             {
                 min = min,
                 max = max
@@ -46,9 +43,7 @@ namespace PrefsGUI.RosettaUI
             return CreateMinMaxSlider(prefs, label, range);
         }
         
-        public static Element CreateMinMaxSlider<T, TMinMax>(this PrefsMinMax<T, TMinMax> prefs, LabelElement label,
-            TMinMax range)
-            where TMinMax : RapidGUI.MinMax<T>, new()
+        public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, LabelElement label, PrefsMinMax<T>.MinMax range)
         {
             return WithDefaultButton(prefs,
                 UI.MinMaxSlider(

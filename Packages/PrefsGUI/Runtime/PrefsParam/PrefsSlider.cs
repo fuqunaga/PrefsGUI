@@ -1,6 +1,4 @@
-﻿using RapidGUI;
-
-namespace PrefsGUI
+﻿namespace PrefsGUI
 {
     public abstract class PrefsSlider<T> : PrefsParam<T>, IPrefsSlider<T>
         where T : struct

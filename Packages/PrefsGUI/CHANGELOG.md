@@ -4,9 +4,11 @@ Accessors and GUIs for persistent preference values using JSON file
 ## [3.0.0] - 2022.4.14
 ### Changed
 - RapidGUI separated into a dependent package
+- PrefsMixMax now has its own MinMax class instead of RapidGUI's MinMax
+- DoGUI() move to PrefsGUI.RapidGUI
 
 ## [2.2.1] - 2021.5.07
-### Add
+### Added
 - Supports RapidGUI 1.2.2 - PrefsList size field
 
 ## [2.2.0] - 2021.5.07

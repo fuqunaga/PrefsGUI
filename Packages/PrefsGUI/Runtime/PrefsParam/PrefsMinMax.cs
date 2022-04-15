@@ -1,15 +1,18 @@
-﻿using RapidGUI;
-
-namespace PrefsGUI
+﻿namespace PrefsGUI
 {
-    public abstract class PrefsMinMax<T, TMinMax> : PrefsAny<TMinMax>, IPrefsSlider<T>   
-        where TMinMax : MinMax<T>, new()
+    public abstract class PrefsMinMax<T> : PrefsAny<PrefsMinMax<T>.MinMax>, IPrefsSlider<T>   
     {
+        public class MinMax
+        {
+            public T min;
+            public T max;
+        }
+        
         public T min => Get().min;
         public T max => Get().max;
 
         public PrefsMinMax(string key, T defaultValueMax = default) : this(key, default, defaultValueMax) { }
-        public PrefsMinMax(string key, T defaultValueMin,  T defaultValueMax) : base(key, new TMinMax() { min = defaultValueMin, max = defaultValueMax }) { }
+        public PrefsMinMax(string key, T defaultValueMin,  T defaultValueMax) : base(key, new MinMax() { min = defaultValueMin, max = defaultValueMax }) { }
 
 
         #region IPrefSlider

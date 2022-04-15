@@ -1,8 +1,7 @@
 {
     "name": "PrefsGUI",
-    "references": [
-        "GUID:3d35d6db7bb67824691179b12a2ce031"
-    ],
+    "rootNamespace": "",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -10,5 +9,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }
