@@ -12,7 +12,7 @@ namespace PrefsGUI
 
         public TOuter DefaultValue => defaultValue;
 
-        public PrefsParamOuter(string key, TOuter defaultValue = default) : base(key)
+        protected PrefsParamOuter(string key, TOuter defaultValue = default) : base(key)
         {
             this.defaultValue = defaultValue;
         }

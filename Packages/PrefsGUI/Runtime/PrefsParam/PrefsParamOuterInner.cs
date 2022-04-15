@@ -7,7 +7,7 @@ namespace PrefsGUI
     /// <summary>
     /// Basic implementation of OuterT and InnnerT
     /// </summary>
-    public abstract partial class PrefsParamOuterInner<TOuter, TInner> : PrefsParamOuter<TOuter>
+    public abstract class PrefsParamOuterInner<TOuter, TInner> : PrefsParamOuter<TOuter>
     {
         protected bool isCachedOuter;
         protected TOuter cachedOuter;

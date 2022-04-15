@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace PrefsGUI.RapidGUI
 {
@@ -14,33 +17,47 @@ namespace PrefsGUI.RapidGUI
 
         private static readonly Dictionary<Type, Func<PrefsParam, string, bool>> doGUIFuncTable = new();
 
+        private static readonly Dictionary<Type, MethodInfo> genericTypeDefinitionToMethodInfo = new ()
+        {
+            [typeof(PrefsParamOuterInner<,>)] = GetDoGUIMethodInfo(typeof(PrefsParamOuterInnerExtension)),
+            [typeof(PrefsSet<,,,>)] = GetDoGUIMethodInfo(typeof(PrefsSetExtension)),
+        };
+
+        static MethodInfo GetDoGUIMethodInfo(Type type)
+        {
+            return type.GetMethod("DoGUI", BindingFlags.Public | BindingFlags.Static);
+        }
+
+        private static readonly object[] sharedArray = new object[2];
+        
         private static bool DispatchDoGUI(PrefsParam prefs, string label)
         {
-            var type = prefs.GetType();
+            var originalType = prefs.GetType();
 
-            if (!doGUIFuncTable.TryGetValue(type, out var func))
+            if (!doGUIFuncTable.TryGetValue(originalType, out var func))
             {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(PrefsParamOuterInner<,>))
+                for (var type = originalType; type != null; type = type.BaseType)
                 {
-                    var mi = typeof(PrefsParamOuterInnerExtension).GetMethod(
-                        nameof(PrefsParamOuterInnerExtension.DoGUI),
-                        BindingFlags.Public | BindingFlags.Static
-                    );
+                    if (!type.IsGenericType) continue;
+                    
+                    var genericTypeDefinition = type.GetGenericTypeDefinition();
+                    if (!genericTypeDefinitionToMethodInfo.TryGetValue(genericTypeDefinition, out var mi)) continue;
 
-                    doGUIFuncTable[type] = func = (p, l) =>
+                    var miGeneric = mi.MakeGenericMethod(type.GetGenericArguments());
+                    
+                    doGUIFuncTable[originalType] = func = (p, l) =>
                     {
-                        var array = ArrayPool<object>.Shared.Rent(2);
-                        array[0] = p;
-                        array[1] = l;
+                        sharedArray[0] = p;
+                        sharedArray[1] = l;
 
-                        var ret = (bool) mi.Invoke(null, array);
-
-                        ArrayPool<object>.Shared.Return(array);
-
-                        return ret;
+                        return (bool) miGeneric.Invoke(null, sharedArray);
                     };
+
+                    break;
                 }
             }
+            
+            Assert.IsNotNull(func, $"Prefs.key[{prefs.key}] type[{prefs.GetType()}]");
 
             return func(prefs, label);
         }
