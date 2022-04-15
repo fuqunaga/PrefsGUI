@@ -1,8 +1,6 @@
-﻿using RapidGUI;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-
 
 namespace PrefsGUI
 {
@@ -14,17 +12,11 @@ namespace PrefsGUI
         #region static
 
         public static readonly PrefsSearch Instance = new();
-
-        PrefsSearch() { }
-
-
-        public static void DoGUI()
-        {
-            Instance.DoGUI_();
-        }
-
+        
         #endregion
 
+
+        public event Action onUpdateList;
         
         private string _lastSearchWord;
 
@@ -43,16 +35,6 @@ namespace PrefsGUI
 
         public List<PrefsParam> PrefsList { get; protected set; } = new();
 
-        readonly FastScrollView _scrollView = new();
-        
-
-        void DoGUI_()
-        {
-            SearchWord = GUILayout.TextField(SearchWord);
-
-            _scrollView.DoGUI(PrefsList, (prefs) => prefs.DoGUI());
-        }
-
         void UpdateList()
         {
             if (string.IsNullOrEmpty(SearchWord))
@@ -67,7 +49,8 @@ namespace PrefsGUI
                 //Debug.Log("InvalidKey:" + string.Join("\n", PrefsParam.allDic.Where(pair => pair.Key != pair.Value.key).Select(pair => pair.Key + ":" + pair.Value.key).ToArray()));
             }
 
-            _scrollView.SetNeedUpdateLayout();
+            
+            onUpdateList?.Invoke();
         }
     }
 }

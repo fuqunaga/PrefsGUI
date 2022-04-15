@@ -1,6 +1,4 @@
-﻿using RapidGUI;
-using System;
-using UnityEngine;
+﻿using System;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI
@@ -16,7 +14,7 @@ namespace PrefsGUI
         public readonly Prefs0 prefs0;
         public readonly Prefs1 prefs1;
 
-        protected abstract string[] paramNames { get; }
+        public abstract string[] paramNames { get; }
 
         protected virtual string GenerateParamKey(string key, string paramName) => key + "_" + paramName;
 
@@ -33,20 +31,6 @@ namespace PrefsGUI
             Assert.IsNotNull(ctor);
 
             return (T)ctor.Invoke(new object[] { GenerateParamKey(key, postfix), defaultValue });
-        }
-
-        public void DoGUI(string label = null)
-        {
-            using (new GUILayout.HorizontalScope())
-            {
-                RGUI.PrefixLabel(label ?? key);
-
-                using ( new GUILayout.VerticalScope())
-                {
-                    prefs0.DoGUI(paramNames[0]);
-                    prefs1.DoGUI(paramNames[1]);
-                }
-            }
         }
     }
 }

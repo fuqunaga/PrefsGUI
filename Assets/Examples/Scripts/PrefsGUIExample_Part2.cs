@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using PrefsGUI.RapidGUI;
 using PrefsGUI.RosettaUI;
 using RapidGUI;
 using RosettaUI;

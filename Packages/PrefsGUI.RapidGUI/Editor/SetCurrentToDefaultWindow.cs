@@ -1,10 +1,11 @@
-﻿using RapidGUI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using PrefsGUI.Editor;
+using RapidGUI;
 using UnityEditor;
 using UnityEngine;
 
-namespace PrefsGUI.Editor
+namespace PrefsGUI.RapidGUI.Editor
 {
     public class SetCurrentToDefaultWindow : PrefsGUIEditorBase
     {

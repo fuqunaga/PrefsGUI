@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using RapidGUI;
-using UnityEngine;
 
 namespace PrefsGUI
 {
@@ -17,12 +15,6 @@ namespace PrefsGUI
         public int DefaultValueCount => defaultValue?.Count ?? 0;
         
         public bool IsDefaultCount => DefaultValueCount == Count;
-
-        protected virtual bool IsEqual(T lhs, T rhs)
-        {
-            return PrefsAnyUtility.ToInner(lhs) == PrefsAnyUtility.ToInner(rhs);
-        }
-
 
         public void ResetToDefaultCount()
         {
@@ -49,7 +41,7 @@ namespace PrefsGUI
             if (idx < DefaultValueCount)
             {
                 var current = Get()[idx];
-                return IsEqual(current, defaultValue[idx]);
+                return PrefsAnyUtility.IsEqual(current, defaultValue[idx]);
             }
 
             return false;
@@ -64,77 +56,7 @@ namespace PrefsGUI
                 Set(list);
             }
         }
-        
-        public override bool DoGUI(string label = null)
-        {
-            return DoGUIStrandard(
-                (v) => RGUI.ListField(
-                    v, 
-                    label ?? key, 
-                    customElementGUI: (list, idx, elemLabel) => DoGUIAt_(list, idx, elemLabel),
-                    customLabelRightFunc: (list) =>
-                    {
-                        list = RGUI.ListLabelRightFunc(list);
-                        if (DoGUIDefaultButton(DefaultValueCount == list.Count))
-                        {
-                            var listCount = list.Count;
-                            if ( DefaultValueCount > listCount)
-                            {
-                                list.AddRange(defaultValue.GetRange(listCount, DefaultValueCount - listCount));
-                            }
-                            else if ( DefaultValueCount < listCount)
-                            {
-                                list.RemoveRange(DefaultValueCount, listCount - DefaultValueCount);
-                            }
-                        }
-                        return list;
-                    }
-                ),
-                false);
-        }
-
-        protected virtual T DoGUIAt_(List<T> list, int idx, string label)
-        {
-            using (new GUILayout.HorizontalScope())
-            {
-                var ret = list[idx];
-                ret = RGUI.Field(ret, label);
-
-                // defaultButton
-                if (idx < DefaultValueCount)
-                {
-                    var dv = defaultValue[idx];
-                    if (DoGUIDefaultButton(IsEqual(ret, dv)))
-                    {
-                        ret = dv;
-                    }
-                }
-                return ret;
-            }
-        }
-
-        public virtual bool DoGUIAt(int idx, string label = null)
-        {
-            var list = Get();
-            var prev = list[idx];
-
-            var prevInner = PrefsAnyUtility.ToInner(prev);
-
-            var next = DoGUIAt_(list, idx, label);
-            var nextInner = PrefsAnyUtility.ToInner(next);
-
-            var changed = (prevInner != nextInner);
-            if (changed)
-            {
-                list[idx] = next;
-                Set(list);
-            }
-
-            return changed;
-        }
-
-
-
+ 
         #region IList<T>
 
         protected void UpdateValue(Action<List<T>> action) { var v = Get(); action(v); Set(v); }

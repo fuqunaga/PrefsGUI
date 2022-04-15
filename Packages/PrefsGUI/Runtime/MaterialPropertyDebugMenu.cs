@@ -1,18 +1,17 @@
-﻿using MaterialPropertyAccessor;
-using PrefsGUI;
-using RapidGUI;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MaterialPropertyAccessor;
+using PrefsGUI;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
 [ExecuteAlways]
-public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
+public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour
 {
     #region TypeDefine
 
-    [System.Serializable]
+    [Serializable]
     public class PrefsTexEnv : PrefsVector4
     {
         public PrefsTexEnv(string key, Vector2 tiling, Vector2 offset = default) : base(key, new Vector4(tiling.x, tiling.y, offset.x, offset.y)) { }
@@ -26,7 +25,7 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
             {"w", "Offset.y" }
         };
 
-        protected override Dictionary<string, string> GetCustomLabel() => customLabel;
+        public override Dictionary<string, string> GetCustomLabel() => customLabel;
     }
 
     #endregion
@@ -131,47 +130,5 @@ public class MaterialPropertyDebugMenu : MaterialPropertyBehaviour, IDoGUI
         }
     }
 
-    public static Dictionary<string, System.Func<PrefsVector4, string, bool>> customVectorGUI = new Dictionary<string, System.Func<PrefsVector4, string, bool>>();
-
-    public void DoGUI() => DoGUI(true);
-
-    public void DoGUI(bool labelEnable = true)
-    {
-        if (IsEnable)
-        {
-            if (labelEnable) GUILayout.Label(_material.name);
-            using (new RGUI.IndentScope())
-            {
-                Colors.ForEach(c => c.DoGUI(KeyToPropertyName(c.key)));
-                _vectors.ForEach(v =>
-                {
-                    var n = KeyToPropertyName(v.key);
-                    if (customVectorGUI.ContainsKey(n))
-                    {
-                        customVectorGUI[n](v, n);
-                    }
-                    else
-                    {
-                        v.DoGUISlider(n);
-                    }
-                });
-                _floats.ForEach(f => f.DoGUISlider(KeyToPropertyName(f.key)));
-                _ranges.ForEach(range =>
-                {
-                    var n = KeyToPropertyName(range.key);
-                    var mr = _propertySet.ranges.Find(r => r.name == n);
-
-                    range.DoGUISlider(mr.min, mr.max, n);
-                });
-
-                _texEnvs.ForEach(t =>
-                {
-                    var label = KeyToPropertyName(t.key);
-                    t.DoGUISlider(Vector4.zero, new Vector4(10, 10, 1, 1), label);
-                });
-            }
-
-            UpdateMaterial();
-        }
-    }
+    public static Dictionary<string, Func<PrefsVector4, string, bool>> customVectorGUI = new();
 }

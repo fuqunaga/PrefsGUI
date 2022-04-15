@@ -12,6 +12,6 @@ namespace PrefsGUI
         public PrefsParam(string key, T defaultValue = default) : base(key, defaultValue) { }
 
         protected override T ToOuter(T innerV) => innerV;
-        protected override T ToInner(T TouterV) => TouterV;
+        protected override T ToInner(T outerV) => outerV;
     }
 }

@@ -1,9 +1,8 @@
-﻿using PrefsGUI.KVS;
-using RapidGUI;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using PrefsGUI.KVS;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -32,10 +31,6 @@ namespace PrefsGUI
     {
         public PrefsBool(string key, bool defaultValue = default(bool)) : base(key, defaultValue) { }
 
-        public bool DoGUIToggle(string label = null)
-        {
-            return DoGUIStrandard((v) => GUILayout.Toggle(v, label ?? key));
-        }
     }
 
     [Serializable]
@@ -52,36 +47,6 @@ namespace PrefsGUI
         public override int defaultMax => 100;
 
         public PrefsInt(string key, int defaultValue = default) : base(key, defaultValue) { }
-
-
-        public override bool DoGUISlider(int min, int max, string label = null)
-        {
-            return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
-        }
-
-        public bool DoGUIToolbar(string[] texts, string label = null)
-        {
-            return DoGUIStrandard((v) =>
-            {
-                using (new GUILayout.HorizontalScope())
-                {
-                    RGUI.PrefixLabel(label ?? key);
-                    return GUILayout.Toolbar(v, texts);
-                }
-            });
-        }
-
-        public bool DoGUISelectionGrid(string[] texts, int xCount, string label = null)
-        {
-            return DoGUIStrandard((v) =>
-            {
-                using (new GUILayout.HorizontalScope())
-                {
-                    RGUI.PrefixLabel(label ?? key);
-                    return GUILayout.SelectionGrid(v, texts, xCount);
-                }
-            });
-        }
     }
 
     [Serializable]
@@ -92,11 +57,6 @@ namespace PrefsGUI
         public override float defaultMin => default;
 
         public override float defaultMax => 1f;
-
-        public override bool DoGUISlider(float min, float max, string label = null)
-        {
-            return DoGUIStrandard((v) => RGUI.Slider(v, min, max, label ?? key));
-        }
     }
 
     [Serializable]
@@ -155,11 +115,6 @@ namespace PrefsGUI
 
         public override Rect defaultMin => default;
         public override Rect defaultMax => new Rect(1f, 1f, 1f, 1f);
-
-        public bool DoGUISlider(float max, string label = null)
-        {
-            return this.DoGUISlider(new Rect(max, max, max, max), label);
-        }
     }
 
     [Serializable]
@@ -170,11 +125,6 @@ namespace PrefsGUI
         public override Bounds defaultMin => default;
 
         public override Bounds defaultMax => new Bounds(Vector3.one, Vector3.one);
-
-        public bool DoGUISlider(float max, string label = null)
-        {
-            return this.DoGUISlider(new Bounds(Vector3.one * max, Vector3.one * max), label);
-        }
     }
 
     [Serializable]
@@ -185,11 +135,6 @@ namespace PrefsGUI
         public override BoundsInt defaultMin => default;
 
         public override BoundsInt defaultMax => new BoundsInt(Vector3Int.one * 100, Vector3Int.one * 100);
-
-        public bool DoGUISlider(int max, string label = null)
-        {
-            return this.DoGUISlider(new BoundsInt(Vector3Int.one * max, Vector3Int.one * max), label);
-        }
     }
 
 
@@ -197,7 +142,7 @@ namespace PrefsGUI
     public class PrefsIPEndPoint : PrefsSet<PrefsString, PrefsInt, string, int>
     {
         static string[] _paramNames = new[] { "address", "port" };
-        protected override string[] paramNames => _paramNames;
+        public override string[] paramNames => _paramNames;
 
 
         public string address => prefs0.Get();

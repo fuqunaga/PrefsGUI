@@ -1,5 +1,4 @@
-﻿using RapidGUI;
-using System;
+﻿using System;
 
 namespace PrefsGUI
 {
@@ -18,16 +17,13 @@ namespace PrefsGUI
         protected override string ToInner(OuterT outerV) => PrefsAnyUtility.ToInner(outerV);
 
         protected override OuterT ToOuter(string innerV) => PrefsAnyUtility.ToOuter<OuterT>(innerV);
-
-        public override bool DoGUI(string label = null)
-        {
-            return DoGUIStrandard((v) => RGUI.Field(v, label ?? key));
-        }
     }
 
     public static class PrefsAnyUtility
     {
         public static string ToInner<OuterT>(OuterT outerV) => (outerV == null) ? "" : JsonUtilityEx.ToJson(outerV);
         public static OuterT ToOuter<OuterT>(string innerV) => string.IsNullOrEmpty(innerV) ? default : JsonUtilityEx.FromJson<OuterT>(innerV);
+        public static bool IsEqual<OuterT>(OuterT lhs, OuterT rhs)
+            =>ToInner(lhs) == PrefsAnyUtility.ToInner(rhs);
     }
 }

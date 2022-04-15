@@ -5,19 +5,19 @@ namespace PrefsGUI
     /// <summary>
     /// Define Outer Interface
     /// </summary>
-    public abstract class PrefsParamOuter<OuterT> : PrefsParam
+    public abstract class PrefsParamOuter<TOuter> : PrefsParam
     {
         [SerializeField]
-        protected OuterT defaultValue;
+        protected TOuter defaultValue;
 
-        public OuterT DefaultValue => defaultValue;
+        public TOuter DefaultValue => defaultValue;
 
-        public PrefsParamOuter(string key, OuterT defaultValue = default) : base(key)
+        public PrefsParamOuter(string key, TOuter defaultValue = default) : base(key)
         {
             this.defaultValue = defaultValue;
         }
 
-        public static implicit operator OuterT(PrefsParamOuter<OuterT> me)
+        public static implicit operator TOuter(PrefsParamOuter<TOuter> me)
         {
             return me.Get();
         }
@@ -25,9 +25,9 @@ namespace PrefsGUI
 
         #region abstract
 
-        public abstract OuterT Get();
+        public abstract TOuter Get();
 
-        public abstract void Set(OuterT v);
+        public abstract void Set(TOuter v);
 
         #endregion
 

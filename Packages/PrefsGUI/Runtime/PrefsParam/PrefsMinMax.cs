@@ -17,16 +17,7 @@ namespace PrefsGUI
         public abstract T defaultMin { get; }
 
         public abstract T defaultMax { get; }
-
-        public bool DoGUISlider(T rangeMin, T rangeMax, string label = null)
-        {
-            return DoGUIStrandard((v) =>
-            {
-                RGUI.MinMaxSlider(ref v.min, ref v.max, rangeMin, rangeMax, label ?? key);
-                return v;
-            });
-        }
-
+        
         #endregion
     }
 }

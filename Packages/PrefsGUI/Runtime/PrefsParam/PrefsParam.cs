@@ -1,7 +1,7 @@
-﻿using PrefsGUI.KVS;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PrefsGUI.KVS;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -24,10 +24,10 @@ namespace PrefsGUI
             set => ChangeKey(value);
         }
 
-        public PrefsParam(string key)
+        protected PrefsParam(string key)
         {
             _key = key;
-            Regist();
+            Register();
         }
 
         public virtual void Delete() => PrefsKVS.DeleteKey(key);
@@ -40,7 +40,6 @@ namespace PrefsGUI
         public abstract object GetObject();
         public abstract void SetSyncedObject(object obj, Action onIfAlreadyGet);
 
-        public abstract bool DoGUI(string label = null);
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
         public abstract void ResetToDefault();
@@ -58,9 +57,9 @@ namespace PrefsGUI
 
         public void OnBeforeSerialize() { }
 
-        public void OnAfterDeserialize() { Regist(); } // To Regist Array/List In Inspector. Constructor not called.
+        public void OnAfterDeserialize() { Register(); } // To Register Array/List In Inspector. Constructor not called.
 
-        void Regist()
+        void Register()
         {
             if (!string.IsNullOrEmpty(key))
             {
@@ -72,13 +71,10 @@ namespace PrefsGUI
                 var alreadyExist = !_all.Add(this);
                 if (alreadyExist)
                 {
-                    _allDic.Where(pair => pair.Value == this)
-                        .Select(pair => pair.Key)
-                        .ToList()
-                        .ForEach(removeKey =>
+                    foreach(var removeKey in _allDic.Where(pair => pair.Value == this).Select(pair => pair.Key))
                     {
                         _allDic.Remove(removeKey);
-                    });
+                    }
                 }
 
                 _allDic[key] = this;
@@ -92,7 +88,7 @@ namespace PrefsGUI
                 _allDic.Remove(key);
 
                 _key = newKey;
-                Regist();
+                Register();
             }
         }
 

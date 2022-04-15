@@ -1,33 +1,31 @@
-﻿using PrefsGUI.KVS;
-using RapidGUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using PrefsGUI.KVS;
 
 namespace PrefsGUI
 {
     /// <summary>
     /// Basic implementation of OuterT and InnnerT
     /// </summary>
-    public abstract class PrefsParamOuterInner<OuterT, InnerT> : PrefsParamOuter<OuterT>
+    public abstract partial class PrefsParamOuterInner<TOuter, TInner> : PrefsParamOuter<TOuter>
     {
         protected bool isCachedOuter;
-        protected OuterT cachedOuter;
+        protected TOuter cachedOuter;
 
         protected bool isCachedObj;
         protected object cachedObj;
 
-        protected bool synced;
+        public bool synced { get; protected set; }
 
         protected bool hasDefaultInner;
-        protected InnerT defaultInner;
+        protected TInner defaultInner;
 
 
-        public PrefsParamOuterInner(string key, OuterT defaultValue = default) : base(key, defaultValue)
+        protected PrefsParamOuterInner(string key, TOuter defaultValue = default) : base(key, defaultValue)
         {
         }
 
-        protected InnerT GetDefaultInner()
+        protected TInner GetDefaultInner()
         {
             if (!hasDefaultInner)
             {
@@ -38,16 +36,16 @@ namespace PrefsGUI
             return defaultInner;
         }
 
-        protected InnerT _Get()
+        protected TInner _Get()
         {
             return PrefsKVS.Get(key, GetDefaultInner());
         }
 
-        protected void _Set(InnerT v, bool synced = false, Action onIfAlreadyGet = null)
+        protected void _Set(TInner v, bool syncedFlag = false, Action onIfAlreadyGet = null)
         {
             if (false == Compare(v, _Get()))
             {
-                if (onIfAlreadyGet != null && !this.synced && synced)
+                if (onIfAlreadyGet != null && !this.synced && syncedFlag)
                 {
                     if (isCachedOuter || isCachedObj)
                     {
@@ -60,19 +58,19 @@ namespace PrefsGUI
                 isCachedObj = false;
             }
 
-            this.synced = synced;
+            synced = syncedFlag;
         }
 
-        protected virtual bool Compare(InnerT lhs, InnerT rhs) => EqualityComparer<InnerT>.Default.Equals(lhs, rhs);
+        public virtual bool Compare(TInner lhs, TInner rhs) => EqualityComparer<TInner>.Default.Equals(lhs, rhs);
 
-        protected virtual Dictionary<string, string> GetCustomLabel() => null;
+        public virtual Dictionary<string, string> GetCustomLabel() => null;
 
 
 
         #region abstract
 
-        protected abstract OuterT ToOuter(InnerT innerV);
-        protected abstract InnerT ToInner(OuterT outerV);
+        protected abstract TOuter ToOuter(TInner innerV);
+        protected abstract TInner ToInner(TOuter outerV);
 
         #endregion
 
@@ -80,7 +78,7 @@ namespace PrefsGUI
 
         #region override
 
-        public override OuterT Get()
+        public override TOuter Get()
         {
             if (!isCachedOuter)
             {
@@ -90,11 +88,11 @@ namespace PrefsGUI
             return cachedOuter;
         }
 
-        public override void Set(OuterT v) { _Set(ToInner(v)); }
+        public override void Set(TOuter v) { _Set(ToInner(v)); }
 
         public override Type GetInnerType()
         {
-            return typeof(InnerT);
+            return typeof(TInner);
         }
         public override object GetObject()
         {
@@ -108,7 +106,7 @@ namespace PrefsGUI
         }
         public override void SetSyncedObject(object obj, Action onIfAlreadyGet = null)
         {
-            _Set((InnerT)obj, true, onIfAlreadyGet);
+            _Set((TInner)obj, true, onIfAlreadyGet);
         }
 
         public override bool IsDefault => Compare(GetDefaultInner(), _Get());
@@ -119,63 +117,13 @@ namespace PrefsGUI
             hasDefaultInner = false;
         }
 
-
-        public override bool DoGUI(string label = null)
-        {
-            return DoGUIStrandard((v) => RGUI.Field(v, label ?? key));
-        }
-
         #endregion
 
 
 
         #region GUI Implement
-
-        protected delegate OuterT GUIFunc(OuterT v);
-
-        protected bool DoGUIStrandard(GUIFunc func, bool enableDefaultButton = true)
-        {
-            var customLabel = GetCustomLabel();
-            if (customLabel != null) RGUI.BeginCustomLabel(customLabel);
-            if (synced) RGUI.BeginColor(syncedColor);
-
-            var changed = false;
-            using (new GUILayout.HorizontalScope())
-            {
-                changed = DoGUICheckChanged(key, func);
-                if (enableDefaultButton)
-                {
-                    changed |= DoGUIDefaultButton();
-                }
-            }
-
-            if (synced) RGUI.EndColor();
-            if (customLabel != null) RGUI.EndCustomLabel();
-
-            return changed;
-        }
-
-        // public for Custom GUI
-        public bool DoGUIDefaultButton()
-        {
-            var ret = DoGUIDefaultButton(Compare(_Get(), ToInner(defaultValue)));
-            if (ret)
-            {
-                ResetToDefault();
-            }
-
-            return ret;
-        }
-
-        public static bool DoGUIDefaultButton(bool isDefault)
-        {
-            var label = isDefault ? "default" : "<color=red>default</color>";
-
-            return GUILayout.Button(label, GUILayout.ExpandWidth(false));
-        }
-
-
-        protected bool DoGUICheckChanged(string key, GUIFunc func)
+        
+        public bool DoGUICheckChanged(Func<TOuter, TOuter> func)
         {
             var changed = false;
             if (!PrefsKVS.HasKey(key))

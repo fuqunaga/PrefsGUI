@@ -1,12 +1,13 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using PrefsGUI.Editor;
 using RapidGUI;
-using System;
-using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace PrefsGUI.Editor
+namespace PrefsGUI.RapidGUI.Editor
 {
     public interface IPrefsGUIEditorExtension
     {
@@ -186,7 +187,7 @@ namespace PrefsGUI.Editor
             }
 
             static bool IsContainWord(string word, string searchWordLower) => word.ToLower().Contains(searchWordLower);
-            static bool IsComponentContainWord(UnityEngine.Object obj, string searchWordLower)
+            static bool IsComponentContainWord(Object obj, string searchWordLower)
             {
                 return obj.name.ToLower().Contains(searchWordLower)
                     || obj.GetType().ToString().ToLower().Contains(searchWordLower);
@@ -202,7 +203,7 @@ namespace PrefsGUI.Editor
                     .FirstOrDefault(sepKeys => sepKeys.Length > 1)?.First();
         }
 
-        string LabelWithEditPrefix(UnityEngine.Object obj, IEnumerable<PrefsParam> prefsSet, bool editPrefix)
+        string LabelWithEditPrefix(Object obj, IEnumerable<PrefsParam> prefsSet, bool editPrefix)
         {
             var keys = prefsSet.Select(prefs => prefs.key);
             var prefix = GetPrefix(keys);
@@ -213,7 +214,7 @@ namespace PrefsGUI.Editor
 
                 using (new RGUI.EnabledScope(false))
                 {
-                    EditorGUILayout.ObjectField(obj, typeof(UnityEngine.Object), true);
+                    EditorGUILayout.ObjectField(obj, typeof(Object), true);
                 }
 
                 if (editPrefix)

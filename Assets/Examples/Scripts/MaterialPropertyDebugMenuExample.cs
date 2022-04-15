@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PrefsGUI.RapidGUI;
+using UnityEngine;
 
 namespace PrefsGUI.Example
 {

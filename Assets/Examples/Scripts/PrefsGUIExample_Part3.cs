@@ -1,4 +1,5 @@
-﻿using PrefsGUI.RosettaUI;
+﻿using PrefsGUI.RapidGUI;
+using PrefsGUI.RosettaUI;
 using RapidGUI;
 using RosettaUI;
 using UnityEngine;

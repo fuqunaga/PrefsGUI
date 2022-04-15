@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using PrefsGUI.RapidGUI;
 using PrefsGUI.RosettaUI;
 using RapidGUI;
 using RosettaUI;
@@ -17,7 +19,7 @@ namespace PrefsGUI.Example
             Three
         }
 
-        [System.Serializable]
+        [Serializable]
         public class CustomClass
         {
             public string name;
