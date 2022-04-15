@@ -1,11 +1,10 @@
 {
     "name": "PrefsGUI.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:a44f47cf3ada4435dbc516bad0bc86fe",
-        "GUID:436548315e6ca5b499a1008921425bfb",
-        "GUID:3d35d6db7bb67824691179b12a2ce031"
+        "GUID:436548315e6ca5b499a1008921425bfb"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
@@ -15,5 +14,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "noEngineReferences": false
 }

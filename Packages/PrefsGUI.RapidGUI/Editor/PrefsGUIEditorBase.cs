@@ -1,9 +1,10 @@
 ﻿using System;
+using PrefsGUI.Editor;
 using UnityEditor;
 using UnityEngine;
 using RapidGUI;
 
-namespace PrefsGUI.Editor
+namespace PrefsGUI.RapidGUI.Editor
 {
     public abstract class PrefsGUIEditorBase : EditorWindow
     {
