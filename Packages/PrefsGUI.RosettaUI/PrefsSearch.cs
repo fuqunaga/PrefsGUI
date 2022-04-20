@@ -7,7 +7,7 @@ namespace PrefsGUI.RosettaUI
     {
         public static Element CreateElement()
         {
-            var ps = PrefsGUI.PrefsSearch.Instance;
+            var ps = PrefsSearchCore.Instance;
 
             return UI.Column(
                 UI.Field(null, () => ps.SearchWord),

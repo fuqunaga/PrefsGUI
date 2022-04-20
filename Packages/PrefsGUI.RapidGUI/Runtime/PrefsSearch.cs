@@ -6,7 +6,7 @@ namespace PrefsGUI.RapidGUI
     public static class PrefsSearch
     {
         static readonly FastScrollView _scrollView = new();
-        private static PrefsGUI.PrefsSearch Instance => PrefsGUI.PrefsSearch.Instance;
+        private static PrefsSearchCore Instance => PrefsSearchCore.Instance;
 
         static PrefsSearch()
         {

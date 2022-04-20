@@ -7,11 +7,11 @@ namespace PrefsGUI
     /// <summary>
     /// Show and search all Prefs
     /// </summary>
-    public class PrefsSearch
+    public class PrefsSearchCore
     {
         #region static
 
-        public static readonly PrefsSearch Instance = new();
+        public static readonly PrefsSearchCore Instance = new();
         
         #endregion
 
