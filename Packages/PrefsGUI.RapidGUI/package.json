@@ -2,7 +2,7 @@
   "name": "ga.fuquna.prefsgui.rapidgui",
   "displayName": "PrefsGUI - RapidGUI",
   "version": "0.0.0",
-  "unity": "2021.2",
+  "unity": "2021.3",
   "description": "RapidGUI implementation of PrefsGUI",
   "keywords": [
     "unity",
@@ -14,7 +14,7 @@
   "category": "Tool",
   "dependencies": {
     "ga.fuquna.prefsgui": "3.0.0",
-    "ga.fuquna.rapidgui": "1.2.2"
+    "ga.fuquna.rapidgui": "1.2.3"
   },
   "author": {
     "name": "fuqunaga",
