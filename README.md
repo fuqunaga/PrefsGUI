@@ -72,8 +72,9 @@ Select `MyRegistries` in `Packages:`
 
 ![](Documentation~/2022-04-12-17-40-26.png)
 
-Install `PrefsGUI - RosettaUI` and `RosettaUI - UIToolkit`
+Install `PrefsGUI - RosettaUI` and `RosettaUI - UIToolkit`  
 If you prefer IMGUI, please select `PrefsGUI - RapidGUI` instead.
+
 ![](Documentation~/2022-04-21-17-00-54.png)
 
 If you do not see it, please make sure that your Unity version is 2021.3 or higher.
