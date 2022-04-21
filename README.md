@@ -1,7 +1,5 @@
 # PrefsGUI
-[![openupm](https://img.shields.io/npm/v/ga.fuquna.prefsgui?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/ga.fuquna.prefsgui/)
-
-Accessors and GUIs for persistent preference values using JSON file
+Accessors and GUIs for persistent preference values using a JSON file
 
 ![](Documentation~/PrefsGUI.gif)
 
@@ -51,29 +49,35 @@ public void DoGUI()
 
 ## Installation
 
-### Dependencies
+This package uses the [scoped registry] feature to resolve package dependencies. 
 
-- [RapidGUI](https://github.com/fuqunaga/RapidGUI)
+[scoped registry]: https://docs.unity3d.com/Manual/upm-scoped.html
 
-### Install via OpenUPM
 
-The package is available on the [openupm registry](https://openupm.com). It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+**Edit > ProjectSettings... > Package Manager > Scoped Registries**
+
+Enter the following and click the Save button.
 
 ```
-openupm add ga.fuquna.rapidgui ga.fuquna.prefsgui
+"name": "fuqunaga",
+"url": "https://registry.npmjs.com",
+"scopes": [ "ga.fuquna" ]
 ```
+![](Documentation~/2022-04-12-17-29-38.png)
 
-### Install via git URL
 
-Add following lines to the `dependencies` section of the `Packages/manifest.json`.
-```
-"ga.fuquna.rapidgui": "https://github.com/fuqunaga/RapidGUI.git",
-"ga.fuquna.prefsgui": "https://github.com/fuqunaga/PrefsGUI.git"
-```
+**Window > Package Manager**
 
-### Install via traditional `.unitypackage`
+Select `MyRegistries` in `Packages:`
 
-Download a `.unitypackage` file from the [Release page](https://github.com/fuqunaga/PrefsGUI/releases).
+![](Documentation~/2022-04-12-17-40-26.png)
+
+Install `PrefsGUI - RosettaUI` and `RosettaUI - UIToolkit`
+If you prefer IMGUI, please select `PrefsGUI - RapidGUI` instead.
+![](Documentation~/2022-04-21-17-00-54.png)
+
+If you do not see it, please make sure that your Unity version is 2021.3 or higher.
+
 
 ## PrefsSearch
 
@@ -86,8 +90,8 @@ Display loaded PrefsParams with partial key match
 
 ![](Documentation~/PrefsGUIEditor.gif)
 - **Window -> PrefsGUI**
-- Display all loaded prefs that can be modiefied
-- You can also feed back the current value as default value
+- Display all loaded prefs that can be modified
+- You can also feed back the current value as a default value
 - You can edit the key prefix for each GameObject by displaying it in order of GameObject
 
 ### JSON file path
@@ -95,8 +99,8 @@ Display loaded PrefsParams with partial key match
 Application.persistentDataPath + "/Prefs.json"
 ```
 
-You can customize by placing PrefsWrapperPathCustom in the scene and set `_path` field.
-also can use the Special folders and environment variables.
+You can customize it by placing PrefsWrapperPathCustom in the scene and setting the `_path` field.
+Special folder names and environment variables are also available.
 ```
 - %dataPath% -> Application.dataPath
 - %companyName% -> Application.companyName
@@ -107,12 +111,12 @@ also can use the Special folders and environment variables.
 
 ## MaterialPropertyDebugMenu
 
-Auto create material GUI menu
+Auto-create material GUI menu
 
 ![](Documentation~/MaterialPropertyDebugMenu.gif)
 
 
-## Sync Prefs over network
+## Sync Prefs over a network
 
 **PrefsGUISyncUNET**
 https://github.com/fuqunaga/PrefsGUISyncUNET
