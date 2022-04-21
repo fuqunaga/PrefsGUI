@@ -71,7 +71,7 @@ namespace PrefsGUI
                 var alreadyExist = !_all.Add(this);
                 if (alreadyExist)
                 {
-                    foreach(var removeKey in _allDic.Where(pair => pair.Value == this).Select(pair => pair.Key))
+                    foreach(var removeKey in _allDic.Where(pair => pair.Value == this).Select(pair => pair.Key).ToArray())
                     {
                         _allDic.Remove(removeKey);
                     }
