@@ -1,0 +1,21 @@
+{
+    "name": "PrefsGUI.RapidGUI.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3d35d6db7bb67824691179b12a2ce031",
+        "GUID:436548315e6ca5b499a1008921425bfb",
+        "GUID:e295d064953ab4d448060d2c2a386f0f",
+        "GUID:8dde17fe02b3f1f46a868d4bdceedfc0"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
