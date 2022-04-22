@@ -8,8 +8,7 @@ namespace PrefsGUI.RosettaUI
 {
     public static class MaterialPropertyDebugMenuExtension
     {
-        public static Dictionary<string, Func<string, PrefsVector4, Element>> customVectorUI =
-            new Dictionary<string, Func<string, PrefsVector4, Element>>();
+        public static Dictionary<string, Func<string, PrefsVector4, Element>> customVectorUI = new();
             
 
         [RuntimeInitializeOnLoadMethod]
@@ -43,7 +42,7 @@ namespace PrefsGUI.RosettaUI
                     return prefs.CreateSlider(key, new Vector4(10, 10, 1, 1));
                 }).ToList();
             }
-
+            
             return
                 UI.Column(
                     new[]
@@ -65,8 +64,8 @@ namespace PrefsGUI.RosettaUI
                             }),
                             texEnvs
                         }
-                        .SelectMany(_ => _)
-                ).RegisterValueChangeCallback(() => menu.UpdateMaterial());
+                        .SelectMany(element => element)
+                ).RegisterValueChangeCallback(menu.UpdateMaterial);
         }
     }
 }

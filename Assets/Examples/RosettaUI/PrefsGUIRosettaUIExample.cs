@@ -1,14 +1,21 @@
 using PrefsGUI.Example;
 using RosettaUI;
-using RosettaUI.UIToolkit;
+using UnityEngine;
 
 namespace PrefsGUI.RosettaUI.Example
 {
-    public class TestRosettaUI : RosettaUIRootUIToolkit
+    [RequireComponent(typeof(RosettaUIRoot))]
+    public class PrefsGUIRosettaUIExample : MonoBehaviour
     {
         private void Start()
         {
-            var window = UI.Window(
+            var root = GetComponent<RosettaUIRoot>();
+            root.Build(CreateElement());
+        }
+
+        Element CreateElement()
+        {
+            return UI.Window(
                 "RosettaUI",
                 UI.WindowLauncher<PrefsGUIExample_Part1>("Part1"),
                 UI.WindowLauncher<PrefsGUIExample_Part2>("Part2"),
@@ -16,7 +23,6 @@ namespace PrefsGUI.RosettaUI.Example
                 UI.WindowLauncher(UI.Window(nameof(PrefsSearch), PrefsSearch.CreateElement()))
             );
 
-            Build(window);
         }
     }
 }

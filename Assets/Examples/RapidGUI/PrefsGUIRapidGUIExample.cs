@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace PrefsGUI.Example
 {
-    public class PrefsGUIExample : PrefsGUIExampleBase
+    public class PrefsGUIRapidGUIExample : PrefsGUIRapidGUIExampleBase
     {
         private WindowLaunchers windows;
         private Rect rect;

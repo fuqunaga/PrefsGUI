@@ -5,18 +5,15 @@ using UnityEngine;
 namespace PrefsGUI.Example
 {
     [RequireComponent(typeof(RosettaUIRoot))]
-    public class MaterialPropertyDebugMenuRosettaUIExample : MaterialPropertyDebugMenuExample
+    public class MaterialPropertyDebugMenuRosettaUIExample : MonoBehaviour
     {
-        private RosettaUIRoot _rosettaUIRoot;
-
-
-        public override void Start()
+        public MaterialPropertyDebugMenu debugMenu;
+        
+        public void Start()
         {
-            base.Start();
-
-            _rosettaUIRoot = GetComponent<RosettaUIRoot>();
+            var rosettaUIRoot = GetComponent<RosettaUIRoot>();
             
-            _rosettaUIRoot.Build(
+            rosettaUIRoot.Build(
                 UI.Window(
                     debugMenu.CreateElement()
                 )
