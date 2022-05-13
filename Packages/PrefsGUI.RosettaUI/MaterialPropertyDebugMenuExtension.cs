@@ -15,7 +15,7 @@ namespace PrefsGUI.RosettaUI
         static void RegisterUI()
         {
             UICustom.RegisterElementCreationFunc<MaterialPropertyDebugMenu>(
-                menu => menu.CreateElement()
+                (label, menu) => menu.CreateElement()
             );
         }
 

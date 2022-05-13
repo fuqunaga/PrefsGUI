@@ -32,7 +32,7 @@ namespace PrefsGUI.Example
             prefsIPEndPoint.DoGUI();
         }
 
-        public Element CreateElement()
+        public Element CreateElement(LabelElement _)
         {
             return UI.Column(
                 prefsVector2Int.CreateElement(),

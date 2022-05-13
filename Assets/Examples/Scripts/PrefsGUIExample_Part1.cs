@@ -111,7 +111,7 @@ namespace PrefsGUI.Example
             List<CustomClass> list = prefsList;
         }
 
-        public Element CreateElement()
+        public Element CreateElement(LabelElement _)
         {
             return UI.Column(
                 prefsBool.CreateElement(),

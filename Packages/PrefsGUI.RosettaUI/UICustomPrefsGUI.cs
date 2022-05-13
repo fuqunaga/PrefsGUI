@@ -14,7 +14,7 @@ namespace PrefsGUI.RosettaUI
         [RuntimeInitializeOnLoadMethod]
         public static void RegisterUICustom()
         {
-            UICustom.RegisterElementCreationFunc<PrefsParam>(prefsParam =>
+            UICustom.RegisterElementCreationFunc<PrefsParam>((label, prefsParam) =>
             {
                 var type = prefsParam.GetType();
                 var func = GetCreationFunc(type);

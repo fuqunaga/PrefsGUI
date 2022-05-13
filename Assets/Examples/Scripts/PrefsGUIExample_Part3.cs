@@ -28,7 +28,7 @@ namespace PrefsGUI.Example
             prefsMinMaxVector3Int.DoGUISlider();
         }
 
-        public Element CreateElement()
+        public Element CreateElement(LabelElement _)
         {
             return UI.Column(
                 prefsMinMaxInt.CreateMinMaxSlider(),
