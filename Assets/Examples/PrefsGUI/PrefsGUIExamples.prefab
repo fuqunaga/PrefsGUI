@@ -1,0 +1,258 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5910173124826832051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5910173124826832050}
+  - component: {fileID: 5910173124826832049}
+  m_Layer: 0
+  m_Name: Part1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5910173124826832050
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173124826832051}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5910173124934788266}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5910173124826832049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173124826832051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61933781acb3fb14faf7443efab03b2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefsBool:
+    _key: PrefsBool
+    defaultValue: 0
+  prefsInt:
+    _key: PrefsInt
+    defaultValue: 0
+  prefsFloat:
+    _key: PrefsFloat
+    defaultValue: 0
+  prefsString:
+    _key: PrefsString
+    defaultValue: 
+  prefsEnum:
+    _key: PrefsEnum
+    defaultValue: 0
+  prefsColor:
+    _key: PrefsColor
+    defaultValue: {r: 0, g: 0, b: 0, a: 0}
+  prefsVector2:
+    _key: PrefsVector2
+    defaultValue: {x: 0, y: 0}
+  prefsVector3:
+    _key: PrefsVector3
+    defaultValue: {x: 0, y: 0, z: 0}
+  prefsVector4:
+    _key: PrefsVector4
+    defaultValue: {x: 0, y: 0, z: 0, w: 0}
+  prefsClass:
+    _key: PrefsClass
+    defaultValue:
+      name: 
+      intValue: 0
+  prefsList:
+    _key: PrefsList
+    defaultValue:
+    - name: first
+      intValue: 0
+--- !u!1 &5910173124934788267
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5910173124934788266}
+  - component: {fileID: 5910173124934788265}
+  m_Layer: 0
+  m_Name: PrefsGUIExamples
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5910173124934788266
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173124934788267}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5910173124826832050}
+  - {fileID: 5910173125313911334}
+  - {fileID: 5910173125652080342}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5910173124934788265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173124934788267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f45fdd78baa00824fa0bd95ff0bf37bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  platformMask: 132
+  _path: '%dataPath%/../../%productName%Prefs'
+--- !u!1 &5910173125313911335
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5910173125313911334}
+  - component: {fileID: 5910173125313911333}
+  m_Layer: 0
+  m_Name: Part2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5910173125313911334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173125313911335}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5910173124934788266}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5910173125313911333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173125313911335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84e9b87159a01f64da8cb763532f1382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefsVector2Int:
+    _key: PrefsVector2Int
+    defaultValue: {x: 0, y: 0}
+  prefsVector3Int:
+    _key: PrefsVector3Int
+    defaultValue: {x: 0, y: 0, z: 0}
+  prefsRect:
+    _key: PrefsRect
+    defaultValue:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  prefsBounds:
+    _key: PrefsBounds
+    defaultValue:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0, y: 0, z: 0}
+  prefsBoundsInt:
+    _key: PrefsBoundsInt
+    defaultValue:
+      m_Position: {x: 0, y: 0, z: 0}
+      m_Size: {x: 0, y: 0, z: 0}
+--- !u!1 &5910173125652080343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5910173125652080342}
+  - component: {fileID: 5910173125652080341}
+  m_Layer: 0
+  m_Name: Part3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5910173125652080342
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173125652080343}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5910173124934788266}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5910173125652080341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173125652080343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99088179b88fc1d46adc2fc60ac2fbee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefsMinMaxInt:
+    _key: PrefsMinMaxInt
+  prefsMinMaxFloat:
+    _key: PrefsMinMaxFloat
+  prefsMinMaxVector2:
+    _key: PrefsMinMaxVector2
+  prefsMinMaxVector3:
+    _key: PrefsMinMaxVector3
+  prefsMinMaxVector4:
+    _key: PrefsMinMaxVector4
+  prefsMinMaxVector2Int:
+    _key: PrefsMinMaxVector2Int
+  prefsMinMaxVector3Int:
+    _key: PrefsMinMaxVector3Int
