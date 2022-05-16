@@ -5,7 +5,7 @@ namespace PrefsGUI.Example
 {
     public abstract class PrefsGUIRapidGUIExampleBase : MonoBehaviour
     {
-        Rect windowRect = new Rect()
+        protected Rect windowRect = new()
         {
             width = 500f
         };
