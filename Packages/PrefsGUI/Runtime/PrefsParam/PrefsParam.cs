@@ -38,7 +38,7 @@ namespace PrefsGUI
 
         public abstract Type GetInnerType();
         public abstract object GetObject();
-        public abstract void SetSyncedObject(object obj, Action onIfAlreadyGet);
+        public abstract void SetSyncedObject(object obj, Action onIfAlreadyGet = null);
 
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();

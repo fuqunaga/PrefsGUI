@@ -5,14 +5,14 @@ using PrefsGUI.KVS;
 namespace PrefsGUI
 {
     /// <summary>
-    /// Basic implementation of OuterT and InnnerT
+    /// Basic implementation of TOuter and TInner
     /// </summary>
     public abstract class PrefsParamOuterInner<TOuter, TInner> : PrefsParamOuter<TOuter>
     {
-        protected bool isCachedOuter;
+        protected bool hasCachedOuter;
         protected TOuter cachedOuter;
 
-        protected bool isCachedObj;
+        protected bool hasCachedObj;
         protected object cachedObj;
 
         public bool synced { get; protected set; }
@@ -47,15 +47,15 @@ namespace PrefsGUI
             {
                 if (onIfAlreadyGet != null && !this.synced && syncedFlag)
                 {
-                    if (isCachedOuter || isCachedObj)
+                    if (hasCachedOuter || hasCachedObj)
                     {
                         onIfAlreadyGet();
                     }
                 }
 
                 PrefsKVS.Set(key, v);
-                isCachedOuter = false;
-                isCachedObj = false;
+                hasCachedOuter = false;
+                hasCachedObj = false;
             }
 
             synced = syncedFlag;
@@ -80,26 +80,24 @@ namespace PrefsGUI
 
         public override TOuter Get()
         {
-            if (!isCachedOuter)
+            if (!hasCachedOuter)
             {
                 cachedOuter = ToOuter(_Get());
-                isCachedOuter = true;
+                hasCachedOuter = true;
             }
             return cachedOuter;
         }
 
-        public override void Set(TOuter v) { _Set(ToInner(v)); }
+        public override void Set(TOuter v) => _Set(ToInner(v));
 
-        public override Type GetInnerType()
-        {
-            return typeof(TInner);
-        }
+        public override Type GetInnerType() => typeof(TInner);
+
         public override object GetObject()
         {
-            if (!isCachedObj)
+            if (!hasCachedObj)
             {
                 cachedObj = _Get();
-                isCachedObj = true;
+                hasCachedObj = true;
             }
 
             return cachedObj;
