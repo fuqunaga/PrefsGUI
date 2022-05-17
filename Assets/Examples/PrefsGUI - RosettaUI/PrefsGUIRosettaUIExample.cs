@@ -16,7 +16,7 @@ namespace PrefsGUI.RosettaUI.Example
         Element CreateElement()
         {
             return UI.Window(
-                "RosettaUI",
+                "PrefsGUI - RosettaUI",
                 UI.WindowLauncher<PrefsGUIExample_Part1>("Part1"),
                 UI.WindowLauncher<PrefsGUIExample_Part2>("Part2"),
                 UI.WindowLauncher<PrefsGUIExample_Part3>("Part3"),

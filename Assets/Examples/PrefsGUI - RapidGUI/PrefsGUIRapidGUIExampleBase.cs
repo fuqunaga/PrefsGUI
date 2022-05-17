@@ -17,7 +17,7 @@ namespace PrefsGUI.Example
                 DoGUI();
                 GUI.DragWindow();
             },
-            "PrefsGUI");
+            "PrefsGUI - RapidGUI");
         }
 
 
