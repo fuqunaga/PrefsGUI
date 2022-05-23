@@ -6,25 +6,26 @@ namespace PrefsGUI.Example
 {
     public class PrefsGUIRapidGUIExample : PrefsGUIRapidGUIExampleBase
     {
-        private WindowLaunchers windows;
+        public Vector2 position;
+        private WindowLaunchers windowLaunchers;
         
         private void Start()
         {
-            windows = new WindowLaunchers
+            windowLaunchers = new WindowLaunchers
             {
                 isWindow = false
             };
-            windows.Add("Part1", typeof(PrefsGUIExample_Part1));
-            windows.Add("Part2", typeof(PrefsGUIExample_Part2));
-            windows.Add("Part3", typeof(PrefsGUIExample_Part3));
-            windows.Add("PrefsSearch", PrefsSearch.DoGUI).SetWidth(600f).SetHeight(800f);
+            windowLaunchers.Add("Part1", typeof(PrefsGUIExample_Part1));
+            windowLaunchers.Add("Part2", typeof(PrefsGUIExample_Part2));
+            windowLaunchers.Add("Part3", typeof(PrefsGUIExample_Part3));
+            windowLaunchers.Add("PrefsSearch", PrefsSearch.DoGUI).SetWidth(600f).SetHeight(800f);
 
-            windowRect.y = Screen.height * 0.5f;
+            windowRect.position = position;
         }
 
         protected override void DoGUI()
         {
-            windows.DoGUI();
+            windowLaunchers.DoGUI();
             base.DoGUI();
         }
     }
