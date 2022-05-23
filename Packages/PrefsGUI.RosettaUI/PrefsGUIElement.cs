@@ -15,7 +15,7 @@ namespace PrefsGUI.RosettaUI
 
             button.onUpdate += _ =>
             {
-                var color = isDefault() ? new Color(0.76f, 0.76f, 0.76f, 1f) : Color.red;
+                var color = isDefault() ? (Color?)null : Color.red;
                 button.SetColor(color);
             };
 

@@ -39,10 +39,14 @@ namespace PrefsGUI.RosettaUI
 
         public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)
         {
-            return UI.Row(
+            var element = UI.Row(
                 _CreateSlider(prefs, label, minGetter, maxGetter),
                 prefs.CreateDefaultButtonElement()
             );
+            
+            PrefsGUIExtension.SubscribeSyncedFlag(prefs, element);
+
+            return element;
         }
 
         private static Element _CreateSlider<T>(PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)

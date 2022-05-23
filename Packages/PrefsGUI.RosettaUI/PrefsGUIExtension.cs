@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RosettaUI;
-using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI.RosettaUI
@@ -74,12 +73,21 @@ namespace PrefsGUI.RosettaUI
             return func?.Invoke(prefs, label);
         }
 
-
-
-
         public static ButtonElement CreateDefaultButtonElement(this PrefsParam prefs)
         {
             return PrefsGUIElement.CreateDefaultButtonElement(prefs.ResetToDefault, () => prefs.IsDefault);
+        }
+
+
+        public static void SubscribeSyncedFlag(PrefsParam prefs, Element element)
+        {
+            prefs.onSyncedChanged += OnSyncedChanged;
+            OnSyncedChanged(prefs.synced);
+
+            void OnSyncedChanged(bool synced)
+            {
+                element?.SetColor(synced ? PrefsParam.syncedColor : null);
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 using RosettaUI;
-using UnityEngine;
 
 namespace PrefsGUI.RosettaUI
 {
@@ -7,7 +6,7 @@ namespace PrefsGUI.RosettaUI
     {
         public static Element CreateElement<T>(this PrefsParamOuter<T> prefs, LabelElement label = null)
         {
-            return UI.Row(
+            var element = UI.Row(
                 UI.Field(
                     label ?? prefs.key,
                     prefs.Get,
@@ -15,6 +14,10 @@ namespace PrefsGUI.RosettaUI
                 ),
                 prefs.CreateDefaultButtonElement()
             );
+
+            PrefsGUIExtension.SubscribeSyncedFlag(prefs, element);
+
+            return element;
         }
 
         public static Element CreateElement<TPrefs0, TPrefs1, TOuter0, TOuter1>(

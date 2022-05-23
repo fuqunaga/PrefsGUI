@@ -15,8 +15,6 @@ namespace PrefsGUI
         protected bool hasCachedObj;
         protected object cachedObj;
 
-        public bool synced { get; protected set; }
-
         protected bool hasDefaultInner;
         protected TInner defaultInner;
 
@@ -45,7 +43,7 @@ namespace PrefsGUI
         {
             if (false == Compare(v, _Get()))
             {
-                if (onIfAlreadyGet != null && !this.synced && syncedFlag)
+                if (onIfAlreadyGet != null && !synced && syncedFlag)
                 {
                     if (hasCachedOuter || hasCachedObj)
                     {

@@ -6,7 +6,7 @@ namespace PrefsGUI.RosettaUI
     {
         public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, LabelElement label = null)
         {
-            return WithDefaultButton(prefs,
+            return AddDefaultButtonAndSyncSubscription(prefs,
                 UI.MinMaxSlider(
                     label ?? prefs.key,
                     prefs.Get,
@@ -45,7 +45,7 @@ namespace PrefsGUI.RosettaUI
         
         public static Element CreateMinMaxSlider<T>(this PrefsMinMax<T> prefs, LabelElement label, PrefsMinMax<T>.MinMax range)
         {
-            return WithDefaultButton(prefs,
+            return AddDefaultButtonAndSyncSubscription(prefs,
                 UI.MinMaxSlider(
                     label ?? prefs.key,
                     prefs.Get,
@@ -55,7 +55,12 @@ namespace PrefsGUI.RosettaUI
             );
         }
 
-        static Element WithDefaultButton(PrefsParam prefs, Element element) =>
-            UI.Row(element, prefs.CreateDefaultButtonElement());
+        static Element AddDefaultButtonAndSyncSubscription(PrefsParam prefs, Element element)
+        {
+            var ret = UI.Row(element, prefs.CreateDefaultButtonElement());
+            PrefsGUIExtension.SubscribeSyncedFlag(prefs, ret);
+
+            return ret;
+        }
     }
 }

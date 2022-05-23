@@ -8,7 +8,7 @@ namespace PrefsGUI.RosettaUI
         {
             var listBinder = Binder.Create(prefs.Get, prefs.Set);
 
-            return UI.Fold(
+            var element = UI.Fold(
                 UI.Row(
                     label ?? prefs.key,
                     UI.Space(),
@@ -43,6 +43,10 @@ namespace PrefsGUI.RosettaUI
                     )
                 }
             );
+            
+            PrefsGUIExtension.SubscribeSyncedFlag(prefs, element);
+
+            return element;
         }
     }
 }
