@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PrefsGUI.KVS;
+using UnityEngine.Assertions;
 
 namespace PrefsGUI
 {
@@ -12,12 +13,13 @@ namespace PrefsGUI
         protected bool hasCachedOuter;
         protected TOuter cachedOuter;
 
-        protected bool hasCachedObj;
-        protected object cachedObj;
+        protected bool hasCachedInner;
+        protected TInner cachedInner;
 
         protected bool hasDefaultInner;
         protected TInner defaultInner;
 
+        private PrefsInnerAccessor _prefsInnerAccessor;
 
         protected PrefsParamOuterInner(string key, TOuter defaultValue = default) : base(key, defaultValue)
         {
@@ -41,11 +43,11 @@ namespace PrefsGUI
 
         protected void _Set(TInner v, bool syncedFlag = false, Action onIfAlreadyGet = null)
         {
-            if (false == Compare(v, _Get()))
+            if (false == Equals(v, _Get()))
             {
                 if (onIfAlreadyGet != null && !synced && syncedFlag)
                 {
-                    if (hasCachedOuter || hasCachedObj)
+                    if (hasCachedOuter || hasCachedInner)
                     {
                         onIfAlreadyGet();
                     }
@@ -53,16 +55,28 @@ namespace PrefsGUI
 
                 PrefsKVS.Set(key, v);
                 hasCachedOuter = false;
-                hasCachedObj = false;
+                hasCachedInner = false;
             }
 
             synced = syncedFlag;
         }
 
-        public virtual bool Compare(TInner lhs, TInner rhs) => EqualityComparer<TInner>.Default.Equals(lhs, rhs);
+        protected virtual bool Equals(TInner lhs, TInner rhs) => EqualityComparer<TInner>.Default.Equals(lhs, rhs);
 
+        // TODO: move out
         public virtual Dictionary<string, string> GetCustomLabel() => null;
 
+
+        private TInner GetInner()
+        {
+            if (!hasCachedInner)
+            {
+                cachedInner = _Get();
+                hasCachedInner = true;
+            }
+
+            return cachedInner;
+        }
 
 
         #region abstract
@@ -89,29 +103,21 @@ namespace PrefsGUI
         public override void Set(TOuter v) => _Set(ToInner(v));
 
         public override Type GetInnerType() => typeof(TInner);
-
-        public override object GetObject()
-        {
-            if (!hasCachedObj)
-            {
-                cachedObj = _Get();
-                hasCachedObj = true;
-            }
-
-            return cachedObj;
-        }
-        public override void SetSyncedObject(object obj, Action onIfAlreadyGet = null)
-        {
-            _Set((TInner)obj, true, onIfAlreadyGet);
-        }
-
-        public override bool IsDefault => Compare(GetDefaultInner(), _Get());
+        
+        public override bool IsDefault => Equals(GetDefaultInner(), _Get());
 
         public override void SetCurrentToDefault()
         {
             defaultValue = Get();
             hasDefaultInner = false;
         }
+
+        public override IPrefsInnerAccessor<T> GetInnerAccessor<T>()
+        {
+            Assert.AreEqual(typeof(T), typeof(TInner));
+            _prefsInnerAccessor ??= new(this);
+            return (IPrefsInnerAccessor<T>)_prefsInnerAccessor;
+        } 
 
         #endregion
 
@@ -134,13 +140,42 @@ namespace PrefsGUI
             var next = func(prev);
             var nextInner = ToInner(next);
 
-            if (!Compare(prevInner, nextInner))
+            if (!Equals(prevInner, nextInner))
             {
                 _Set(nextInner);
                 changed = true;
             }
 
             return changed;
+        }
+
+        #endregion
+        
+        
+        #region InnerAccessor
+
+        public class PrefsInnerAccessor : IPrefsInnerAccessor<TInner>
+        {
+            private readonly PrefsParamOuterInner<TOuter, TInner> _prefs;
+
+            public PrefsInnerAccessor(PrefsParamOuterInner<TOuter, TInner> prefs)
+            {
+                _prefs = prefs;
+            } 
+            
+            #region IPrefsInnerAccessor
+            
+            public PrefsParam Prefs => _prefs;
+            public TInner Get() => _prefs.GetInner();
+            
+            public void SetSyncedValue(TInner value, Action onIfAlreadyGet = null)
+            {
+                _prefs._Set(value, true, onIfAlreadyGet);
+            }
+            
+            public bool Equals(TInner lhs, TInner rhs) => _prefs.Equals(lhs, rhs);
+
+            #endregion
         }
 
         #endregion

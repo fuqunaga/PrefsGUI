@@ -51,12 +51,10 @@ namespace PrefsGUI
         #region abstract
 
         public abstract Type GetInnerType();
-        public abstract object GetObject();
-        public abstract void SetSyncedObject(object obj, Action onIfAlreadyGet = null);
-
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
         public abstract void ResetToDefault();
+        public abstract IPrefsInnerAccessor<T> GetInnerAccessor<T>();
 
         #endregion
 
