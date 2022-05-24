@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using PrefsGUI.KVS;
+using PrefsGUI.Kvs;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI
@@ -38,7 +38,7 @@ namespace PrefsGUI
 
         protected TInner _Get()
         {
-            return PrefsKVS.Get(key, GetDefaultInner());
+            return PrefsKvs.Get(key, GetDefaultInner());
         }
 
         protected void _Set(TInner v, bool syncedFlag = false, Action onIfAlreadyGet = null)
@@ -53,7 +53,7 @@ namespace PrefsGUI
                     }
                 }
 
-                PrefsKVS.Set(key, v);
+                PrefsKvs.Set(key, v);
                 hasCachedOuter = false;
                 hasCachedInner = false;
             }
@@ -128,7 +128,7 @@ namespace PrefsGUI
         public bool DoGUICheckChanged(Func<TOuter, TOuter> func)
         {
             var changed = false;
-            if (!PrefsKVS.HasKey(key))
+            if (!PrefsKvs.HasKey(key))
             {
                 Set(defaultValue);
                 changed = true;

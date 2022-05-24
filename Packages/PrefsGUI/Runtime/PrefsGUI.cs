@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using PrefsGUI.KVS;
+using PrefsGUI.Kvs;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -10,9 +10,9 @@ namespace PrefsGUI
     #region static class
     public class Prefs
     {
-        public static void Save() { PrefsKVS.Save(); }
-        public static void Load() { PrefsKVS.Load(); }
-        public static void DeleteAll() { PrefsKVS.DeleteAll(); }
+        public static void Save() { PrefsKvs.Save(); }
+        public static void Load() { PrefsKvs.Load(); }
+        public static void DeleteAll() { PrefsKvs.DeleteAll(); }
     }
     #endregion
 

@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace PrefsGUI.KVS.Json
+namespace PrefsGUI.Kvs.Json
 {
-    public class PrefsKVSJson : IKVS
+    public class PrefsKvsJson : IKvs
     {
         #region JsonUtility
 
@@ -24,13 +24,13 @@ namespace PrefsGUI.KVS.Json
 
         #endregion
 
-        string path => PrefsKVSPathSelector.path + "/Prefs.json";
+        string path => PrefsKvsPathSelector.path + "/Prefs.json";
 
 
         Dictionary<string, object> cachedObj = new Dictionary<string, object>();
         Dictionary<string, string> jsonDic = new Dictionary<string, string>();
 
-        public PrefsKVSJson()
+        public PrefsKvsJson()
         {
             Load();
         }

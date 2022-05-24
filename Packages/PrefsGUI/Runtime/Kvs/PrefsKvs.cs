@@ -1,8 +1,8 @@
-﻿using PrefsGUI.KVS.Json;
+﻿using PrefsGUI.Kvs.Json;
 
-namespace PrefsGUI.KVS
+namespace PrefsGUI.Kvs
 {
-    public interface IKVS
+    public interface IKvs
     {
         void Save();
         void Load();
@@ -15,9 +15,9 @@ namespace PrefsGUI.KVS
     }
 
 
-    public static class PrefsKVS
+    public static class PrefsKvs
     {
-        public static IKVS implement = new PrefsKVSJson();
+        public static readonly IKvs implement = new PrefsKvsJson();
 
         public static void Save() => implement.Save();
         public static void Load() => implement.Load();

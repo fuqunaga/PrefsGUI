@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PrefsGUI.KVS;
+using PrefsGUI.Kvs;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -44,7 +44,7 @@ namespace PrefsGUI
             Register();
         }
 
-        public virtual void Delete() => PrefsKVS.DeleteKey(key);
+        public virtual void Delete() => PrefsKvs.DeleteKey(key);
 
 
 

@@ -3,37 +3,33 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace PrefsGUI.KVS
+namespace PrefsGUI.Kvs
 {
     /// <summary>
-    /// Custom File Path for PrefsKVS
-    /// Rerative to Application.dataPath
+    /// Custom File Path for PrefsKvs
+    /// Relative to Application.dataPath
     /// you can use magic path
     /// - %dataPath% -> Application.dataPath
     /// - %companyName% -> Application.companyName
     /// - %productName% -> Application.productName
     /// - other %[word]% -> System.Environment.GetEnvironmentVariable([word])
     /// </summary>
-    public class PrefsKVSPathCustom : MonoBehaviour, IPrefsKVSPath
+    public class PrefsKvsPathCustom : MonoBehaviour, IPrefsKvsPath
     {
         #region Static
 
         public static ulong MakePlatformMask(params RuntimePlatform[] platforms) => platforms.Aggregate((ulong)0, (mask, platform) => mask | ((ulong)1 << (int)platform));
 
-        public string ReplaceMagicWord(string path)
+        public string ReplaceMagicWord(string rawString)
         {
-            var ret = path
+            var ret = rawString
                 .Replace("%dataPath%", Application.dataPath)
                 .Replace("%companyName%", Application.companyName)
                 .Replace("%productName%", Application.productName);
 
             var matches = Regex.Matches(ret, @"%\w+?%").Cast<Match>();
-            foreach (var m in matches)
-            {
-                ret = ret.Replace(m.Value, Environment.GetEnvironmentVariable(m.Value.Trim('%')));
-            }
 
-            return ret;
+            return matches.Aggregate(ret, (current, m) => current.Replace(m.Value, Environment.GetEnvironmentVariable(m.Value.Trim('%'))));
         }
 
         #endregion
