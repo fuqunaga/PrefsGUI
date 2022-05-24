@@ -24,7 +24,7 @@ namespace PrefsGUI.Example
         protected virtual void DoGUI()
         {
             GUILayout.Space(50f);
-            GUILayout.Label($"file path: {KVS.PrefsKVSPathSelector.path}");
+            GUILayout.Label($"file path: {Kvs.PrefsKvsPathSelector.path}");
 
             if (GUILayout.Button("Save")) Prefs.Save();
             if (GUILayout.Button("DeleteAll")) Prefs.DeleteAll();

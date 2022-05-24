@@ -24,7 +24,7 @@ namespace PrefsGUI.RosettaUI.Example
                 UI.WindowLauncher<PrefsGUIExample_Part3>("Part3"),
                 UI.WindowLauncher(UI.Window(nameof(PrefsSearch), PrefsSearch.CreateElement())),
                 UI.Space().SetHeight(15f),
-                UI.Label(() => $"file path: {KVS.PrefsKVSPathSelector.path}"),
+                UI.Label(() => $"file path: {Kvs.PrefsKvsPathSelector.path}"),
                 UI.Button(nameof(Prefs.Save), Prefs.Save),
                 UI.Button(nameof(Prefs.DeleteAll), Prefs.DeleteAll)
             ).SetPosition(position);
