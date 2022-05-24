@@ -24,11 +24,12 @@ namespace PrefsGUI.Kvs.Json
 
         #endregion
 
-        string path => PrefsKvsPathSelector.path + "/Prefs.json";
-
-
-        Dictionary<string, object> cachedObj = new Dictionary<string, object>();
-        Dictionary<string, string> jsonDic = new Dictionary<string, string>();
+        
+        private readonly KvsCache ksvCache = new();
+        private Dictionary<string, string> jsonDic = new();
+        
+        private string path => PrefsKvsPathSelector.path + "/Prefs.json";
+        
 
         public PrefsKvsJson()
         {
@@ -38,11 +39,11 @@ namespace PrefsGUI.Kvs.Json
 
         public void Save()
         {
-            cachedObj.ToList().ForEach(pair =>
+            foreach(var (key,obj) in ksvCache)
             {
-                var json = JsonUtilityEx.ToJson(pair.Value);
-                jsonDic[pair.Key] = json;
-            });
+                var json = JsonUtilityEx.ToJson(obj);
+                jsonDic[key] = json;
+            }
 
             var list = jsonDic.Select(pair => new KeyValue() { key = pair.Key, value = pair.Value }).ToList();
             var str = JsonUtilityEx.ToJson(new ListWrapper() { list = list }, true);
@@ -61,50 +62,43 @@ namespace PrefsGUI.Kvs.Json
                 var kvList = JsonUtility.FromJson<ListWrapper>(str).list;
                 jsonDic = kvList?.ToDictionary(kv => kv.key, kv => kv.value);
 
-                cachedObj.Clear();
+                ksvCache.Clear();
             }
         }
 
 
-        public bool HasKey(string key) => cachedObj.ContainsKey(key) || jsonDic.ContainsKey(key);
+        public bool HasKey(string key) => ksvCache.ContainsKey(key) || jsonDic.ContainsKey(key);
 
         public void DeleteKey(string key)
         {
-            cachedObj.Remove(key);
+            ksvCache.Remove(key);
             jsonDic.Remove(key);
         }
 
         public void DeleteAll()
         {
-            cachedObj.Clear();
+            ksvCache.Clear();
             jsonDic.Clear();
         }
 
 
         public T Get<T>(string key, T defaultValue)
         {
-            object obj;
-            if (!cachedObj.TryGetValue(key, out obj))
+            if (!ksvCache.TryGetValue<T>(key, out var value))
             {
-                if (jsonDic.TryGetValue(key, out var json))
-                {
-                    obj = JsonUtilityEx.FromJson<T>(json);
-                    cachedObj[key] = obj;
-                }
-            }
+                value = jsonDic.TryGetValue(key, out var json)
+                    ? JsonUtilityEx.FromJson<T>(json)
+                    : defaultValue;
 
-            if ( obj != null)
-            {
-                return (T)obj;
+                ksvCache.Set(key, value);
             }
-
-            Set(key, defaultValue);
-            return defaultValue;
+            
+            return value;
         }
 
         public void Set<T>(string key, T v)
         {
-            cachedObj[key] = v;
+            ksvCache.Set(key, v);
         }
     }
 }

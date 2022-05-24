@@ -13,23 +13,24 @@ namespace PrefsGUI.Example
         public int count = 10000;
         public bool updateValues = true;
         public int showPrefsIndex;
-        public List<PrefsFloat> prefsFloats = new();
+        public List<PrefsFloat> prefsList = new();
 
         private void Start()
         {
+            ResetPrefs();
             uiRoot.Build(CreateElement());
         }
 
         private void Update()
         {
-            if (prefsFloats.Count != count)
+            if (prefsList.Count != count)
             {
                 ResetPrefs();
             }
 
             if (updateValues)
             {
-                foreach (var prefs in prefsFloats)
+                foreach (var prefs in prefsList)
                 {
                     prefs.Set(Random.value);
                 }
@@ -38,7 +39,7 @@ namespace PrefsGUI.Example
         
         void ResetPrefs()
         {
-            prefsFloats = Enumerable.Range(0, count)
+            prefsList = Enumerable.Range(0, count)
                 .Select(i => new PrefsFloat(nameof(PrefsFloat) + i))
                 .ToList();
         }
@@ -54,7 +55,7 @@ namespace PrefsGUI.Example
                 ),
                 UI.DynamicElementOnStatusChanged(
                     () => showPrefsIndex,
-                    idx => (0 <= idx && idx < prefsFloats.Count) ? prefsFloats[idx].CreateElement() : null
+                    idx => (0 <= idx && idx < prefsList.Count) ? prefsList[idx].CreateElement() : null
                 )
             );
         }
