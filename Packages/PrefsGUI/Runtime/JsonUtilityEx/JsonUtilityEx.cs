@@ -33,10 +33,7 @@ namespace PrefsGUI
             return ret;
         }
 
-        
-        public static string ToJson(object obj) => ToJson(obj, false);
-
-        public static string ToJson(object obj, bool prettyPrint)
+        public static string ToJson(object obj, bool prettyPrint = false)
         {
             return JsonUtility.ToJson(WrapObject(obj), prettyPrint);
         }
@@ -58,32 +55,41 @@ namespace PrefsGUI
 
         internal abstract class ValueWrapper
         {
-            public static Type GetWrapperType(Type type) => typeof(ValueWrapper<>).MakeGenericType(type);
-
-
-            static HashSet<Type> supportedTypes = new HashSet<Type>()
+            private static readonly HashSet<Type> supportedTypes = new()
             {
                 typeof(string),
                 typeof(Vector2Int), typeof(Vector3Int),
                 typeof(Rect), typeof(RectOffset),
                 typeof(Bounds), typeof(BoundsInt)
             };
+            
+            private static readonly Dictionary<Type, bool> isSupportedTable = new();
 
+
+            public static Type GetWrapperType(Type type) => typeof(ValueWrapper<>).MakeGenericType(type);
+            
             public static bool IsSupport(Type type)
             {
-                return type.IsPrimitive
-                    || supportedTypes.Contains(type)
-                    || type.IsArray
-                    || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                    ;
+                if (!isSupportedTable.TryGetValue(type, out var ret))
+                {
+                    ret = type.IsPrimitive
+                          || supportedTypes.Contains(type)
+                          || type.IsArray
+                          || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                        ;
+
+                    isSupportedTable[type] = ret;
+                }
+
+                return ret;
             }
 
             public abstract object obj { get; }
         }
 
-        internal class ValueWrapper<T> : ValueWrapper
+        private class ValueWrapper<T> : ValueWrapper
         {
-            public T value;
+            private readonly T value;
             public override object obj => value;
 
             public ValueWrapper(T value) { this.value = value; }
