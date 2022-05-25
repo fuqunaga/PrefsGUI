@@ -6,8 +6,9 @@ using UnityEngine;
 namespace PrefsGUI
 {
     /// <summary>
-    /// JsonUtility exntention.
-    /// support primitive type, List and Array
+    /// JsonUtility extension to convert any type.
+    /// The original JsonUtility converts public fields of objects to Json,
+    /// so primitive types, etc. are not supported.
     /// </summary>
     public static class JsonUtilityEx
     {

@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
@@ -17,45 +18,101 @@ namespace PrefsGUI.Test
             Three
         }
 
-
-        [Test]
-        public void TestConsistency()
+        [TestCaseSource(nameof(JsonUtilityUnsupportedTestSource))]
+        public void JsonUtilityUnsupportedTest<T>(T v)
         {
-            TestConsistency(Enum.One);
-            TestConsistency("string");
-            TestConsistency(1);
-            TestConsistency(1.0);
-            TestConsistency(Vector2.one);
-            TestConsistency(Vector3.one);
-            TestConsistency(Vector4.one);
-            TestConsistency(Vector2Int.one);
-            TestConsistency(Vector3Int.one);
-            TestConsistency(Color.white);
-            TestConsistency(new Rect(1f, 1f, 1f, 1f));
-            TestConsistency(new RectOffset(1, 1, 1, 1), new SimpleComparer<RectOffset>());
-            TestConsistency(new Bounds(Vector3.one, Vector3.one));
-            TestConsistency(new BoundsInt(Vector3Int.one, Vector3Int.one));
-            TestConsistency<int[]>(new[] { 1, 2, 3 }, new EnumerableComparer<int>()); // Type inference that T is IEnumerable<int>
-            TestConsistency<List<int>>(new[] { 1, 2, 3 }.ToList(), new EnumerableComparer<int>());// Type inference that T is IEnumerable<int>
+            var json = JsonUtility.ToJson(v);
+            var newV = JsonUtility.FromJson<T>(json);
+
+            Assert.AreNotEqual(v, newV,
+                $"{typeof(T).Name} supported. before[{v}] after[{newV}] json[{json}]",
+                GetEqualityComparer(v)
+            );
         }
 
-
-        void TestConsistency<T>(T v, IEqualityComparer<T> comparer = null)
+        [TestCaseSource(nameof(ValueConsistencyTestSource))]
+        public void ValueConsistencyTest<T>(T v)
         {
             var json = JsonUtilityEx.ToJson(v);
             var newV = JsonUtilityEx.FromJson<T>(json);
 
-            if (comparer != null)
+            Assert.AreEqual(v, newV,
+                $"{typeof(T).Name} NOT Consistency before[{v}] after[{newV}] json[{json}]",
+                GetEqualityComparer(v)
+            );
+        }
+        
+
+        static TestCaseData[] JsonUtilityUnsupportedTestSource =
+        {
+            // new(Enum.Two),
+            new("string"),
+            new(1),
+            new(1.0),
+            // new(Vector2.one),
+            // new(Vector3.one),
+            // new(Vector4.one),
+            new(Vector2Int.one),
+            new(Vector3Int.one),
+            // new(Color.white),
+            new(new Rect(1f, 1f, 1f, 1f)),
+            new(new RectOffset(1, 1, 1, 1)),
+            new(new Bounds(Vector3.one, Vector3.one)),
+            new(new BoundsInt(Vector3Int.one, Vector3Int.one)),
+            new(new[] {1, 2, 3}),
+            new(new[] {1, 2, 3}.ToList())
+        };
+        
+        static TestCaseData[] ValueConsistencyTestSource = {
+            new(Enum.Two),
+            new("string"),
+            new(1),
+            new(1.0),
+            new(Vector2.one),
+            new(Vector3.one),
+            new(Vector4.one),
+            new(Vector2Int.one),
+            new(Vector3Int.one),
+            new(Color.white),
+            new(new Rect(1f, 1f, 1f, 1f)),
+            new(new RectOffset(1, 1, 1, 1)),
+            new(new Bounds(Vector3.one, Vector3.one)),
+            new(new BoundsInt(Vector3Int.one, Vector3Int.one)),
+            new(new[] {1, 2, 3}),
+            new(new[] {1, 2, 3}.ToList())
+        };
+
+        IEqualityComparer<T> GetEqualityComparer<T>(T v)
+        {
+            var type = typeof(T);
+            
+            IEqualityComparer<T> ret = EqualityComparer<T>.Default;
+            if (!type.IsValueType && type != typeof(string))
             {
-                Assert.AreEqual(v, newV, $"{typeof(T).Name} NOT Consistency", comparer);
+                ret = v switch
+                {
+                    IFormattable => new ToStringComparer<T>(),
+                    IEnumerable => CreateEnumerableComparer(),
+                    _ => throw new ArgumentOutOfRangeException(nameof(v), v, null)
+                };
             }
-            else
+
+            return ret;
+            
+            
+            static IEqualityComparer<T> CreateEnumerableComparer()
             {
-                Assert.AreEqual(v, newV, $"{typeof(T).Name} NOT Consistency");
+                var t = typeof(T);
+                var itemType = t.IsArray
+                    ? t.GetElementType()
+                    : t.GetGenericArguments()[0];
+                
+                var comparerType = typeof(EnumerableComparer<>).MakeGenericType(itemType);
+                return (IEqualityComparer<T>) Activator.CreateInstance(comparerType);
             }
         }
-
-        public class SimpleComparer<T> : IEqualityComparer<T>
+        
+        public class ToStringComparer<T> : IEqualityComparer<T>
         {
             public bool Equals(T x, T y)
             {
@@ -72,7 +129,9 @@ namespace PrefsGUI.Test
         {
             public bool Equals(IEnumerable<T> x, IEnumerable<T> y)
             {
-                return x.SequenceEqual(y);
+                if (x == null && y == null) return true;
+                
+                return (x != null && y != null) && x.SequenceEqual(y);
             }
 
             public int GetHashCode(IEnumerable<T> obj)
