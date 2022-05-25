@@ -6,10 +6,11 @@ namespace PrefsGUI
     public interface IPrefsInnerAccessor<T>
     {
         PrefsParam Prefs { get; }
+        bool IsAlreadyGet { get; }
         T Get();
-        void SetSyncedValue(T value, Action onIfAlreadyGet = null);
+        bool SetSyncedValue(T value);
         bool Equals(T lhs, T rhs);
-
+        
         string Key => Prefs.key;
     }
 }

@@ -41,10 +41,12 @@ namespace PrefsGUI
             return PrefsKvs.Get(key, GetDefaultInner());
         }
 
-        protected void _Set(TInner v, bool syncedFlag = false, Action onIfAlreadyGet = null)
+        protected bool _Set(TInner v, bool syncedFlag = false)
         {
-            if (false == Equals(v, _Get()))
+            var updateValue = (false == Equals(v, _Get()));
+            if (updateValue)
             {
+                /*
                 if (onIfAlreadyGet != null && !synced && syncedFlag)
                 {
                     if (hasCachedOuter || hasCachedInner)
@@ -52,6 +54,8 @@ namespace PrefsGUI
                         onIfAlreadyGet();
                     }
                 }
+                */
+
 
                 PrefsKvs.Set(key, v);
                 hasCachedOuter = false;
@@ -59,6 +63,8 @@ namespace PrefsGUI
             }
 
             synced = syncedFlag;
+
+            return updateValue;
         }
 
         protected virtual bool Equals(TInner lhs, TInner rhs) => EqualityComparer<TInner>.Default.Equals(lhs, rhs);
@@ -166,11 +172,13 @@ namespace PrefsGUI
             #region IPrefsInnerAccessor
             
             public PrefsParam Prefs => _prefs;
+            
+            public bool IsAlreadyGet => _prefs.hasCachedInner || _prefs.hasCachedOuter;
             public TInner Get() => _prefs.GetInner();
             
-            public void SetSyncedValue(TInner value, Action onIfAlreadyGet = null)
+            public bool SetSyncedValue(TInner value)
             {
-                _prefs._Set(value, true, onIfAlreadyGet);
+                return _prefs._Set(value, true);
             }
             
             public bool Equals(TInner lhs, TInner rhs) => _prefs.Equals(lhs, rhs);
