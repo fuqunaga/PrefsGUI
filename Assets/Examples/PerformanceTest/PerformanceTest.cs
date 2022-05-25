@@ -1,21 +1,38 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PrefsGUI.RosettaUI;
 using RosettaUI;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
-namespace PrefsGUI.Example
+namespace PrefsGUI.Sync.Example
 {
     public class PerformanceTest : MonoBehaviour
     {
+        public class MyClass
+        {
+            public int intValue;
+            public string stringValue;
+        }
+        
         public RosettaUIRoot uiRoot;
+        public Vector2 windowPosition;
         
         public int count = 10000;
-        public bool updateValues = true;
+        public bool updatePrefsValues = true;
+        public bool enablePrefsFloat = true;
+        public bool enablePrefsString = true;
+        public bool enablePrefsAny = true;
         public int showPrefsIndex;
-        public List<PrefsFloat> prefsList = new();
+        public List<PrefsFloat> prefsFloats;
+        public List<PrefsString> prefsStrings;
+        [FormerlySerializedAs("prefsClasses")] public List<PrefsAny<MyClass>> prefsAnys;
 
-        private void Start()
+        private static List<string> _stringValues = new();
+        
+        public void Start()
         {
             ResetPrefs();
             uiRoot.Build(CreateElement());
@@ -23,41 +40,81 @@ namespace PrefsGUI.Example
 
         private void Update()
         {
-            if (prefsList.Count != count)
+            if (updatePrefsValues)
             {
-                ResetPrefs();
+                UpdatePrefs(enablePrefsFloat, prefsFloats, p => p.Set(Random.value));
+                UpdatePrefs(enablePrefsString, prefsStrings, p => p.Set(_stringValues[Random.Range(0,count)]));
+                UpdatePrefs(enablePrefsAny, prefsAnys, p => p.Set(new MyClass()
+                {
+                    intValue = Random.Range(0, int.MaxValue),
+                    stringValue = _stringValues[Random.Range(0, count)]
+                }));
             }
 
-            if (updateValues)
+            void UpdatePrefs<T>(bool enable, List<T> prefsList, Action<T> updateAction)
             {
+                if (!enable) return;
                 foreach (var prefs in prefsList)
                 {
-                    prefs.Set(Random.value);
+                    updateAction(prefs);
                 }
             }
         }
-        
+
         void ResetPrefs()
         {
-            prefsList = Enumerable.Range(0, count)
+            prefsFloats = Enumerable.Range(0, count)
                 .Select(i => new PrefsFloat(nameof(PrefsFloat) + i))
                 .ToList();
+            
+            prefsStrings = Enumerable.Range(0, count)
+                .Select(i => new PrefsString(nameof(PrefsString) + i))
+                .ToList();
+
+            prefsAnys = Enumerable.Range(0, count)
+                .Select(i => new PrefsAny<MyClass>(nameof(PrefsAny<MyClass>) + i))
+                .ToList();
+
+            if (_stringValues.Count <= count)
+            {
+                _stringValues = Enumerable.Range(0, count).Select(i => i.ToString()).ToList();
+            }
         }
-        
-        private Element CreateElement()
+
+        public Element CreateElement()
         {
-            return UI.Window(
-                UI.Field(() => count),
-                UI.Field(() => updateValues),
-                UI.DynamicElementOnStatusChanged(
-                    () => count,
-                    max => UI.Slider(() => showPrefsIndex, max)
-                ),
-                UI.DynamicElementOnStatusChanged(
-                    () => showPrefsIndex,
-                    idx => (0 <= idx && idx < prefsList.Count) ? prefsList[idx].CreateElement() : null
+            return UI.Window(nameof(PerformanceTest),
+                UI.Page(
+                    UI.Field(() => count).RegisterValueChangeCallback(ResetPrefs),
+                    UI.Field(() => updatePrefsValues),
+                    UI.Field(() => enablePrefsFloat),
+                    UI.Field(() => enablePrefsString),
+                    UI.Field(() => enablePrefsAny),
+                    UI.Box(
+                        UI.DynamicElementOnStatusChanged(
+                            () => count,
+                            max => UI.Slider(() => showPrefsIndex, max - 1)
+                        ),
+                        UI.DynamicElementOnStatusChanged(
+                            () => showPrefsIndex,
+                            (idx) =>
+                            {
+                                if (0 <= idx && idx < prefsFloats.Count)
+                                {
+                                    return UI.Column(
+                                        UI.DynamicElementIf(() => enablePrefsFloat,
+                                            () => prefsFloats[idx].CreateElement()),
+                                        UI.DynamicElementIf(() => enablePrefsString,
+                                            () => prefsStrings[idx].CreateElement()),
+                                        UI.DynamicElementIf(() => enablePrefsAny, () => prefsAnys[idx].CreateElement())
+                                    );
+                                }
+
+                                return null;
+                            })
+                    )
                 )
-            );
+            ).SetPosition(windowPosition);
         }
     }
 }

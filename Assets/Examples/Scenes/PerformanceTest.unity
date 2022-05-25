@@ -331,10 +331,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiRoot: {fileID: 2146636593}
+  windowPosition: {x: 0, y: 0}
   count: 10000
-  updateValues: 1
+  updatePrefsValues: 1
+  enablePrefsFloat: 0
+  enablePrefsString: 0
+  enablePrefsAny: 1
   showPrefsIndex: 0
   prefsFloats: []
+  prefsStrings: []
+  prefsAnys: []
 --- !u!4 &1656682493
 Transform:
   m_ObjectHideFlags: 0
