@@ -11,8 +11,8 @@
         public T min => Get().min;
         public T max => Get().max;
 
-        public PrefsMinMax(string key, T defaultValueMax = default) : this(key, default, defaultValueMax) { }
-        public PrefsMinMax(string key, T defaultValueMin,  T defaultValueMax) : base(key, new MinMax() { min = defaultValueMin, max = defaultValueMax }) { }
+        protected PrefsMinMax(string key, T defaultValueMax = default) : this(key, default, defaultValueMax) { }
+        protected PrefsMinMax(string key, T defaultValueMin,  T defaultValueMax) : base(key, new MinMax() { min = defaultValueMin, max = defaultValueMax }) { }
 
 
         #region IPrefSlider

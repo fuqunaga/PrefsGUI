@@ -7,7 +7,7 @@ namespace PrefsGUI
     /// </summary>
     [Serializable]
     public class PrefsParam<T> : PrefsParamOuterInner<T, T>
-        where T:struct // if class, that can change devaultValue in DoGUI()
+        where T:struct // if class, that can change defaultValue in DoGUI()
     {
         public PrefsParam(string key, T defaultValue = default) : base(key, defaultValue) { }
 

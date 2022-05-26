@@ -6,24 +6,24 @@ namespace PrefsGUI
     /// PrefsParam for user type that has new(), serializable by Unity(JsonUtility)
     /// </summary>
     [Serializable]
-    public class PrefsAny<OuterT> : PrefsParamOuterInner<OuterT, string> 
-        where OuterT : new()
+    public class PrefsAny<TOuter> : PrefsParamOuterInner<TOuter, string> 
+        where TOuter : new()
     {
-        public PrefsAny(string key, OuterT defaultValue = default) : base(key, defaultValue)
+        public PrefsAny(string key, TOuter defaultValue = default) : base(key, defaultValue)
         {
-            if (this.defaultValue == null) this.defaultValue = new OuterT();
+            this.defaultValue ??= new TOuter();
         }
 
-        protected override string ToInner(OuterT outerV) => PrefsAnyUtility.ToInner(outerV);
+        protected override string ToInner(TOuter outerV) => PrefsAnyUtility.ToInner(outerV);
 
-        protected override OuterT ToOuter(string innerV) => PrefsAnyUtility.ToOuter<OuterT>(innerV);
+        protected override TOuter ToOuter(string innerV) => PrefsAnyUtility.ToOuter<TOuter>(innerV);
     }
 
     public static class PrefsAnyUtility
     {
-        public static string ToInner<OuterT>(OuterT outerV) => (outerV == null) ? "" : JsonUtilityEx.ToJson(outerV);
-        public static OuterT ToOuter<OuterT>(string innerV) => string.IsNullOrEmpty(innerV) ? default : JsonUtilityEx.FromJson<OuterT>(innerV);
-        public static bool IsEqual<OuterT>(OuterT lhs, OuterT rhs)
+        public static string ToInner<TOuter>(TOuter outerV) => (outerV == null) ? "" : JsonUtilityEx.ToJson(outerV);
+        public static TOuter ToOuter<TOuter>(string innerV) => string.IsNullOrEmpty(innerV) ? default : JsonUtilityEx.FromJson<TOuter>(innerV);
+        public static bool IsEqual<TOuter>(TOuter lhs, TOuter rhs)
             =>ToInner(lhs) == PrefsAnyUtility.ToInner(rhs);
     }
 }

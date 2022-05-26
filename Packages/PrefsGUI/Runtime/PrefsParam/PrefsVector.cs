@@ -7,8 +7,8 @@ namespace PrefsGUI
     {
         public PrefsVector(string key, T defaultValue = default) : base(key, defaultValue) { }
 
-        static readonly Lazy<T> zero = new Lazy<T>(() => (T)typeof(T).GetProperty("zero").GetValue(null));
-        static readonly Lazy<T> one = new Lazy<T>(() => (T)typeof(T).GetProperty("one").GetValue(null));
+        static readonly Lazy<T> zero = new(() => (T)typeof(T).GetProperty("zero").GetValue(null));
+        static readonly Lazy<T> one = new(() => (T)typeof(T).GetProperty("one").GetValue(null));
 
         public override T defaultMin => zero.Value;
         public override T defaultMax => one.Value;
