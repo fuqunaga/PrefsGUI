@@ -82,7 +82,7 @@ namespace PrefsGUI.RosettaUI
         public static void SubscribeSyncedFlag(PrefsParam prefs, Element element)
         {
             prefs.onSyncedChanged += OnSyncedChanged;
-            OnSyncedChanged(prefs.synced);
+            OnSyncedChanged(prefs.Synced);
 
             void OnSyncedChanged(bool synced)
             {

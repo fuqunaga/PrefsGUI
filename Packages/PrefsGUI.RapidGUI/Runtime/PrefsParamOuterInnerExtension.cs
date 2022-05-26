@@ -15,7 +15,7 @@ namespace PrefsGUI.RapidGUI
         {
             var customLabel = prefs.GetCustomLabel();
             if (customLabel != null) RGUI.BeginCustomLabel(customLabel);
-            if (prefs.synced) RGUI.BeginColor(PrefsParam.syncedColor);
+            if (prefs.Synced) RGUI.BeginColor(PrefsParam.syncedColor);
             
             var changed = false;
             using (new GUILayout.HorizontalScope())
@@ -27,7 +27,7 @@ namespace PrefsGUI.RapidGUI
                 }
             }
 
-            if (prefs.synced) RGUI.EndColor();
+            if (prefs.Synced) RGUI.EndColor();
             if (customLabel != null) RGUI.EndCustomLabel();
 
             return changed;

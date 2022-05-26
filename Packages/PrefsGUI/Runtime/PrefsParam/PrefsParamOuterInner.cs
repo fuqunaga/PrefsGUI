@@ -51,7 +51,7 @@ namespace PrefsGUI
                 hasCachedInner = false;
             }
 
-            synced = syncedFlag;
+            Synced = syncedFlag;
 
             return updateValue;
         }
