@@ -20,7 +20,7 @@ namespace PrefsGUI
         {
             if (!IsDefaultCount)
             {
-                var list = Get();
+                var list = Get() ?? new();
                 var listCount = list.Count;
 
                 if (DefaultValueCount > listCount)
@@ -61,7 +61,7 @@ namespace PrefsGUI
 
         protected void UpdateValue(Action<List<T>> action) { var v = Get(); action(v); Set(v); }
 
-        public int Count => Get().Count;
+        public int Count => Get()?.Count ?? 0;
         public bool IsReadOnly => false;
         public T this[int index] { get => Get()[index]; set { UpdateValue((v) => v[index] = value); } }
         public int IndexOf(T item) => Get().IndexOf(item);

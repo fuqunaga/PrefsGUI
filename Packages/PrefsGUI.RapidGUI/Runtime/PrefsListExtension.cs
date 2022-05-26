@@ -18,8 +18,9 @@ namespace PrefsGUI.RapidGUI
                         list = RGUI.ListLabelRightFunc(list);
 
                         var defaultValueCount = prefs.DefaultValueCount;
-                        if (GUIComponent.DoGUIDefaultButton(defaultValueCount == list.Count))
+                        if (GUIComponent.DoGUIDefaultButton(prefs.IsDefaultCount))
                         {
+                            list ??= new();
                             var listCount = list.Count;
                             if (defaultValueCount > listCount)
                             {
