@@ -61,11 +61,11 @@ namespace PrefsGUI
 
         #region RegistAllInstance
 
-        public static IReadOnlyCollection<PrefsParam> all => _all;
-        public static IReadOnlyDictionary<string, PrefsParam> allDic => _allDic;
+        public static IReadOnlyCollection<PrefsParam> all => All;
+        public static IReadOnlyDictionary<string, PrefsParam> allDic => AllDic;
 
-        static readonly HashSet<PrefsParam> _all = new HashSet<PrefsParam>();
-        static readonly Dictionary<string, PrefsParam> _allDic = new Dictionary<string, PrefsParam>();
+        static readonly HashSet<PrefsParam> All = new();
+        static readonly Dictionary<string, PrefsParam> AllDic = new();
 
         public void OnBeforeSerialize() { }
 
@@ -75,21 +75,21 @@ namespace PrefsGUI
         {
             if (!string.IsNullOrEmpty(key))
             {
-                if (_allDic.TryGetValue(key, out var prev))
+                if (AllDic.TryGetValue(key, out var prev))
                 {
-                    _all.Remove(prev);
+                    All.Remove(prev);
                 }
 
-                var alreadyExist = !_all.Add(this);
+                var alreadyExist = !All.Add(this);
                 if (alreadyExist)
                 {
-                    foreach(var removeKey in _allDic.Where(pair => pair.Value == this).Select(pair => pair.Key).ToArray())
+                    foreach(var removeKey in AllDic.Where(pair => pair.Value == this).Select(pair => pair.Key).ToArray())
                     {
-                        _allDic.Remove(removeKey);
+                        AllDic.Remove(removeKey);
                     }
                 }
 
-                _allDic[key] = this;
+                AllDic[key] = this;
             }
         }
 
@@ -97,7 +97,7 @@ namespace PrefsGUI
         {
             if (key != newKey && !string.IsNullOrEmpty(newKey))
             {
-                _allDic.Remove(key);
+                AllDic.Remove(key);
 
                 _key = newKey;
                 Register();

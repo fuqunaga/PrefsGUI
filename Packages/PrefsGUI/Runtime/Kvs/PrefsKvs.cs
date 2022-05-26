@@ -17,7 +17,9 @@ namespace PrefsGUI.Kvs
 
     public static class PrefsKvs
     {
-        public static readonly IKvs implement = new PrefsKvsJson();
+        // ReSharper disable once FieldCanBeMadeReadOnly.Global
+        // ReSharper disable once MemberCanBePrivate.Global
+        public static IKvs implement = new PrefsKvsJson();
 
         public static void Save() => implement.Save();
         public static void Load() => implement.Load();

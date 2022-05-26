@@ -7,13 +7,15 @@ using UnityEngine;
 
 namespace PrefsGUI
 {
-    #region static class
-    public class Prefs
+    #region Static
+    
+    public static class Prefs
     {
-        public static void Save() { PrefsKvs.Save(); }
-        public static void Load() { PrefsKvs.Load(); }
-        public static void DeleteAll() { PrefsKvs.DeleteAll(); }
+        public static void Save() => PrefsKvs.Save();
+        public static void Load() => PrefsKvs.Load();
+        public static void DeleteAll() => PrefsKvs.DeleteAll();
     }
+    
     #endregion
 
 
