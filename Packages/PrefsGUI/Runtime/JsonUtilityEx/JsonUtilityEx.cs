@@ -18,7 +18,7 @@ namespace PrefsGUI
         {
             object ret = null;
 
-            if (ValueWrapper.IsSupport(type))
+            if (ValueWrapper.NeedWrap(type))
             {
                 var wrapperType = ValueWrapper.GetWrapperType(type);
                 var wrapper = JsonUtility.FromJson(json, wrapperType);
@@ -43,7 +43,7 @@ namespace PrefsGUI
             if ( obj != null)
             {
                 var type = obj.GetType();
-                if (ValueWrapper.IsSupport(type))
+                if (ValueWrapper.NeedWrap(type))
                 {   
                     obj = Activator.CreateInstance(ValueWrapper.GetWrapperType(type), obj);
                 }
@@ -55,7 +55,7 @@ namespace PrefsGUI
 
         internal abstract class ValueWrapper
         {
-            private static readonly HashSet<Type> supportedTypes = new()
+            private static readonly HashSet<Type> needWrapTypes = new()
             {
                 typeof(string),
                 typeof(Vector2Int), typeof(Vector3Int),
@@ -63,22 +63,21 @@ namespace PrefsGUI
                 typeof(Bounds), typeof(BoundsInt)
             };
             
-            private static readonly Dictionary<Type, bool> isSupportedTable = new();
+            private static readonly Dictionary<Type, bool> needWrapTable = new();
 
 
             public static Type GetWrapperType(Type type) => typeof(ValueWrapper<>).MakeGenericType(type);
             
-            public static bool IsSupport(Type type)
+            public static bool NeedWrap(Type type)
             {
-                if (!isSupportedTable.TryGetValue(type, out var ret))
+                if (!needWrapTable.TryGetValue(type, out var ret))
                 {
                     ret = type.IsPrimitive
-                          || supportedTypes.Contains(type)
+                          || needWrapTypes.Contains(type)
                           || type.IsArray
-                          || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                        ;
+                          || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>));
 
-                    isSupportedTable[type] = ret;
+                    needWrapTable[type] = ret;
                 }
 
                 return ret;
@@ -89,7 +88,10 @@ namespace PrefsGUI
 
         private class ValueWrapper<T> : ValueWrapper
         {
-            private readonly T value;
+            // [public/not readonly] to be target to JsonUtility serialization
+            // ReSharper disable once MemberCanBePrivate.Local
+            // ReSharper disable once FieldCanBeMadeReadOnly.Local
+            public T value;
             public override object obj => value;
 
             public ValueWrapper(T value) { this.value = value; }
