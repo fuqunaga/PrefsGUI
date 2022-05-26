@@ -58,10 +58,6 @@ namespace PrefsGUI
 
         protected virtual bool Equals(TInner lhs, TInner rhs) => EqualityComparer<TInner>.Default.Equals(lhs, rhs);
 
-        // TODO: move out
-        public virtual Dictionary<string, string> GetCustomLabel() => null;
-
-
         private TInner GetInner()
         {
             if (!hasCachedInner)

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using PrefsGUI.Utility;
 using RosettaUI;
 
 namespace PrefsGUI.RosettaUI

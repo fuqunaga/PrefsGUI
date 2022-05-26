@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace PrefsGUI
+namespace PrefsGUI.Utility
 {
     /// <summary>
     /// JsonUtility extension to convert any type.

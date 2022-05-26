@@ -1,4 +1,5 @@
 ﻿using System;
+using PrefsGUI.Utility;
 
 namespace PrefsGUI
 {

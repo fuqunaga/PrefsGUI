@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using PrefsGUI.Utility;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
 namespace PrefsGUI.Test
 {
-
     public class JsonUtilityExTest : MonoBehaviour
     {
         public enum Enum

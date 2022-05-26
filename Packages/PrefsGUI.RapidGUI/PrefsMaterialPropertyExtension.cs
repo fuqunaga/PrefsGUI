@@ -1,11 +1,20 @@
-﻿using RapidGUI;
+﻿using System.Collections.Generic;
+using RapidGUI;
 using UnityEngine;
 
 namespace PrefsGUI.RapidGUI
 {
-    public static class MaterialPropertyDebugMenuExtension
+    public static class PrefsMaterialPropertyExtension
     {
-        public static void DoGUI(this MaterialPropertyDebugMenu menu, bool labelEnable = true)
+        static readonly Dictionary<string, string> texEnvCustomLabel = new()
+        {
+            {"x", "Tiling.x"},
+            {"y", "Tiling.y"},
+            {"z", "Offset.x"},
+            {"w", "Offset.y"}
+        };
+        
+        public static void DoGUI(this PrefsMaterialProperty menu, bool labelEnable = true)
         {
             if (menu.IsEnable)
             {
@@ -16,9 +25,9 @@ namespace PrefsGUI.RapidGUI
                     menu.Vectors.ForEach(v =>
                     {
                         var n = KeyToPropertyName(v.key);
-                        if (MaterialPropertyDebugMenu.customVectorGUI.ContainsKey(n))
+                        if (PrefsMaterialProperty.customVectorGUI.ContainsKey(n))
                         {
-                            MaterialPropertyDebugMenu.customVectorGUI[n](v, n);
+                            PrefsMaterialProperty.customVectorGUI[n](v, n);
                         }
                         else
                         {
@@ -34,11 +43,14 @@ namespace PrefsGUI.RapidGUI
                         range.DoGUISlider(mr.min, mr.max, n);
                     });
 
-                    menu.TexEnvs.ForEach(t =>
+                    using (new RGUI.CustomLabelScope(texEnvCustomLabel))
                     {
-                        var label = KeyToPropertyName(t.key);
-                        t.DoGUISlider(Vector4.zero, new Vector4(10, 10, 1, 1), label);
-                    });
+                        menu.TexEnvs.ForEach(t =>
+                        {
+                            var label = KeyToPropertyName(t.key);
+                            t.DoGUISlider(Vector4.zero, new Vector4(10, 10, 1, 1), label);
+                        });
+                    }
                 }
 
                 menu.UpdateMaterial();

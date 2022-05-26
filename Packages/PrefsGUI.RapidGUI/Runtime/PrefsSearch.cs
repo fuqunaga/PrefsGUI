@@ -1,4 +1,5 @@
-﻿using RapidGUI;
+﻿using PrefsGUI.Utility;
+using RapidGUI;
 using UnityEngine;
 
 namespace PrefsGUI.RapidGUI

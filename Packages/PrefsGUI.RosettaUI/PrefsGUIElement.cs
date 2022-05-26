@@ -8,10 +8,13 @@ namespace PrefsGUI.RosettaUI
     {
         public static ButtonElement CreateDefaultButtonElement(Action onClick, Func<bool> isDefault)
         {
-            var button = UI.Button(
-                "default",
-                onClick
-            );
+            var button = UI.Button("default");
+            
+            button.onClick += () =>
+            {
+                onClick();
+                button.NotifyViewValueChanged();
+            };
 
             button.onUpdate += _ =>
             {

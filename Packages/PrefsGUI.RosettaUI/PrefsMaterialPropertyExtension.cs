@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PrefsGUI.RosettaUI
 {
-    public static class MaterialPropertyDebugMenuExtension
+    public static class PrefsMaterialPropertyExtension
     {
         public static Dictionary<string, Func<string, PrefsVector4, Element>> customVectorUI = new();
             
@@ -14,35 +14,20 @@ namespace PrefsGUI.RosettaUI
         [RuntimeInitializeOnLoadMethod]
         static void RegisterUI()
         {
-            UICustom.RegisterElementCreationFunc<MaterialPropertyDebugMenu>(
+            UICustom.RegisterElementCreationFunc<PrefsMaterialProperty>(
                 (label, menu) => menu.CreateElement()
             );
         }
 
-        public static Element CreateElement(this MaterialPropertyDebugMenu menu)
+        public static Element CreateElement(this PrefsMaterialProperty menu)
         {
             return menu.IsEnable
                 ? UI.Fold(menu._material.name, menu.CreateElementRaw())
                 : null;
         }
         
-        public static Element CreateElementRaw(this MaterialPropertyDebugMenu menu)
+        public static Element CreateElementRaw(this PrefsMaterialProperty menu)
         {
-            List<Element> texEnvs;
-            using (new UICustom.PropertyOrFieldLabelModifierScope(
-                ("x", "Tiling.x"),
-                ("y", "Tiling.y"),
-                ("z", "Offset.x"),
-                ("w", "Offset.y")
-            ))
-            {
-                texEnvs = menu.TexEnvs.Select(prefs =>
-                {
-                    var key = menu.KeyToPropertyName(prefs.key);
-                    return prefs.CreateSlider(key, new Vector4(10, 10, 1, 1));
-                }).ToList();
-            }
-            
             return
                 UI.Column(
                     new[]
@@ -55,14 +40,26 @@ namespace PrefsGUI.RosettaUI
                                     ? func(key, prefs)
                                     : prefs.CreateSlider(key);
                             }),
-                            menu.Floats.Select(prefs => prefs.CreateSlider(menu.KeyToPropertyName(prefs.key))),
+                            menu.Floats.Select(prefs => prefs.CreateElement(menu.KeyToPropertyName(prefs.key))),
                             menu.Ranges.Select(prefs =>
                             {
                                 var key = menu.KeyToPropertyName(prefs.key);
                                 var range = menu._propertySet.ranges.First(r => r.name == key);
                                 return prefs.CreateSlider(key, range.min, range.max);
                             }),
-                            texEnvs
+                            menu.TexEnvs.Select(prefs =>
+                            {
+                                using var _ = new UICustom.PropertyOrFieldLabelModifierScope(
+                                    ("x", "Tiling.x"),
+                                    ("y", "Tiling.y"),
+                                    ("z", "Offset.x"),
+                                    ("w", "Offset.y")
+                                );
+                                
+                                var key = menu.KeyToPropertyName(prefs.key);
+                                return prefs.CreateSlider(key, new Vector4(10, 10, 1, 1));
+                            }),
+                            menu.Ints.Select(prefs => prefs.CreateElement(menu.KeyToPropertyName(prefs.key)))
                         }
                         .SelectMany(element => element)
                 ).RegisterValueChangeCallback(menu.UpdateMaterial);

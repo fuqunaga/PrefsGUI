@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PrefsGUI
+namespace PrefsGUI.Utility
 {
     /// <summary>
     /// Show and search all Prefs
     /// </summary>
     public class PrefsSearchCore
     {
-        #region static
+        #region Static
 
         public static readonly PrefsSearchCore Instance = new();
         

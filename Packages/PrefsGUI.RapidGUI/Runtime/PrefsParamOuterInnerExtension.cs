@@ -13,8 +13,6 @@ namespace PrefsGUI.RapidGUI
 
         public static bool DoGUIStandard<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, Func<TOuter, TOuter> func, bool enableDefaultButton = true)
         {
-            var customLabel = prefs.GetCustomLabel();
-            if (customLabel != null) RGUI.BeginCustomLabel(customLabel);
             if (prefs.Synced) RGUI.BeginColor(PrefsParam.syncedColor);
             
             var changed = false;
@@ -28,7 +26,6 @@ namespace PrefsGUI.RapidGUI
             }
 
             if (prefs.Synced) RGUI.EndColor();
-            if (customLabel != null) RGUI.EndCustomLabel();
 
             return changed;
         }
