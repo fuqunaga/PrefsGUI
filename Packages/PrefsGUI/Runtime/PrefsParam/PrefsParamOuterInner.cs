@@ -94,7 +94,7 @@ namespace PrefsGUI
             return cachedOuter;
         }
 
-        public override void Set(TOuter v) => _Set(ToInner(v));
+        public override bool Set(TOuter v) => _Set(ToInner(v));
 
         public override Type GetInnerType() => typeof(TInner);
 
@@ -115,35 +115,6 @@ namespace PrefsGUI
             Assert.AreEqual(typeof(T), typeof(TInner));
             _prefsInnerAccessor ??= new(this);
             return (IPrefsInnerAccessor<T>) _prefsInnerAccessor;
-        }
-
-        #endregion
-
-
-        #region GUI Implement
-
-        public bool DoGUICheckChanged(Func<TOuter, TOuter> func)
-        {
-            var changed = false;
-            if (!PrefsKvs.HasKey(key))
-            {
-                Set(defaultValue);
-                changed = true;
-            }
-
-            var prev = Get();
-            var prevInner = ToInner(prev);
-
-            var next = func(prev);
-            var nextInner = ToInner(next);
-
-            if (!Equals(prevInner, nextInner))
-            {
-                _Set(nextInner);
-                changed = true;
-            }
-
-            return changed;
         }
 
         #endregion

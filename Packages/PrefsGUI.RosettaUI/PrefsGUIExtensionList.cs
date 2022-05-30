@@ -6,7 +6,7 @@ namespace PrefsGUI.RosettaUI
     {
         public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label = null)
         {
-            var listBinder = Binder.Create(prefs.Get, prefs.Set);
+            var listBinder = Binder.Create(prefs.Get, v => prefs.Set(v));
 
             var element = UI.Fold(
                 UI.Row(

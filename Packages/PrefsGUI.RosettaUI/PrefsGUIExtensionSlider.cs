@@ -53,7 +53,7 @@ namespace PrefsGUI.RosettaUI
         {
             return UI.Slider(
                 label ?? prefs.key,
-                Binder.Create(prefs.Get, prefs.Set),
+                Binder.Create(prefs.Get, v => prefs.Set(v)),
                 minGetter,
                 maxGetter
             );

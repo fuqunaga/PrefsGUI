@@ -10,7 +10,7 @@ namespace PrefsGUI.RosettaUI
                 UI.MinMaxSlider(
                     label ?? prefs.key,
                     prefs.Get,
-                    prefs.Set
+                    v => prefs.Set(v)
                 )
             );
         }
@@ -49,7 +49,7 @@ namespace PrefsGUI.RosettaUI
                 UI.MinMaxSlider(
                     label ?? prefs.key,
                     prefs.Get,
-                    prefs.Set,
+                    v => prefs.Set(v),
                     range
                 )
             );

@@ -10,7 +10,7 @@ namespace PrefsGUI.RosettaUI
                 UI.Field(
                     label ?? prefs.key,
                     prefs.Get,
-                    prefs.Set
+                    v => prefs.Set(v)
                 ),
                 prefs.CreateDefaultButtonElement()
             );

@@ -27,7 +27,8 @@ namespace PrefsGUI
 
         public abstract TOuter Get();
 
-        public abstract void Set(TOuter v);
+        /// <returns>true if the value is changed</returns>
+        public abstract bool Set(TOuter v);
 
         #endregion
 

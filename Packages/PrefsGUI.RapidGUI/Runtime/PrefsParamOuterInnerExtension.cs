@@ -1,4 +1,5 @@
 ﻿using System;
+using PrefsGUI.Kvs;
 using RapidGUI;
 using UnityEngine;
 
@@ -31,6 +32,15 @@ namespace PrefsGUI.RapidGUI
         }
         
         
+        public static bool DoGUICheckChanged<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, Func<TOuter, TOuter> func)
+        {
+            var prev = prefs.Get();
+            var next = func(prev);
+       
+            return prefs.Set(next);
+        }
+
+
         public static bool DoGUIDefaultButton<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs)
         {
             var ret = GUIComponent.DoGUIDefaultButton(prefs.IsDefault);
