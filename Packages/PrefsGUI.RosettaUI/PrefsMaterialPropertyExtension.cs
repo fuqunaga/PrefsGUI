@@ -55,14 +55,14 @@ namespace PrefsGUI.RosettaUI
                                     ("z", "Offset.x"),
                                     ("w", "Offset.y")
                                 );
-                                
+
                                 var key = menu.KeyToPropertyName(prefs.key);
                                 return prefs.CreateSlider(key, new Vector4(10, 10, 1, 1));
                             }),
                             menu.Ints.Select(prefs => prefs.CreateElement(menu.KeyToPropertyName(prefs.key)))
                         }
                         .SelectMany(element => element)
-                ).RegisterValueChangeCallback(menu.UpdateMaterial);
+                );
         }
     }
 }

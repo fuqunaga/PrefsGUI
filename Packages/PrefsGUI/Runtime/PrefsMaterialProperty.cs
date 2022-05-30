@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using PrefsGUI.Utility;
 using UnityEngine;
@@ -66,20 +66,27 @@ namespace PrefsGUI
         string PropertyNameToKey(string n) => KeyPrefix + n;
         public string KeyToPropertyName(string key) => key.Replace(KeyPrefix, "");
 
+        
+        #region Unity
+        
         public void Start()
         {
-            UpdateMaterial();
+            InitMaterialAndSetPrefsCallback();
         }
 
         protected override void OnValidate()
         {
             base.OnValidate();
             UpdatePrefs();
+            InitMaterialAndSetPrefsCallback();
         }
+        
+        #endregion
+        
 
+        [Conditional("UNITY_EDITOR")]
         void UpdatePrefs()
         {
-#if UNITY_EDITOR
             UpdatePrefsList(_colors, _propertySet.colors,
                 (key) => new PrefsColor(key, _material.GetColor(KeyToPropertyName(key)))
             );
@@ -128,24 +135,33 @@ namespace PrefsGUI
                     prefsList.AddRange(newPrefs);
                 }
             }
-#endif
         }
 
-        public void UpdateMaterial()
+        private void InitMaterialAndSetPrefsCallback()
         {
-            if (IsEnable)
+            if (!IsEnable) return;
+
+            _colors.ForEach(prefs => BindPrefsToMaterialProperty(prefs, _material.SetColor));
+            _vectors.ForEach(prefs => BindPrefsToMaterialProperty(prefs, _material.SetVector));
+            _floats.ForEach(prefs => BindPrefsToMaterialProperty(prefs, _material.SetFloat));
+            _ranges.ForEach(prefs => BindPrefsToMaterialProperty(prefs, _material.SetFloat));
+            _texEnvs.ForEach(prefs => BindPrefsToMaterialProperty(prefs, (propertyName, _) =>
             {
-                _colors.ForEach(c => _material.SetColor(KeyToPropertyName(c.key), c.Get()));
-                _vectors.ForEach(v => _material.SetVector(KeyToPropertyName(v.key), v.Get()));
-                _floats.ForEach(f => _material.SetFloat(KeyToPropertyName(f.key), f.Get()));
-                _ranges.ForEach(r => _material.SetFloat(KeyToPropertyName(r.key), r.Get()));
-                _texEnvs.ForEach(t =>
+                _material.SetTextureScale(propertyName, prefs.GetScale());
+                _material.SetTextureOffset(propertyName, prefs.GetOffset());
+            }));
+            _ints.ForEach(prefs => BindPrefsToMaterialProperty(prefs, _material.SetInt));
+            
+
+            void BindPrefsToMaterialProperty<T>(PrefsParamOuter<T> prefs, Action<string, T> setPrefsToMaterial)
+            {
+                SetPrefsToMaterial();
+                prefs.RegisterValueChangedCallback(SetPrefsToMaterial);
+
+                void SetPrefsToMaterial()
                 {
-                    var pn = KeyToPropertyName(t.key);
-                    _material.SetTextureScale(pn, t.GetScale());
-                    _material.SetTextureOffset(pn, t.GetOffset());
-                });
-                _ints.ForEach(i => _material.SetInt(KeyToPropertyName(i.key), i.Get()));
+                    setPrefsToMaterial.Invoke(KeyToPropertyName(prefs.key), prefs.Get());
+                }
             }
         }
 

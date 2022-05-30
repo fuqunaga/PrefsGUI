@@ -53,8 +53,6 @@ namespace PrefsGUI.RapidGUI
                     }
                 }
 
-                menu.UpdateMaterial();
-
                 string KeyToPropertyName(string key) => menu.KeyToPropertyName(key); 
             }
         }
