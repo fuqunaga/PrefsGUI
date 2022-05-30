@@ -164,7 +164,5 @@ namespace PrefsGUI
                 }
             }
         }
-
-        public static Dictionary<string, Func<PrefsVector4, string, bool>> customVectorGUI = new();
     }
 }

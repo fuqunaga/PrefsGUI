@@ -22,18 +22,7 @@ namespace PrefsGUI.RapidGUI
                 using (new RGUI.IndentScope())
                 {
                     menu.Colors.ForEach(c => c.DoGUI(KeyToPropertyName(c.key)));
-                    menu.Vectors.ForEach(v =>
-                    {
-                        var n = KeyToPropertyName(v.key);
-                        if (PrefsMaterialProperty.customVectorGUI.ContainsKey(n))
-                        {
-                            PrefsMaterialProperty.customVectorGUI[n](v, n);
-                        }
-                        else
-                        {
-                            v.DoGUISlider(n);
-                        }
-                    });
+                    menu.Vectors.ForEach(v =>v.DoGUISlider(KeyToPropertyName(v.key)));
                     menu.Floats.ForEach(f => f.DoGUISlider(KeyToPropertyName(f.key)));
                     menu.Ranges.ForEach(range =>
                     {
