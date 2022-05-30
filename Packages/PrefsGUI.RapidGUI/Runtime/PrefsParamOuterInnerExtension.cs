@@ -14,7 +14,8 @@ namespace PrefsGUI.RapidGUI
 
         public static bool DoGUIStandard<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, Func<TOuter, TOuter> func, bool enableDefaultButton = true)
         {
-            if (prefs.Synced) RGUI.BeginColor(PrefsParam.syncedColor);
+            var synced = prefs.Synced;
+            if (synced) RGUI.BeginColor(PrefsParam.syncedColor);
             
             var changed = false;
             using (new GUILayout.HorizontalScope())
@@ -26,7 +27,7 @@ namespace PrefsGUI.RapidGUI
                 }
             }
 
-            if (prefs.Synced) RGUI.EndColor();
+            if (synced) RGUI.EndColor();
 
             return changed;
         }

@@ -25,11 +25,30 @@ namespace PrefsGUI.RosettaUI
             where TPrefs0 : PrefsParamOuter<TOuter0>
             where TPrefs1 : PrefsParamOuter<TOuter1>
         {
-            return UI.Fold(
+            var fold = UI.Fold(
                 prefs.key,
                 prefs.prefs0.CreateElement(),
                 prefs.prefs1.CreateElement()
             );
+            
+            SubscribePrefsSetSyncedFlag(prefs.prefs0, prefs.prefs1, fold);
+
+            return fold;
+
+
+            void SubscribePrefsSetSyncedFlag(PrefsParam prefs0, PrefsParam prefs1, Element element)
+            {
+                prefs0.onSyncedChanged += _ => OnSyncedChanged();
+                prefs1.onSyncedChanged += _ => OnSyncedChanged();
+                OnSyncedChanged();
+
+                void OnSyncedChanged()
+                {
+                    var synced = prefs0.Synced && prefs1.Synced;
+                    element?.SetColor(synced ? PrefsParam.syncedColor : null);
+                }
+            }
+
         }
     }
 }

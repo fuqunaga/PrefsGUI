@@ -15,9 +15,9 @@ namespace PrefsGUI.RapidGUI
             return DispatchDoGUI(prefs, label);
         }
 
-        private static readonly Dictionary<Type, Func<PrefsParam, string, bool>> doGUIFuncTable = new();
+        private static readonly Dictionary<Type, Func<PrefsParam, string, bool>> DoGUIFuncTable = new();
 
-        private static readonly Dictionary<Type, MethodInfo> genericTypeDefinitionToMethodInfo = new ()
+        private static readonly Dictionary<Type, MethodInfo> GenericTypeDefinitionToMethodInfo = new ()
         {
             [typeof(PrefsParamOuterInner<,>)] = GetDoGUIMethodInfo(typeof(PrefsParamOuterInnerExtension)),
             [typeof(PrefsSet<,,,>)] = GetDoGUIMethodInfo(typeof(PrefsSetExtension)),
@@ -28,29 +28,29 @@ namespace PrefsGUI.RapidGUI
             return type.GetMethod("DoGUI", BindingFlags.Public | BindingFlags.Static);
         }
 
-        private static readonly object[] sharedArray = new object[2];
+        private static readonly object[] SharedArray = new object[2];
         
         private static bool DispatchDoGUI(PrefsParam prefs, string label)
         {
             var originalType = prefs.GetType();
 
-            if (!doGUIFuncTable.TryGetValue(originalType, out var func))
+            if (!DoGUIFuncTable.TryGetValue(originalType, out var func))
             {
                 for (var type = originalType; type != null; type = type.BaseType)
                 {
                     if (!type.IsGenericType) continue;
                     
                     var genericTypeDefinition = type.GetGenericTypeDefinition();
-                    if (!genericTypeDefinitionToMethodInfo.TryGetValue(genericTypeDefinition, out var mi)) continue;
+                    if (!GenericTypeDefinitionToMethodInfo.TryGetValue(genericTypeDefinition, out var mi)) continue;
 
                     var miGeneric = mi.MakeGenericMethod(type.GetGenericArguments());
                     
-                    doGUIFuncTable[originalType] = func = (p, l) =>
+                    DoGUIFuncTable[originalType] = func = (p, l) =>
                     {
-                        sharedArray[0] = p;
-                        sharedArray[1] = l;
+                        SharedArray[0] = p;
+                        SharedArray[1] = l;
 
-                        return (bool) miGeneric.Invoke(null, sharedArray);
+                        return (bool) miGeneric.Invoke(null, SharedArray);
                     };
 
                     break;

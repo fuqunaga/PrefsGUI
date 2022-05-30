@@ -116,7 +116,7 @@ namespace PrefsGUI
         public PrefsRect(string key, Rect defaultValue = default) : base(key, defaultValue) { }
 
         public override Rect defaultMin => default;
-        public override Rect defaultMax => new Rect(1f, 1f, 1f, 1f);
+        public override Rect defaultMax => new(1f, 1f, 1f, 1f);
     }
 
     [Serializable]
@@ -126,7 +126,7 @@ namespace PrefsGUI
 
         public override Bounds defaultMin => default;
 
-        public override Bounds defaultMax => new Bounds(Vector3.one, Vector3.one);
+        public override Bounds defaultMax => new(Vector3.one, Vector3.one);
     }
 
     [Serializable]
@@ -136,28 +136,24 @@ namespace PrefsGUI
 
         public override BoundsInt defaultMin => default;
 
-        public override BoundsInt defaultMax => new BoundsInt(Vector3Int.one * 100, Vector3Int.one * 100);
+        public override BoundsInt defaultMax => new(Vector3Int.one * 100, Vector3Int.one * 100);
     }
 
 
     [Serializable]
     public class PrefsIPEndPoint : PrefsSet<PrefsString, PrefsInt, string, int>
     {
-        static string[] _paramNames = new[] { "address", "port" };
-        public override string[] paramNames => _paramNames;
-
-
         public string address => prefs0.Get();
         public int port => prefs1.Get();
 
-        public PrefsIPEndPoint(string key, string hostname = "localhost", int port = 10000) : base(key, hostname, port) { }
+        public PrefsIPEndPoint(string key, string hostname = "localhost", int port = 10000) : base(key, hostname, port, "address", "port") { }
 
         public static implicit operator IPEndPoint(PrefsIPEndPoint me) => CreateIPEndPoint(me.address, me.port);
 
         public static IPEndPoint CreateIPEndPoint(string address, int port)
         {
             var ip = FindFromHostName(address);
-            return (ip != IPAddress.None) ? new IPEndPoint(ip, port) : null;
+            return (!Equals(ip, IPAddress.None)) ? new IPEndPoint(ip, port) : null;
         }
 
         public static IPAddress FindFromHostName(string hostname)

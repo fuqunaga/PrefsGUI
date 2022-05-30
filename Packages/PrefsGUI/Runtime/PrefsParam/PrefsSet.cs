@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI
@@ -11,26 +11,27 @@ namespace PrefsGUI
         where TPrefs1 : PrefsParamOuter<TOuter1>
     {
         public readonly string key;
+        public readonly string[] paramNames;
         public readonly TPrefs0 prefs0;
         public readonly TPrefs1 prefs1;
+        
+        protected virtual string GenerateParamKey(string keyString, string paramName) => $"{keyString}_{paramName}";
 
-        public abstract string[] paramNames { get; }
-
-        protected virtual string GenerateParamKey(string key, string paramName) => key + "_" + paramName;
-
-        public PrefsSet(string key, TOuter0 default0 = default, TOuter1 default1 = default)
+        protected PrefsSet(string key, TOuter0 default0, TOuter1 default1, string paramName0, string paramName1)
         {
             this.key = key;
-            prefs0 = Construct<TPrefs0, TOuter0>(key, paramNames[0], default0);
-            prefs1 = Construct<TPrefs1, TOuter1>(key, paramNames[1], default1);
+            prefs0 = Construct<TPrefs0, TOuter0>(key, paramName0, default0);
+            prefs1 = Construct<TPrefs1, TOuter1>(key, paramName1, default1);
+
+            paramNames = new[] {paramName0, paramName1};
         }
 
-        TPrefs Construct<TPrefs, TOuter>(string key, string postfix, TOuter defaultValue)
+        TPrefs Construct<TPrefs, TOuter>(string keyString, string postfix, TOuter defaultValue)
         {
             var ctor = typeof(TPrefs).GetConstructor(new[] { typeof(string), typeof(TOuter) });
             Assert.IsNotNull(ctor);
 
-            return (TPrefs)ctor.Invoke(new object[] { GenerateParamKey(key, postfix), defaultValue });
+            return (TPrefs)ctor.Invoke(new object[] { GenerateParamKey(keyString, postfix), defaultValue });
         }
     }
 }

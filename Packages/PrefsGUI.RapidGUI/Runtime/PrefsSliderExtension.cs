@@ -5,7 +5,7 @@ namespace PrefsGUI.RapidGUI
 {
     public static class PrefsSliderExtension
     {
-        private static readonly Dictionary<PrefsParam, bool> isOpenTable = new();
+        private static readonly Dictionary<PrefsParam, bool> IsOpenTable = new();
 
         public static bool DoGUISlider<T>(this PrefsSlider<T> prefs, string label = null)
             where T : struct
@@ -22,11 +22,11 @@ namespace PrefsGUI.RapidGUI
         public static bool DoGUISlider<T>(this PrefsSlider<T> prefs, T min, T max, string label = null)
             where T : struct
         {
-            isOpenTable.TryGetValue(prefs, out var isOpen);
+            IsOpenTable.TryGetValue(prefs, out var isOpen);
             
             var ret = prefs.DoGUIStandard((T v) => RGUI.Slider(v, min, max, label ?? prefs.key, ref isOpen));
 
-            isOpenTable[prefs] = isOpen;
+            IsOpenTable[prefs] = isOpen;
 
             return ret;
         }
