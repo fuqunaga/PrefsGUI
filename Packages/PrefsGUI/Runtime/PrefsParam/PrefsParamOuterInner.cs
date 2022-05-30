@@ -20,7 +20,7 @@ namespace PrefsGUI
         protected TInner defaultInner;
 
         private PrefsInnerAccessor _prefsInnerAccessor;
-        private event Action _onValueChanged;
+        private event Action onValueChanged;
 
         protected PrefsParamOuterInner(string key, TOuter defaultValue = default) : base(key, defaultValue)
         {
@@ -42,7 +42,7 @@ namespace PrefsGUI
             return PrefsKvs.Get(key, GetDefaultInner());
         }
 
-        protected bool _Set(TInner v, bool syncedFlag = false)
+        protected bool _Set(TInner v)
         {
             var updateValue = (false == Equals(v, _Get()));
             if (updateValue)
@@ -51,10 +51,8 @@ namespace PrefsGUI
                 hasCachedOuter = false;
                 hasCachedInner = false;
 
-                _onValueChanged?.Invoke();
+                onValueChanged?.Invoke();
             }
-
-            Synced = syncedFlag;
 
             return updateValue;
         }
@@ -106,8 +104,8 @@ namespace PrefsGUI
             hasDefaultInner = false;
         }
 
-        public override void RegisterValueChangedCallback(Action callback) => _onValueChanged += callback;
-        public override void UnregisterValueChangedCallback(Action callback) => _onValueChanged -= callback;
+        public override void RegisterValueChangedCallback(Action callback) => onValueChanged += callback;
+        public override void UnregisterValueChangedCallback(Action callback) => onValueChanged -= callback;
 
 
         public override IPrefsInnerAccessor<T> GetInnerAccessor<T>()
@@ -140,7 +138,19 @@ namespace PrefsGUI
 
             public bool SetSyncedValue(TInner value)
             {
-                return _prefs._Set(value, true);
+                _prefs.UnregisterValueChangedCallback(UpdateSyncedFlag);
+                
+                var ret =  _prefs._Set(value);
+                _prefs.Synced = true;
+                
+                _prefs.RegisterValueChangedCallback(UpdateSyncedFlag);
+
+                return ret;
+
+                void UpdateSyncedFlag()
+                {
+                    _prefs.Synced = Equals(value, Get());
+                }
             }
 
             public bool Equals(TInner lhs, TInner rhs) => _prefs.Equals(lhs, rhs);
