@@ -14,8 +14,8 @@ namespace PrefsGUI
     {
         [SerializeField]
         [FormerlySerializedAs("key")]
-        string _key;
-
+        private string _key;
+        
         public string key
         {
             get => _key;
@@ -39,6 +39,8 @@ namespace PrefsGUI
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
         public abstract void ResetToDefault();
+        public abstract void RegisterValueChangedCallback(Action callback);
+        public abstract void UnregisterValueChangedCallback(Action callback);
         public abstract IPrefsInnerAccessor<T> GetInnerAccessor<T>();
 
         #endregion

@@ -20,6 +20,7 @@ namespace PrefsGUI
         protected TInner defaultInner;
 
         private PrefsInnerAccessor _prefsInnerAccessor;
+        private event Action _onValueChanged;
 
         protected PrefsParamOuterInner(string key, TOuter defaultValue = default) : base(key, defaultValue)
         {
@@ -49,6 +50,8 @@ namespace PrefsGUI
                 PrefsKvs.Set(key, v);
                 hasCachedOuter = false;
                 hasCachedInner = false;
+
+                _onValueChanged?.Invoke();
             }
 
             Synced = syncedFlag;
@@ -102,6 +105,10 @@ namespace PrefsGUI
             defaultValue = Get();
             hasDefaultInner = false;
         }
+
+        public override void RegisterValueChangedCallback(Action callback) => _onValueChanged += callback;
+        public override void UnregisterValueChangedCallback(Action callback) => _onValueChanged -= callback;
+
 
         public override IPrefsInnerAccessor<T> GetInnerAccessor<T>()
         {
@@ -166,7 +173,7 @@ namespace PrefsGUI
             }
 
             public bool Equals(TInner lhs, TInner rhs) => _prefs.Equals(lhs, rhs);
-
+            
             #endregion
         }
 
