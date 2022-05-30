@@ -37,8 +37,6 @@ namespace PrefsGUI
 
         #endregion
 
-        public static bool update { get; set; }
-
         [SerializeField] List<PrefsColor> _colors = new();
         [SerializeField] List<PrefsVector4> _vectors = new();
         [SerializeField] List<PrefsFloat> _floats = new();
@@ -56,7 +54,7 @@ namespace PrefsGUI
 
         public bool IsEnable => _material != null && _propertySet.Any();
 
-        string keyPrefix
+        string KeyPrefix
         {
             get
             {
@@ -65,21 +63,12 @@ namespace PrefsGUI
             }
         }
 
-        string PropertyNameToKey(string n) => keyPrefix + n;
-        public string KeyToPropertyName(string key) => key.Replace(keyPrefix, "");
+        string PropertyNameToKey(string n) => KeyPrefix + n;
+        public string KeyToPropertyName(string key) => key.Replace(KeyPrefix, "");
 
         public void Start()
         {
             UpdateMaterial();
-        }
-
-
-        public void Update()
-        {
-            if (update)
-            {
-                UpdateMaterial();
-            }
         }
 
         protected override void OnValidate()
