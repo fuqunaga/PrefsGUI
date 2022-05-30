@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PrefsGUI
+﻿namespace PrefsGUI
 {
     // Inner object accessor
     public interface IPrefsInnerAccessor<T>
