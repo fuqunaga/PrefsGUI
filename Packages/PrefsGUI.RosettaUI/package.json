@@ -1,25 +1,26 @@
 {
   "name": "ga.fuquna.prefsgui.rosettaui",
+  "version": "0.0.3",
   "displayName": "PrefsGUI - RosettaUI",
-  "version": "0.0.2",
-  "unity": "2021.3",
   "description": "RosettaUI implementation of PrefsGUI",
+  "unity": "2021.3",
+  "documentationUrl": "https://github.com/fuqunaga/PrefsGUI#readme",
+  "license": "MIT",
+  "dependencies": {
+    "ga.fuquna.prefsgui": "3.1.0",
+    "ga.fuquna.rosettaui": "0.3.2"
+  },
   "keywords": [
     "unity",
     "gui",
     "prefsgui",
     "rosettaui"
   ],
-  "category": "Tool",
-  "dependencies": {
-    "ga.fuquna.prefsgui": "3.0.0",
-    "ga.fuquna.rosettaui": "0.1.2"
-  },
   "author": {
     "name": "fuqunaga",
     "email": "fukhid@gmail.com",
     "url": "https://fuquna.ga"
   },
-  "repository": "github:fuqunaga/PrefsGUI",
-  "license": "MIT"
+  "repository": "github:fuqunaga/PrefsGUI"
+  
 }

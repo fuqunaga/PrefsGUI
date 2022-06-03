@@ -1,6 +1,17 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [3.1.0] - 2022.6.03
+### Changed
+ - PrefsParamOuterInner InnerValue access via IPrefsInnnerAccessor
+ - Rename Prefs.KVS > Prefs.Kvs
+ - Rename MaterialPropertyDebugMenu > PrefsMaterialProperty
+ - PrefsKvsJson alloc reduced
+
+### Added
+ - PrefsParam.[Register/Unregister]ValueChangedCallback()
+
+
 ## [3.0.0] - 2022.4.14
 ### Changed
 - RapidGUI separated into a dependent package

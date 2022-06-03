@@ -102,7 +102,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "ga.fuquna.prefsgui": "3.0.0",
+        "ga.fuquna.prefsgui": "3.1.0",
         "ga.fuquna.rapidgui": "1.2.3"
       }
     },
@@ -111,8 +111,8 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "ga.fuquna.prefsgui": "3.0.0",
-        "ga.fuquna.rosettaui": "0.1.2"
+        "ga.fuquna.prefsgui": "3.1.0",
+        "ga.fuquna.rosettaui": "0.3.2"
       }
     },
     "ga.fuquna.rapidgui": {
