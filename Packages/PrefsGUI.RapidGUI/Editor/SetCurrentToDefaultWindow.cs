@@ -13,8 +13,8 @@ namespace PrefsGUI.RapidGUI.Editor
 
         protected override void OnGUIInternal()
         {
-            var objPrefsKeysList = ObjectPrefsUtility.objPrefsList
-                .Select(objPrefs => ( objPrefs, prefsList: objPrefs.prefsList.Where(prefs => !prefs.IsDefault)))
+            var objPrefsKeysList = PrefsAssetUtility.ObjPrefsList
+                .Select(objPrefs => ( objPrefs, prefsList: objPrefs.PrefsAll.Where(prefs => !prefs.IsDefault)))
                 .Where(pair => pair.prefsList.Any())
                 .Select(pair =>
                 {
@@ -71,7 +71,7 @@ namespace PrefsGUI.RapidGUI.Editor
         protected Dictionary<(Object, PrefsParam), bool> checkedList = new Dictionary<(Object, PrefsParam), bool>();
 
 
-        public void CheckGoPrefsListGUI(List<(ObjectPrefsUtility.ObjPrefs objPrefs, List<(Object, PrefsParam prefs)> keys)>  objPrefsKeysList)
+        public void CheckGoPrefsListGUI(List<(PrefsAssetUtility.ObjPrefs objPrefs, List<(Object, PrefsParam prefs)> keys)>  objPrefsKeysList)
         {
             // set new keys true
             var newKeys = objPrefsKeysList

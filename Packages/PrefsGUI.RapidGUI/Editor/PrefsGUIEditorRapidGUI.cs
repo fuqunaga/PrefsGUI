@@ -5,6 +5,7 @@ using PrefsGUI.Editor;
 using RapidGUI;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
 namespace PrefsGUI.RapidGUI.Editor
@@ -48,13 +49,13 @@ namespace PrefsGUI.RapidGUI.Editor
 
         private void Awake()
         {
-            ObjectPrefsUtility.onGoPrefsListChanged += OnGpListChanged;
+            PrefsAssetUtility.onObjPrefsListChanged += OnGpListChanged;
         }
 
         private void OnDestroy()
         {
-            if (ObjectPrefsUtility.onGoPrefsListChanged != null)
-                ObjectPrefsUtility.onGoPrefsListChanged -= OnGpListChanged;
+            if (PrefsAssetUtility.onObjPrefsListChanged != null)
+                PrefsAssetUtility.onObjPrefsListChanged -= OnGpListChanged;
         }
 
         void OnGpListChanged()
@@ -83,7 +84,7 @@ namespace PrefsGUI.RapidGUI.Editor
                 }
             }
 
-            var prefsAll = ObjectPrefsUtility.ObjPrefsList.SelectMany(gp => gp.prefsList).ToList();
+            var prefsAll = PrefsAssetUtility.ObjPrefsList.SelectMany(gp => gp.PrefsAll).ToList();
             var currentToDefaultEnable = !Application.isPlaying && prefsAll.Any(prefs => !prefs.IsDefault);
             using (new RGUI.EnabledScope(currentToDefaultEnable))
             {
@@ -139,15 +140,15 @@ namespace PrefsGUI.RapidGUI.Editor
 
                 case Order.GameObject:
                     {
-                        scrollViewGameObject.DoGUI(ObjectPrefsUtility.ObjPrefsList, (gp) =>
+                        scrollViewGameObject.DoGUI(PrefsAssetUtility.ObjPrefsList, (gp) =>
                         {
                             var objNameHit = IsContainWord(gp.obj.name, searchWordLower);
                             var componentNameHit = gp.holders.Any(holder => IsComponentContainWord(holder.parent, searchWordLower));
-                            var prefsHit = gp.prefsList.Any(p => IsContainWord(p.key, searchWordLower));
+                            var prefsHit = gp.PrefsAll.Any(p => IsContainWord(p.key, searchWordLower));
 
                             if (objNameHit || (showComponent && componentNameHit) || prefsHit)
                             {
-                                var prefixGo = LabelWithEditPrefix(gp.obj, gp.prefsList, !showComponent);
+                                var prefixGo = LabelWithEditPrefix(gp.obj, gp.PrefsAll.ToList(), !showComponent);
 
                                 using (new RGUI.IndentScope(16))
                                 {
@@ -157,7 +158,7 @@ namespace PrefsGUI.RapidGUI.Editor
 
                                         if (showComponent)
                                         {
-                                            LabelWithEditPrefix(holder.parent, holder.prefsSet, true);
+                                            LabelWithEditPrefix(holder.parent, holder.prefsSet.ToList(), true);
 
                                             needFilter &= !IsComponentContainWord(holder.parent, searchWordLower);
                                         }
@@ -195,22 +196,18 @@ namespace PrefsGUI.RapidGUI.Editor
         }
 
 
-        const char separator = '.';
+  
 
-        static string GetPrefix(IEnumerable<string> keys)
+        string LabelWithEditPrefix(Object obj, List<PrefsParam> prefsList, bool editPrefix)
         {
-            return keys.Select(key => key.Split(separator))
-                    .FirstOrDefault(sepKeys => sepKeys.Length > 1)?.First();
-        }
-
-        string LabelWithEditPrefix(Object obj, IEnumerable<PrefsParam> prefsSet, bool editPrefix)
-        {
-            var keys = prefsSet.Select(prefs => prefs.key);
-            var prefix = GetPrefix(keys);
+            var prefix = prefsList
+                .Select(prefs => prefs.key)
+                .Select(PrefsKeyUtility.GetPrefix)
+                .FirstOrDefault(s => !string.IsNullOrEmpty(s));
 
             using (new GUILayout.HorizontalScope())
             {
-                _rapidGUIExtension?.GUIGroupLabelLeft(prefsSet);
+                _rapidGUIExtension?.GUIGroupLabelLeft(prefsList);
 
                 using (new RGUI.EnabledScope(false))
                 {
@@ -224,13 +221,13 @@ namespace PrefsGUI.RapidGUI.Editor
                     var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
                     if (prefix != prefixNew)
                     {
-                        var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + separator;
+                        var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + PrefsKeyUtility.separator;
 
                         Undo.RecordObject(obj, "Change PrefsGUI Prefix");
 
-                        foreach (var prefs in prefsSet)
+                        foreach (var prefs in prefsList)
                         {
-                            prefs.key = prefixWithSeparator + prefs.key.Split(separator).Last();
+                            prefs.key = prefixWithSeparator + prefs.key.Split(PrefsKeyUtility.separator).Last();
                         }
 
                         prefix = prefixNew;

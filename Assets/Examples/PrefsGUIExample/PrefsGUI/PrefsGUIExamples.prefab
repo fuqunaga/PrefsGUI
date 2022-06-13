@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefsBool:
-    _key: PrefsBool
+    _key: PrefsBool_
     defaultValue: 0
   prefsInt:
     _key: PrefsInt
