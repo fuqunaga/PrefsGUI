@@ -6,7 +6,7 @@ using RapidGUI;
 
 namespace PrefsGUI.RapidGUI.Editor
 {
-    public abstract class PrefsGUIEditorBase : EditorWindow
+    public abstract class PrefsGUIEditorRapidGUIBase : EditorWindow
     {
         #region Type Define 
 
@@ -56,11 +56,6 @@ namespace PrefsGUI.RapidGUI.Editor
 
 
         public static readonly GUILayoutOption ToggleWidth = GUILayout.Width(8f);
-
-        protected void Update()
-        {
-            ObjectPrefsUtility.UpdateGoPrefs();
-        }
 
         void OnGUI()
         {

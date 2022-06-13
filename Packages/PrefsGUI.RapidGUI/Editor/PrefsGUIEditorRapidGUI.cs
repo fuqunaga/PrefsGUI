@@ -9,24 +9,24 @@ using Object = UnityEngine.Object;
 
 namespace PrefsGUI.RapidGUI.Editor
 {
-    public interface IPrefsGUIEditorExtension
+    public interface IPrefsGUIEditorRapidGUIExtension
     {
         void GUIHeadLine();
         void GUIPrefsLeft(PrefsParam param);
         void GUIGroupLabelLeft(IEnumerable<PrefsParam> prefsList);
     }
 
-    public class PrefsGUIEditor : PrefsGUIEditorBase
+    public class PrefsGUIEditorRapidGUI : PrefsGUIEditorRapidGUIBase
     {
         #region static
 
-        private static IPrefsGUIEditorExtension extension;
-        public static void RegistExtension(IPrefsGUIEditorExtension ext) => extension = ext;
+        private static IPrefsGUIEditorRapidGUIExtension _rapidGUIExtension;
+        public static void RegistExtension(IPrefsGUIEditorRapidGUIExtension ext) => _rapidGUIExtension = ext;
 
-        [MenuItem("Window/PrefsGUI")]
+        [MenuItem("Window/PrefsGUI(RapidGUI)")]
         public static void ShowWindow()
         {
-            GetWindow<PrefsGUIEditor>("PrefsGUI");
+            GetWindow<PrefsGUIEditorRapidGUI>("PrefsGUI");
         }
 
         #endregion
@@ -83,7 +83,7 @@ namespace PrefsGUI.RapidGUI.Editor
                 }
             }
 
-            var prefsAll = ObjectPrefsUtility.objPrefsList.SelectMany(gp => gp.prefsList).ToList();
+            var prefsAll = ObjectPrefsUtility.ObjPrefsList.SelectMany(gp => gp.prefsList).ToList();
             var currentToDefaultEnable = !Application.isPlaying && prefsAll.Any(prefs => !prefs.IsDefault);
             using (new RGUI.EnabledScope(currentToDefaultEnable))
             {
@@ -119,7 +119,7 @@ namespace PrefsGUI.RapidGUI.Editor
             // horizontal line
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
 
-            extension?.GUIHeadLine();
+            _rapidGUIExtension?.GUIHeadLine();
 
             switch (order)
             {
@@ -130,7 +130,7 @@ namespace PrefsGUI.RapidGUI.Editor
                         {
                             using (new GUILayout.HorizontalScope())
                             {
-                                extension?.GUIPrefsLeft(prefs);
+                                _rapidGUIExtension?.GUIPrefsLeft(prefs);
                                 prefs.DoGUI();
                             }
                         });
@@ -139,7 +139,7 @@ namespace PrefsGUI.RapidGUI.Editor
 
                 case Order.GameObject:
                     {
-                        scrollViewGameObject.DoGUI(ObjectPrefsUtility.objPrefsList, (gp) =>
+                        scrollViewGameObject.DoGUI(ObjectPrefsUtility.ObjPrefsList, (gp) =>
                         {
                             var objNameHit = IsContainWord(gp.obj.name, searchWordLower);
                             var componentNameHit = gp.holders.Any(holder => IsComponentContainWord(holder.parent, searchWordLower));
@@ -173,7 +173,7 @@ namespace PrefsGUI.RapidGUI.Editor
                                             {
                                                 using (new GUILayout.HorizontalScope())
                                                 {
-                                                    extension?.GUIPrefsLeft(prefs);
+                                                    _rapidGUIExtension?.GUIPrefsLeft(prefs);
                                                     prefs.DoGUI();
                                                 }
                                             }
@@ -210,7 +210,7 @@ namespace PrefsGUI.RapidGUI.Editor
 
             using (new GUILayout.HorizontalScope())
             {
-                extension?.GUIGroupLabelLeft(prefsSet);
+                _rapidGUIExtension?.GUIGroupLabelLeft(prefsSet);
 
                 using (new RGUI.EnabledScope(false))
                 {

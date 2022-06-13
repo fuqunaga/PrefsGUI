@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace PrefsGUI.RapidGUI.Editor
 {
-    public class SetCurrentToDefaultWindow : PrefsGUIEditorBase
+    public class SetCurrentToDefaultWindow : PrefsGUIEditorRapidGUIBase
     {
-        public PrefsGUIEditor parentWindow;
+        public PrefsGUIEditorRapidGUI parentWindow;
 
         protected override void OnGUIInternal()
         {
