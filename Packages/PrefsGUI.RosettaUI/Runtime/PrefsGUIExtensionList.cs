@@ -10,7 +10,7 @@ namespace PrefsGUI.RosettaUI
 
             var element = UI.Fold(
                 UI.Row(
-                    label ?? prefs.key,
+                    label ?? UI.Label(() => prefs.key),
                     UI.Space(),
                     UI.ListCounterField(listBinder),
                     PrefsGUIElement.CreateDefaultButtonElement(

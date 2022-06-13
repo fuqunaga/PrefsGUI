@@ -8,7 +8,7 @@ namespace PrefsGUI.RosettaUI
         {
             var element = UI.Row(
                 UI.Field(
-                    label ?? prefs.key,
+                    label ?? UI.Label(() => prefs.key),
                     prefs.Get,
                     v => prefs.Set(v)
                 ),
@@ -26,7 +26,7 @@ namespace PrefsGUI.RosettaUI
             where TPrefs1 : PrefsParamOuter<TOuter1>
         {
             var fold = UI.Fold(
-                prefs.key,
+                UI.Label(() => prefs.key),
                 prefs.prefs0.CreateElement(),
                 prefs.prefs1.CreateElement()
             );

@@ -8,7 +8,7 @@ namespace PrefsGUI.RosettaUI
         {
             return AddDefaultButtonAndSyncSubscription(prefs,
                 UI.MinMaxSlider(
-                    label ?? prefs.key,
+                    label ?? UI.Label(() => prefs.key),
                     prefs.Get,
                     v => prefs.Set(v)
                 )
@@ -47,7 +47,7 @@ namespace PrefsGUI.RosettaUI
         {
             return AddDefaultButtonAndSyncSubscription(prefs,
                 UI.MinMaxSlider(
-                    label ?? prefs.key,
+                    label ?? UI.Label(() => prefs.key),
                     prefs.Get,
                     v => prefs.Set(v),
                     range

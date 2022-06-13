@@ -52,7 +52,7 @@ namespace PrefsGUI.RosettaUI
         private static Element _CreateSlider<T>(PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)
         {
             return UI.Slider(
-                label ?? prefs.key,
+                label ?? UI.Label(() => prefs.key),
                 Binder.Create(prefs.Get, v => prefs.Set(v)),
                 minGetter,
                 maxGetter
