@@ -22,7 +22,7 @@ namespace PrefsGUI.RapidGUI.Editor
         #region static
 
         private static IPrefsGUIEditorRapidGUIExtension _rapidGUIExtension;
-        public static void RegistExtension(IPrefsGUIEditorRapidGUIExtension ext) => _rapidGUIExtension = ext;
+        public static void RegisterExtension(IPrefsGUIEditorRapidGUIExtension ext) => _rapidGUIExtension = ext;
 
         [MenuItem("Window/PrefsGUI(RapidGUI)")]
         public static void ShowWindow()
@@ -148,7 +148,7 @@ namespace PrefsGUI.RapidGUI.Editor
 
                             if (objNameHit || (showComponent && componentNameHit) || prefsHit)
                             {
-                                var prefixGo = LabelWithEditPrefix(gp.obj, gp.PrefsAll.ToList(), !showComponent);
+                                LabelWithEditPrefix(gp.obj, gp.PrefsAll.ToList(), !showComponent);
 
                                 using (new RGUI.IndentScope(16))
                                 {
