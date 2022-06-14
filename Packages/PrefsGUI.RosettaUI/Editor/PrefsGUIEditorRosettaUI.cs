@@ -22,38 +22,13 @@ namespace PrefsGUI.RosettaUI.Editor
             GameObject,
         }
 
-        private Order order;
         private string searchWord = "";
+        private Order order;
+        private bool showComponent;
+        
         private int objPrefsListChangeCount;
 
-        /*
-        SetCurrentToDefaultWindow setCurrentToDefaultWindow;
-
-        FastScrollView scrollViewAtoZ = new FastScrollView();
-        FastScrollView scrollViewGameObject = new FastScrollView();
-
-        private void Awake()
-        {
-            ObjectPrefsUtility.onGoPrefsListChanged += OnGpListChanged;
-        }
-
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            
-            if (ObjectPrefsUtility.onGoPrefsListChanged != null)
-                ObjectPrefsUtility.onGoPrefsListChanged -= OnGpListChanged;
-        }
-
-        
-        void OnGpListChanged()
-        {
-            scrollViewAtoZ.SetNeedUpdateLayout();
-            scrollViewGameObject.SetNeedUpdateLayout();
-        }
-        */
-
+ 
         private void OnEnable()
         {
             PrefsAssetUtility.onObjPrefsListChanged += OnObjPrefsListChanged;
@@ -95,17 +70,20 @@ namespace PrefsGUI.RosettaUI.Editor
                         })
                     ),
                     UI.Field(() => searchWord),
-                    UI.Field(() => order)
-                ),
-                UI.Space().SetHeight(30f),
+                    UI.Field(() => order),
+                    UI.DynamicElementIf(
+                        () => order == Order.GameObject,
+                        () => UI.Field(() => showComponent)
+                    )
+                ).SetHeight(150f),
                 UI.Space().SetHeight(2f).SetBackgroundColor(Color.gray),
                 UI.ScrollViewVertical(1000f,
                     UI.Indent(
                         UI.DynamicElementOnStatusChanged(
-                            () => (order, searchWord.ToLower(), objPrefsListChangeCount),
-                            pair =>
+                            () => (order, searchWord.ToLower(), showComponent, objPrefsListChangeCount),
+                            _ =>
                             {
-                                var (_, word, _) = pair;
+                                var word = searchWord.ToLower();
 
                                 return order switch
                                 {
@@ -122,7 +100,7 @@ namespace PrefsGUI.RosettaUI.Editor
             Element CreatePrefsUIAtoZ(string word)
             {
                 var pocAll = PrefsAssetUtility.PrefsObjComponentList
-                    .Where(poc => poc.Item1.key.ToLower().Contains(word))
+                    .Where(poc => IsContainWord(poc.Item1.key, word))
                     .OrderBy(poc => poc.Item1.key);
                 
                 return UI.Column(
@@ -141,66 +119,93 @@ namespace PrefsGUI.RosettaUI.Editor
             Element CreatePrefsGameObject(string word)
             {
                 return UI.Column(
-                    PrefsAssetUtility.ObjPrefsList.Select(op =>
+                    PrefsAssetUtility.ObjPrefsList.SelectMany(op =>
                     {
-                        var objNameHit = op.obj.name.ToLower().Contains(word);
-                        var componentNameHit = op.holders.Select(holder => holder.parent)
-                            .Any(parent => parent.name.ToLower().Contains(word)
-                                           || parent.GetType().ToString().ToLower().Contains(word)
+                        var objNameHit = IsContainWord(op.obj.name, word);
+                        var componentNameHit = op.holders
+                            .Select(holder => holder.parent)
+                            .Any(parent => IsContainWord(parent.GetType().ToString(), word)
                             );
-                        var prefsHit = op.PrefsAll.Any(p => p.key.ToLower().Contains(word));
+                        var prefsHit = op.PrefsAll.Any(p => IsContainWord(p.key, word));
 
-                        if (!objNameHit && !prefsHit) return null;
+                        if (!objNameHit && !prefsHit && !(showComponent && componentNameHit)) return null;
 
+                        if (showComponent)
+                        {
+                            return op.holders.Select(holder =>
+                                {
+                                    var enableFilter = !objNameHit &&
+                                                       !IsContainWord(holder.parent.GetType().ToString(), word);
+                                    return UI.Indent( 
+                                        CreateObjFieldAndPrefsListElement(holder.parent, holder.prefsSet.ToList(), true, enableFilter)
+                                    );
+                                })
+                                .Prepend(
+                                    CreateObjectFieldAndEditPrefs(op.obj, op.PrefsAll.ToList(), false)
+                                );
 
-                        return UI.Column(
-                            CreateObjectFieldAndEditPrefs(op.obj, op.PrefsAll.ToList(), true),
-                            UI.Indent(
-                                op.holders.Select(holder =>
-                                    UI.Indent(
-                                        holder.prefsSet.Select(prefs => prefs.CreateElement())
-                                    )
-                                )
-                            )
-                        );
+                        }
+                        else 
+                        {
+                            return CreateObjFieldAndPrefsListElement(op.obj, op.PrefsAll.ToList(), true, !objNameHit, 2);
+                        }
                     })
                 );
-            }
 
-            Element CreateObjectFieldAndEditPrefs(Object obj, List<PrefsParam> prefsList, bool editPrefix)
-            {
-                var objectField = UIEditor.ObjectFieldReadOnly(null, () => obj).SetWidth(objectFieldWidth);
-                if (!editPrefix)
+                IEnumerable<Element> CreateObjFieldAndPrefsListElement(Object obj, List<PrefsParam> prefsList, bool editPrefix, bool enableFilter, int indentLevel =
+                    1)
                 {
-                    return objectField;
+                    var prefsSet = enableFilter
+                        ? prefsList.Where(prefs => IsContainWord(prefs.key, word))
+                        : prefsList;
+
+                    return new[]
+                    {
+                        CreateObjectFieldAndEditPrefs(obj, prefsList, editPrefix),
+                        UI.Indent(
+                            prefsSet.Select(prefs => prefs.CreateElement()),
+                            indentLevel
+                        )
+                    };
                 }
                 
-                return UI.Row(
-                    objectField,
-                    UI.Space().SetWidth(20f),
-                    UI.Field(
-                        UI.Label("KeyPrefix").SetWidth(100f),
-                        () => prefsList
-                            .Select(prefs => prefs.key)
-                            .Select(PrefsKeyUtility.GetPrefix)
-                            .FirstOrDefault(s => !string.IsNullOrEmpty(s)),
-                        prefixNew =>
-                        {
-                            var prefixWithSeparator = string.IsNullOrEmpty(prefixNew)
-                                ? ""
-                                : prefixNew + PrefsKeyUtility.separator;
-
-                            Undo.RecordObject(obj, "Change PrefsGUI Prefix");
-
-                            foreach (var prefs in prefsList)
+                Element CreateObjectFieldAndEditPrefs(Object obj, List<PrefsParam> prefsList, bool editPrefix)
+                {
+                    var objectField = UIEditor.ObjectFieldReadOnly(null, () => obj).SetWidth(objectFieldWidth);
+                    if (!editPrefix)
+                    {
+                        return objectField;
+                    }
+                
+                    return UI.Row(
+                        objectField,
+                        UI.Space().SetWidth(20f),
+                        UI.Field(
+                            UI.Label("KeyPrefix").SetWidth(100f),
+                            () => prefsList
+                                .Select(prefs => prefs.key)
+                                .Select(PrefsKeyUtility.GetPrefix)
+                                .FirstOrDefault(s => !string.IsNullOrEmpty(s)),
+                            prefixNew =>
                             {
-                                prefs.key = prefixWithSeparator + prefs.key.Split(PrefsKeyUtility.separator).Last();
-                            }
+                                var prefixWithSeparator = string.IsNullOrEmpty(prefixNew)
+                                    ? ""
+                                    : prefixNew + PrefsKeyUtility.separator;
+
+                                Undo.RecordObject(obj, "Change PrefsGUI Prefix");
+
+                                foreach (var prefs in prefsList)
+                                {
+                                    prefs.key = prefixWithSeparator + prefs.key.Split(PrefsKeyUtility.separator).Last();
+                                }
                             
-                            EditorUtility.SetDirty(obj);
-                        }).SetWidth(300f)
-                );
+                                EditorUtility.SetDirty(obj);
+                            }).SetWidth(300f)
+                    );
+                }
             }
+            
+            static bool IsContainWord(string word, string searchWordLower) => word.ToLower().Contains(searchWordLower);
         }
     }
 }
