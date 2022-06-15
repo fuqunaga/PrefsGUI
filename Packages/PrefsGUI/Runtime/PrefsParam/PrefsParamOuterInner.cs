@@ -51,7 +51,7 @@ namespace PrefsGUI
 
         private static readonly Dictionary<string, OuterInnerCache> keyToCache = new();
 
-        private readonly CachedValue<TInner> _defaultValueCache = new();
+        private readonly CachedValue<TInner> _defaultValueInnerCache = new();
         private OuterInnerCache _cache;
         private PrefsInnerAccessor _prefsInnerAccessor;
         private event Action onValueChanged;
@@ -65,10 +65,10 @@ namespace PrefsGUI
         
         protected TInner GetDefaultInner()
         {
-            if (_defaultValueCache.TryGet(out var value))
+            if (_defaultValueInnerCache.TryGet(out var value))
             {
                 value = ToInner(defaultValue);
-                _defaultValueCache.Set(value);
+                _defaultValueInnerCache.Set(value);
             }
             
             return value;
@@ -138,8 +138,15 @@ namespace PrefsGUI
 
         public override void SetCurrentToDefault()
         {
-            defaultValue = Get();
-            _defaultValueCache.Clear();
+            // TOuterがクラスだと、defaultValueと今後Get()で返ってくるインスタンスが同一なってしまい、
+            // 外部でdefaultValueの値を書き換えることが可能になってしまう。したがって次のコードはまずい
+            //
+            // 　defaultValue = Get();
+            //
+            // ToOuter(GetInner())で新しいインスタンスを作る
+            // TInnerがクラスでToOuter()で何もしない処理だと同様の問題があるが、現状TInnerがクラスなのはstringのみなので大丈夫
+            defaultValue = ToOuter(GetInner());
+            _defaultValueInnerCache.Clear();
         }
 
         public override void RegisterValueChangedCallback(Action callback) => onValueChanged += callback;
