@@ -116,11 +116,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7830099223094831404}
     m_Modifications:
-    - target: {fileID: 5910173124826832049, guid: f4cadb92b2d3b5a4dad3110b82cd1d5d,
-        type: 3}
-      propertyPath: prefsBool._key
-      value: PrefsBool
-      objectReference: {fileID: 0}
     - target: {fileID: 5910173124934788266, guid: f4cadb92b2d3b5a4dad3110b82cd1d5d,
         type: 3}
       propertyPath: m_RootOrder

@@ -18,8 +18,8 @@ namespace PrefsGUI.RosettaUI.Editor
 
         public enum Order
         {
-            AtoZ,
             GameObject,
+            Key,
         }
 
         private string searchWord = "";
@@ -61,9 +61,7 @@ namespace PrefsGUI.RosettaUI.Editor
                         UI.Button("Load", Prefs.Load),
                         UI.Button("DeleteAll", () =>
                         {
-                            if (EditorUtility.DisplayDialog("DeleteAll",
-                                    "Are you sure to delete all current prefs parameters?",
-                                    "DeleteAll", "Don't Delete"))
+                            if (PrefsGUIEditorUtility.DisplayDialogDeleteAll())
                             {
                                 Prefs.DeleteAll();
                             }
@@ -87,7 +85,7 @@ namespace PrefsGUI.RosettaUI.Editor
 
                                 return order switch
                                 {
-                                    Order.AtoZ => CreatePrefsUIAtoZ(word),
+                                    Order.Key => CreatePrefsUIAtoZ(word),
                                     Order.GameObject => CreatePrefsGameObject(word),
                                     _ => throw new ArgumentOutOfRangeException()
                                 };
@@ -186,21 +184,8 @@ namespace PrefsGUI.RosettaUI.Editor
                                 .Select(prefs => prefs.key)
                                 .Select(PrefsKeyUtility.GetPrefix)
                                 .FirstOrDefault(s => !string.IsNullOrEmpty(s)),
-                            prefixNew =>
-                            {
-                                var prefixWithSeparator = string.IsNullOrEmpty(prefixNew)
-                                    ? ""
-                                    : prefixNew + PrefsKeyUtility.separator;
-
-                                Undo.RecordObject(obj, "Change PrefsGUI Prefix");
-
-                                foreach (var prefs in prefsList)
-                                {
-                                    prefs.key = prefixWithSeparator + prefs.key.Split(PrefsKeyUtility.separator).Last();
-                                }
-                            
-                                EditorUtility.SetDirty(obj);
-                            }).SetWidth(300f)
+                            prefixNew => PrefsGUIEditorUtility.UpdateKeyPrefix(prefixNew, obj, prefsList)
+                        ).SetWidth(300f)
                     );
                 }
             }

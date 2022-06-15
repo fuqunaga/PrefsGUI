@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -45,12 +44,33 @@ namespace PrefsGUI.Editor
         {
             public bool Equals(ObjPrefs x, ObjPrefs y)
             {
-                return x.obj.Equals(y.obj);
+                if (ReferenceEquals(x, y)) return true;
+                if (ReferenceEquals(x, null)) return false;
+                if (ReferenceEquals(y, null)) return false;
+                if (x.GetType() != y.GetType()) return false;
+                return Equals(x.obj, y.obj) && x.holders.SequenceEqual(y.holders, new PrefsHolderComparer());
             }
 
             public int GetHashCode(ObjPrefs obj)
             {
-                return obj.obj.GetHashCode();
+                return HashCode.Combine(obj.obj, obj.holders);
+            }
+        }
+
+        readonly struct PrefsHolderComparer : IEqualityComparer<PrefsHolder>
+        {
+            public bool Equals(PrefsHolder x, PrefsHolder y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (ReferenceEquals(x, null)) return false;
+                if (ReferenceEquals(y, null)) return false;
+                if (x.GetType() != y.GetType()) return false;
+                return Equals(x.parent, y.parent) && x.prefsSet.SequenceEqual(y.prefsSet);
+            }
+
+            public int GetHashCode(PrefsHolder obj)
+            {
+                return HashCode.Combine(obj.parent, obj.prefsSet);
             }
         }
 
@@ -86,8 +106,7 @@ namespace PrefsGUI.Editor
         }
 
         public static IEnumerable<(PrefsParam, Object, Object)> PrefsObjComponentList
-            => ObjPrefsList.SelectMany(op =>
-                    op.holders.SelectMany(holder => holder.prefsSet.Select(prefs => (prefs, op.obj, holder.parent))));
+            => ObjPrefsList.SelectMany(op => op.holders.SelectMany(holder => holder.prefsSet.Select(prefs => (prefs, op.obj, holder.parent))));
 
           
 
@@ -155,42 +174,11 @@ namespace PrefsGUI.Editor
                     )
                 );
 
-
-#if false
-                .Select(go => new ObjPrefs(
-                    go,
-                    go.GetComponents<MonoBehaviour>()
-                        .Where(mono => !Assembly.GetAssembly(mono.GetType()).GetName().Name.StartsWith("UnityEngine.")) // skip unity classes
-                        .Select(mono => new ObjPrefsField() { obj = mono, prefsList = SearchChildPrefsParams(mono).ToList() })
-                        .Where(mp => mp.prefsList.Any())
-                        .ToList()
-                        )
-                )
-                .Where(gp => gp.objPrefsList.Any())
-                .ToList();
-                */
-
-            var inHierarchy = all
-                .Where(gp => gp.go.scene.name != null)
-                .ToList();
-
-            var prefabSources = new HashSet<GameObject>(inHierarchy.Select(gp => PrefabUtility.GetCorrespondingObjectFromOriginalSource(gp.go)));
-
-            var inProject = all
-                .Except(inHierarchy)
-                .Where(gp => !prefabSources.Contains(gp.go)) // ignore prefabs that the child is in the hierarchy
-                ;
-
-            var newList = inHierarchy.Concat(inProject)
-                .OrderBy(gp => gp.go.name)
-                .ToList();
-#else
             using var newListScope = ListPool<ObjPrefs>.Get(out var newList);
             newList.AddRange(objPrefsOfGameObjects
                 .Concat(objPrefsOfScriptableObjects)
                 .OrderBy(op => op.obj.name)
             );
-#endif
 
             var change = !objPrefsList.SequenceEqual(newList, new ObjPrefsComparer());
             if (change)
@@ -200,8 +188,5 @@ namespace PrefsGUI.Editor
 
             return change;
         }
-
- 
-        
     }
 }

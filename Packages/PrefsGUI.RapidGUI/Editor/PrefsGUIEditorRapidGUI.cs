@@ -57,6 +57,11 @@ namespace PrefsGUI.RapidGUI.Editor
             if (PrefsAssetUtility.onObjPrefsListChanged != null)
                 PrefsAssetUtility.onObjPrefsListChanged -= OnGpListChanged;
         }
+        
+        protected void Update()
+        {
+            PrefsAssetUtility.UpdateObjPrefsIfNeed();
+        }
 
         void OnGpListChanged()
         {
@@ -76,8 +81,7 @@ namespace PrefsGUI.RapidGUI.Editor
                 if (GUILayout.Button("Load")) Prefs.Load();
                 if (GUILayout.Button("DeleteAll"))
                 {
-                    if (EditorUtility.DisplayDialog("DeleteAll", "Are you sure to delete all current prefs parameters?",
-                        "DeleteAll", "Don't Delete"))
+                    if (PrefsGUIEditorUtility.DisplayDialogDeleteAll())
                     {
                         Prefs.DeleteAll();
                     }
@@ -221,17 +225,7 @@ namespace PrefsGUI.RapidGUI.Editor
                     var prefixNew = GUILayout.TextField(prefix, GUILayout.MinWidth(100f));
                     if (prefix != prefixNew)
                     {
-                        var prefixWithSeparator = string.IsNullOrEmpty(prefixNew) ? "" : prefixNew + PrefsKeyUtility.separator;
-
-                        Undo.RecordObject(obj, "Change PrefsGUI Prefix");
-
-                        foreach (var prefs in prefsList)
-                        {
-                            prefs.key = prefixWithSeparator + prefs.key.Split(PrefsKeyUtility.separator).Last();
-                        }
-
-                        prefix = prefixNew;
-                        EditorUtility.SetDirty(obj);
+                        PrefsGUIEditorUtility.UpdateKeyPrefix(prefixNew, obj, prefsList);
                     }
                 }
 
