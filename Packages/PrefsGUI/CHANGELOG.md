@@ -1,6 +1,11 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [3.2.0] - 2022.6.??
+### Fix
+ - Get() can return different values in different instances with the same key
+
+
 ## [3.1.0] - 2022.6.03
 ### Changed
  - PrefsParamOuterInner InnerValue access via IPrefsInnnerAccessor

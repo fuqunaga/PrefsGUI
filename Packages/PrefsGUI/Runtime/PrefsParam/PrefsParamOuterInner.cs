@@ -7,49 +7,91 @@ namespace PrefsGUI
 {
     /// <summary>
     /// Basic implementation of TOuter and TInner
+    /// デフォルト値は各インスタンスごとに固有で持つが、Get(),Set()はKvsと透過的に行う（＝同一キーなら同一の値）
     /// </summary>
     public abstract class PrefsParamOuterInner<TOuter, TInner> : PrefsParamOuter<TOuter>
     {
-        protected bool hasCachedOuter;
-        protected TOuter cachedOuter;
+        #region Type Define
+        
+        public class CachedValue<T>
+        {
+            private bool hasValue;
+            private T value;
 
-        protected bool hasCachedInner;
-        protected TInner cachedInner;
+            public bool HasValue => hasValue;
+            
+            public bool TryGet(out T v)
+            {
+                v = value;
+                return hasValue;
+            }
 
-        protected bool hasDefaultInner;
-        protected TInner defaultInner;
+            public void Set(T v)
+            {
+                value = v;
+                hasValue = true;
+            }
 
+            public void Clear() => hasValue = false;
+        }
+        
+        public class OuterInnerCache
+        {
+            public readonly CachedValue<TOuter> outer = new();
+            public readonly CachedValue<TInner> inner = new();
+
+            public void Clear()
+            {
+                outer.Clear();
+                inner.Clear();
+            }
+        }
+        
+        #endregion
+
+        private static readonly Dictionary<string, OuterInnerCache> keyToCache = new();
+
+        private readonly CachedValue<TInner> _defaultValueCache = new();
+        private OuterInnerCache _cache;
         private PrefsInnerAccessor _prefsInnerAccessor;
         private event Action onValueChanged;
 
+        
         protected PrefsParamOuterInner(string key, TOuter defaultValue = default) : base(key, defaultValue)
         {
         }
 
+        protected virtual bool Equals(TInner lhs, TInner rhs) => EqualityComparer<TInner>.Default.Equals(lhs, rhs);
+        
         protected TInner GetDefaultInner()
         {
-            if (!hasDefaultInner)
+            if (_defaultValueCache.TryGet(out var value))
             {
-                defaultInner = ToInner(defaultValue);
-                hasDefaultInner = true;
+                value = ToInner(defaultValue);
+                _defaultValueCache.Set(value);
+            }
+            
+            return value;
+        }
+
+        private TInner GetInner()
+        {
+            if (!_cache.inner.TryGet(out var value))
+            {
+                value = PrefsKvs.Get(key, GetDefaultInner());
+                _cache.inner.Set(value);
             }
 
-            return defaultInner;
+            return value;
         }
-
-        protected TInner _Get()
+        
+        protected bool SetInner(TInner v)
         {
-            return PrefsKvs.Get(key, GetDefaultInner());
-        }
-
-        protected bool _Set(TInner v)
-        {
-            var updateValue = (false == Equals(v, _Get()));
+            var updateValue = !Equals(v, GetInner());
             if (updateValue)
             {
                 PrefsKvs.Set(key, v);
-                hasCachedOuter = false;
-                hasCachedInner = false;
+                _cache.Clear();
 
                 onValueChanged?.Invoke();
             }
@@ -57,51 +99,47 @@ namespace PrefsGUI
             return updateValue;
         }
 
-        protected virtual bool Equals(TInner lhs, TInner rhs) => EqualityComparer<TInner>.Default.Equals(lhs, rhs);
-
-        private TInner GetInner()
-        {
-            if (!hasCachedInner)
-            {
-                cachedInner = _Get();
-                hasCachedInner = true;
-            }
-
-            return cachedInner;
-        }
-
 
         #region abstract
 
-        protected abstract TOuter ToOuter(TInner innerV);
-        protected abstract TInner ToInner(TOuter outerV);
+        protected abstract TOuter ToOuter(TInner inner);
+        protected abstract TInner ToInner(TOuter outer);
 
         #endregion
 
 
         #region override
 
-        public override TOuter Get()
+        protected override void OnKeyChanged(string oldKey, string newKey)
         {
-            if (!hasCachedOuter)
+            base.OnKeyChanged(oldKey, newKey);
+            if (!keyToCache.TryGetValue(newKey, out _cache))
             {
-                cachedOuter = ToOuter(_Get());
-                hasCachedOuter = true;
+                keyToCache[newKey] = _cache = new ();
             }
-
-            return cachedOuter;
         }
 
-        public override bool Set(TOuter v) => _Set(ToInner(v));
+        public override TOuter Get()
+        {
+            if (!_cache.outer.TryGet(out var value))
+            {
+                value = ToOuter(GetInner());
+                _cache.outer.Set(value);
+            }
+
+            return value;
+        }
+
+        public override bool Set(TOuter v) => SetInner(ToInner(v));
 
         public override Type GetInnerType() => typeof(TInner);
 
-        public override bool IsDefault => Equals(GetDefaultInner(), _Get());
+        public override bool IsDefault => Equals(GetDefaultInner(), GetInner());
 
         public override void SetCurrentToDefault()
         {
             defaultValue = Get();
-            hasDefaultInner = false;
+            _defaultValueCache.Clear();
         }
 
         public override void RegisterValueChangedCallback(Action callback) => onValueChanged += callback;
@@ -133,14 +171,14 @@ namespace PrefsGUI
 
             public PrefsParam Prefs => _prefs;
 
-            public bool IsAlreadyGet => _prefs.hasCachedInner || _prefs.hasCachedOuter;
+            public bool IsAlreadyGet => _prefs._cache.outer.HasValue || _prefs._cache.inner.HasValue;
             public TInner Get() => _prefs.GetInner();
 
             public bool SetSyncedValue(TInner value)
             {
                 _prefs.UnregisterValueChangedCallback(UpdateSyncedFlag);
                 
-                var ret =  _prefs._Set(value);
+                var ret =  _prefs.SetInner(value);
                 _prefs.Synced = true;
                 
                 _prefs.RegisterValueChangedCallback(UpdateSyncedFlag);

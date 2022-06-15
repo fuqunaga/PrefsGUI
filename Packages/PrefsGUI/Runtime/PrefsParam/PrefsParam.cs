@@ -19,18 +19,32 @@ namespace PrefsGUI
         public string key
         {
             get => _key;
-            set => ChangeKey(value);
+            set
+            {
+                if (_key != value && !string.IsNullOrEmpty(value))
+                {
+                    var old = _key;
+                    _key = value;
+                    OnKeyChanged(old, _key);
+                }
+            }
         }
 
 
-        protected PrefsParam(string key)
-        {
-            _key = key;
-            Register();
-        }
+        protected PrefsParam(string key) => this.key = key;
 
         public virtual void Delete() => PrefsKvs.DeleteKey(key);
 
+
+        protected virtual void OnKeyChanged(string oldKey, string newKey)
+        {
+            if (!string.IsNullOrEmpty(oldKey))
+            {
+                AllDic.Remove(oldKey);
+            }
+
+            Register();
+        }
 
 
         #region abstract
@@ -56,7 +70,8 @@ namespace PrefsGUI
 
         public void OnBeforeSerialize() { }
 
-        public void OnAfterDeserialize() { Register(); } // To Register Array/List In Inspector. Constructor not called.
+        // To Register Array/List In Inspector. constructor is not called.
+        public void OnAfterDeserialize() => Register();
 
         void Register()
         {
@@ -77,17 +92,6 @@ namespace PrefsGUI
                 }
 
                 AllDic[key] = this;
-            }
-        }
-
-        void ChangeKey(string newKey)
-        {
-            if (key != newKey && !string.IsNullOrEmpty(newKey))
-            {
-                AllDic.Remove(key);
-
-                _key = newKey;
-                Register();
             }
         }
 
