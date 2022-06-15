@@ -65,7 +65,7 @@ namespace PrefsGUI
         
         protected TInner GetDefaultInner()
         {
-            if (_defaultValueInnerCache.TryGet(out var value))
+            if (!_defaultValueInnerCache.TryGet(out var value))
             {
                 value = ToInner(defaultValue);
                 _defaultValueInnerCache.Set(value);
