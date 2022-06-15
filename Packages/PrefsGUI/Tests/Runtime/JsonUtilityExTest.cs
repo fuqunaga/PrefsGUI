@@ -9,7 +9,7 @@ using Assert = UnityEngine.Assertions.Assert;
 
 namespace PrefsGUI.Test
 {
-    public class JsonUtilityExTest : MonoBehaviour
+    public class JsonUtilityExTest
     {
         public enum Enum
         {
