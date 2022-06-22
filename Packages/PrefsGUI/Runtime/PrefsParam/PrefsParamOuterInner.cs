@@ -119,6 +119,14 @@ namespace PrefsGUI
             }
         }
 
+        public override void OnAfterDeserialize()
+        {
+            base.OnAfterDeserialize();
+            
+            // defaultValueがInspectorで書き換えられてる可能性がある
+            _defaultValueInnerCache.Clear();
+        }
+
         public override TOuter Get()
         {
             if (!_cache.outer.TryGet(out var value))

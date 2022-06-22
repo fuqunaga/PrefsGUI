@@ -11,22 +11,28 @@ using Object = UnityEngine.Object;
 
 namespace PrefsGUI.Editor
 {
+    /// <summary>
+    /// PrefsParamを持つオブジェクトをリストアップする
+    /// - scene 内
+    /// - prefab
+    /// - scriptable object
+    /// </summary>
     public class PrefsAssetUtility : AssetPostprocessor
     {
         #region Type Define
 
-        public class PrefsHolder
+        public class PrefsHolderComponent
         {
-            public Object parent;
+            public Object component;
             public HashSet<PrefsParam> prefsSet;
         }
 
         public class ObjPrefs
         {
             public readonly Object obj;
-            public readonly List<PrefsHolder> holders;
+            public readonly List<PrefsHolderComponent> holders;
 
-            public ObjPrefs(Object obj, IEnumerable<PrefsHolder> holders)
+            public ObjPrefs(Object obj, IEnumerable<PrefsHolderComponent> holders)
             {
                 this.obj = obj;
                 this.holders = holders.ToList();
@@ -36,7 +42,7 @@ namespace PrefsGUI.Editor
 
             public Object GetPrefsParent(PrefsParam prefs)
             {
-                return holders.FirstOrDefault(h => h.prefsSet.Contains(prefs))?.parent;
+                return holders.FirstOrDefault(h => h.prefsSet.Contains(prefs))?.component;
             }
         }
 
@@ -57,20 +63,20 @@ namespace PrefsGUI.Editor
             }
         }
 
-        readonly struct PrefsHolderComparer : IEqualityComparer<PrefsHolder>
+        readonly struct PrefsHolderComparer : IEqualityComparer<PrefsHolderComponent>
         {
-            public bool Equals(PrefsHolder x, PrefsHolder y)
+            public bool Equals(PrefsHolderComponent x, PrefsHolderComponent y)
             {
                 if (ReferenceEquals(x, y)) return true;
                 if (ReferenceEquals(x, null)) return false;
                 if (ReferenceEquals(y, null)) return false;
                 if (x.GetType() != y.GetType()) return false;
-                return Equals(x.parent, y.parent) && x.prefsSet.SequenceEqual(y.prefsSet);
+                return Equals(x.component, y.component) && x.prefsSet.SequenceEqual(y.prefsSet);
             }
 
-            public int GetHashCode(PrefsHolder obj)
+            public int GetHashCode(PrefsHolderComponent obj)
             {
-                return HashCode.Combine(obj.parent, obj.prefsSet);
+                return HashCode.Combine(obj.component, obj.prefsSet);
             }
         }
 
@@ -105,8 +111,10 @@ namespace PrefsGUI.Editor
             }
         }
 
-        public static IEnumerable<(PrefsParam, Object, Object)> PrefsObjComponentList
-            => ObjPrefsList.SelectMany(op => op.holders.SelectMany(holder => holder.prefsSet.Select(prefs => (prefs, op.obj, holder.parent))));
+        public static IEnumerable<(PrefsParam prefs, Object obj)> PrefsObjEnumerable
+            => ObjPrefsList.SelectMany(op => 
+                op.holders.SelectMany(holder => 
+                    holder.prefsSet.Select(prefs => (prefs, op.obj))));
 
           
 
@@ -149,7 +157,7 @@ namespace PrefsGUI.Editor
                     var holders = go.GetComponents<MonoBehaviour>()
                             .Where(mono => mono != null)
                             .Where(mono => !Assembly.GetAssembly(mono.GetType()).GetName().Name.StartsWith("UnityEngine.")) // skip unity classes
-                            .Select(mono => new PrefsHolder() { parent = mono, prefsSet = PrefsTypeUtility.SearchChildPrefsParams(mono) })
+                            .Select(mono => new PrefsHolderComponent() { component = mono, prefsSet = PrefsTypeUtility.SearchChildPrefsParams(mono) })
                             .Where(holder => holder.prefsSet.Any());
 
                     return (go, holders);
@@ -170,7 +178,7 @@ namespace PrefsGUI.Editor
                 .Where(pair => pair.prefsList.Any())
                 .Select(pair => new ObjPrefs(
                     pair.so,
-                    new[] { new PrefsHolder() { parent = pair.so, prefsSet = pair.prefsList } }
+                    new[] { new PrefsHolderComponent() { component = pair.so, prefsSet = pair.prefsList } }
                     )
                 );
 

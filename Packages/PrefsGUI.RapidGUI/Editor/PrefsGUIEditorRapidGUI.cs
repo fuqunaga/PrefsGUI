@@ -5,7 +5,6 @@ using PrefsGUI.Editor;
 using RapidGUI;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
 namespace PrefsGUI.RapidGUI.Editor
@@ -41,7 +40,7 @@ namespace PrefsGUI.RapidGUI.Editor
 
         Order order;
 
-        SetCurrentToDefaultWindow setCurrentToDefaultWindow;
+        // SetCurrentToDefaultWindow setCurrentToDefaultWindow;
 
         FastScrollView scrollViewAtoZ = new FastScrollView();
         FastScrollView scrollViewGameObject = new FastScrollView();
@@ -94,10 +93,8 @@ namespace PrefsGUI.RapidGUI.Editor
             {
                 if (GUILayout.Button("Open Current To Default Window"))
                 {
-                    if (setCurrentToDefaultWindow == null)
-                        setCurrentToDefaultWindow = CreateInstance<SetCurrentToDefaultWindow>();
+                    var setCurrentToDefaultWindow = GetWindow<SetCurrentToDefaultWindowRapidGUI>(true);
                     setCurrentToDefaultWindow.parentWindow = this;
-                    setCurrentToDefaultWindow.ShowUtility();
                 }
             }
 
@@ -147,7 +144,7 @@ namespace PrefsGUI.RapidGUI.Editor
                         scrollViewGameObject.DoGUI(PrefsAssetUtility.ObjPrefsList, (gp) =>
                         {
                             var objNameHit = IsContainWord(gp.obj.name, searchWordLower);
-                            var componentNameHit = gp.holders.Any(holder => IsComponentContainWord(holder.parent, searchWordLower));
+                            var componentNameHit = gp.holders.Any(holder => IsComponentContainWord(holder.component, searchWordLower));
                             var prefsHit = gp.PrefsAll.Any(p => IsContainWord(p.key, searchWordLower));
 
                             if (objNameHit || (showComponent && componentNameHit) || prefsHit)
@@ -162,9 +159,9 @@ namespace PrefsGUI.RapidGUI.Editor
 
                                         if (showComponent)
                                         {
-                                            LabelWithEditPrefix(holder.parent, holder.prefsSet.ToList(), true);
+                                            LabelWithEditPrefix(holder.component, holder.prefsSet.ToList(), true);
 
-                                            needFilter &= !IsComponentContainWord(holder.parent, searchWordLower);
+                                            needFilter &= !IsComponentContainWord(holder.component, searchWordLower);
                                         }
 
                                         var prefsSet = needFilter

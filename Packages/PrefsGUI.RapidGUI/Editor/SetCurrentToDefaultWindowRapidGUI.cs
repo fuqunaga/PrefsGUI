@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace PrefsGUI.RapidGUI.Editor
 {
-    public class SetCurrentToDefaultWindow : PrefsGUIEditorRapidGUIBase
+    public class SetCurrentToDefaultWindowRapidGUI : PrefsGUIEditorRapidGUIBase
     {
         public PrefsGUIEditorRapidGUI parentWindow;
 
@@ -44,20 +44,20 @@ namespace PrefsGUI.RapidGUI.Editor
                         var objs = checkedPrefsList.Select(prefs => objPrefsKeys.objPrefs.GetPrefsParent(prefs)).Distinct().ToArray();
 
                         Undo.RecordObjects(objs, "Set PrefsGUI default value");
-
-
+                        
                         // SetCurrent To Default
                         foreach (var prefs in checkedPrefsList)
                         {
                             prefs.SetCurrentToDefault();
                         }
 
-                        foreach (var o in objs)
-                        {
-                            EditorUtility.SetDirty(o);
-                        }
 
+                        foreach (var obj in objs)
+                        {
+                            PrefsGUIEditorUtility.SavePrefabAssetIfNeed(obj);
+                        }
                     }
+
 
                     Close();
                     parentWindow.Repaint();
@@ -85,7 +85,7 @@ namespace PrefsGUI.RapidGUI.Editor
 
 
             // check all
-            var trueCount = checkedList.Values.Where(c => c).Count();
+            var trueCount = checkedList.Values.Count(c => c);
 
             var checkAll = ToggleMixed(trueCount, checkedList.Count);
             if (checkAll.HasValue)
@@ -97,43 +97,39 @@ namespace PrefsGUI.RapidGUI.Editor
             }
 
             // per object
-            using (var sc = new GUILayout.ScrollViewScope(scrollPosition))
+            using var sc = new GUILayout.ScrollViewScope(scrollPosition);
+            scrollPosition = sc.scrollPosition;
+
+            foreach (var (objPrefs, keys) in objPrefsKeysList)
             {
-                scrollPosition = sc.scrollPosition;
-
-                foreach (var objPrefsKeys in objPrefsKeysList)
+                using (new GUILayout.HorizontalScope())
                 {
-                    using (new GUILayout.HorizontalScope())
+                    var check = ToggleMixed(keys.Count(key => checkedList[key]), keys.Count);
+                    if (check.HasValue)
                     {
-                        var keys = objPrefsKeys.keys;
-
-                        var check = ToggleMixed(keys.Where(key => checkedList[key]).Count(), keys.Count);
-                        if (check.HasValue)
+                        foreach (var key in keys)
                         {
-                            foreach (var key in keys)
-                            {
-                                checkedList[key] = check.Value;
-                            }
-                        }
-
-                        using (new RGUI.EnabledScope(false))
-                        {
-                            EditorGUILayout.ObjectField(objPrefsKeys.objPrefs.obj, typeof(Object), true);
+                            checkedList[key] = check.Value;
                         }
                     }
 
-
-                    using (new RGUI.IndentScope())
+                    using (new RGUI.EnabledScope(false))
                     {
-                        foreach(var key in objPrefsKeys.keys)
-                        {
-                            bool check = checkedList[key];
+                        EditorGUILayout.ObjectField(objPrefs.obj, typeof(Object), true);
+                    }
+                }
 
-                            using (new GUILayout.HorizontalScope())
-                            {
-                                if (check != GUILayout.Toggle(check, GUIContent.none, ToggleWidth)) checkedList[key] = !check;
-                                key.prefs.DoGUI();
-                            }
+
+                using (new RGUI.IndentScope())
+                {
+                    foreach(var key in keys)
+                    {
+                        var check = checkedList[key];
+
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            if (check != GUILayout.Toggle(check, GUIContent.none, ToggleWidth)) checkedList[key] = !check;
+                            key.prefs.DoGUI();
                         }
                     }
                 }
