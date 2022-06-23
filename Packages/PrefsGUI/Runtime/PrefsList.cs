@@ -8,7 +8,7 @@ namespace PrefsGUI
     /// List style PrefsGUI
     /// </summary>
     [Serializable]
-    public class PrefsList<T> : PrefsAny<List<T>>, IList<T>
+    public class PrefsList<T> : PrefsAny<List<T>>, IList<T>, IList
     {
         public PrefsList(string key, List<T> defaultValue = default) : base(key, defaultValue) { }
 
@@ -57,15 +57,15 @@ namespace PrefsGUI
             }
         }
  
+        
         #region IList<T>
 
         protected void UpdateValue(Action<List<T>> action) { var v = Get(); action(v); Set(v); }
-
         public int Count => Get()?.Count ?? 0;
         public bool IsReadOnly => false;
         public T this[int index] { get => Get()[index]; set { UpdateValue((v) => v[index] = value); } }
         public int IndexOf(T item) => Get().IndexOf(item);
-        public void Insert(int index, T item) => UpdateValue((v) => v.Insert(index, item));
+        public void Insert(int index, T item) => UpdateValue((v) => v.Insert(index, item));        
         public void RemoveAt(int index) => UpdateValue((v) => v.RemoveAt(index));
         public void Add(T item) => UpdateValue((v) => v.Add(item));
         public void Clear() => UpdateValue((v) => v.Clear());
@@ -83,8 +83,42 @@ namespace PrefsGUI
 
         #endregion
         
+        
         #region List like
         public void RemoveAll(Predicate<T> predicate) => UpdateValue(v => v.RemoveAll(predicate));
+
+        #endregion
+        
+        
+        #region IList
+        public void CopyTo(Array array, int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSynchronized => false;
+        public object SyncRoot => this;
+
+        object IList.this[int index]
+        {
+            get => this[index];
+            set => this[index] = (T)value;
+        }
+
+        public void Remove(object value) => Remove((T) value);
+        
+        public bool IsFixedSize => false;
+
+        public int Add(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(object value) => Contains((T) value);
+
+        public int IndexOf(object value) => IndexOf((T) value);
+
+        public void Insert(int index, object value) => Insert(index, (T) value);
 
         #endregion
     }
