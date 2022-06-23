@@ -6,42 +6,30 @@ namespace PrefsGUI.RosettaUI
     {
         public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label = null)
         {
-            var listBinder = Binder.Create(prefs.Get, v => prefs.Set(v));
-
-            var element = UI.Fold(
-                UI.Row(
+            var element = UI.Row(
+                UI.List(
                     label ?? UI.Label(() => prefs.key),
-                    UI.Space(),
-                    UI.ListCounterField(listBinder),
-                    PrefsGUIElement.CreateDefaultButtonElement(
-                        onClick: prefs.ResetToDefaultCount,
-                        isDefault: () => prefs.IsDefaultCount
-                    )
-                ),
-                new[]
-                {
-                    UI.ListItemContainer(
-                        listBinder,
-                        (binder, idx) =>
+                    () => prefs,
+                    (binder, idx) =>
+                    {
+                        var field = UI.ListItemDefault(binder, idx);
+                        var ret = field;
+
+                        if (idx < prefs.DefaultValueCount)
                         {
-                            var field = UI.ListItemDefault(binder, idx);
-                            var ret = field;
-
-                            if (idx < prefs.DefaultValueCount)
-                            {
-                                ret = UI.Row(
-                                    field,
-                                    PrefsGUIElement.CreateDefaultButtonElement(
-                                        onClick: () => prefs.ResetToDefaultAt(idx),
-                                        isDefault: () => prefs.IsDefaultAt(idx)
-                                    )
-                                );
-                            }
-
-                            return ret;
+                            ret = UI.Row(
+                                field,
+                                PrefsGUIElement.CreateDefaultButtonElement(
+                                    onClick: () => prefs.ResetToDefaultAt(idx),
+                                    isDefault: () => prefs.IsDefaultAt(idx)
+                                )
+                            );
                         }
-                    )
-                }
+
+                        return ret;
+                    }
+                ),
+                prefs.CreateDefaultButtonElement()
             );
             
             PrefsGUIExtension.SubscribeSyncedFlag(prefs, element);
