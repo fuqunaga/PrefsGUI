@@ -51,7 +51,7 @@ namespace PrefsGUI
 
         private static readonly Dictionary<string, OuterInnerCache> keyToCache = new();
 
-        private readonly CachedValue<TInner> _defaultValueInnerCache = new();
+        private CachedValue<TInner> _defaultValueInnerCache = new();
         private OuterInnerCache _cache;
         private PrefsInnerAccessor _prefsInnerAccessor;
         private event Action onValueChanged;
@@ -124,6 +124,7 @@ namespace PrefsGUI
             base.OnAfterDeserialize();
             
             // defaultValueがInspectorで書き換えられてる可能性がある
+            _defaultValueInnerCache ??= new();
             _defaultValueInnerCache.Clear();
         }
 
