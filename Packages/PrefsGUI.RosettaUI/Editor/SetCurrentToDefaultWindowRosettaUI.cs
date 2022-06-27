@@ -41,7 +41,7 @@ namespace PrefsGUI.RosettaUI.Editor
                     _ => CheckPrefsNonDefaultChanged(),
                     () => UI.Column(
                         CreatePrefsListCheckElement(GetPrefsNonDefaults().ToList()),
-                        PrefsGUIEditorRosettaUI.CreateLineElement(),
+                        PrefsGUIEditorRosettaUIComponent.CreateLineElement(),
                         UI.ScrollViewVertical(PrefsGUIEditorRosettaUI.scrollViewHeight,
                             CreateObjectPrefsElements()
                         )
@@ -103,7 +103,7 @@ namespace PrefsGUI.RosettaUI.Editor
                 return new Element[]
                 {
                     UI.Row(
-                        PrefsGUIEditorRosettaUI.CreateObjectFieldWithAssetMarkElement(objPrefs.obj)
+                        PrefsGUIEditorRosettaUIComponent.CreateObjectFieldWithAssetMarkParts(objPrefs.obj)
                             .Prepend(
                                 CreatePrefsListCheckElement(prefsList)
                             )

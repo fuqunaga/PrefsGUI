@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PrefsGUI.Editor;
 using RosettaUI;
-using RosettaUI.Editor;
 using RosettaUI.UIToolkit.Editor;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -17,7 +15,7 @@ namespace PrefsGUI.RosettaUI.Editor
         public static void ShowWindow() => GetWindow<PrefsGUIEditorRosettaUI>("PrefsGUI");
 
         public static float scrollViewHeight = 1000f;
-        public static float objectFieldWidth = 300f;
+        
 
         public enum Order
         {
@@ -32,7 +30,8 @@ namespace PrefsGUI.RosettaUI.Editor
         
         private int objPrefsListChangeCount;
 
- 
+        private static IPrefsGUIEditorRosettaUIObjCheckExtension _objCheckExtension;
+        
         private void OnEnable()
         {
             PrefsAssetUtility.onObjPrefsListChanged += OnObjPrefsListChanged;
@@ -56,7 +55,6 @@ namespace PrefsGUI.RosettaUI.Editor
 
         protected override Element CreateElement()
         {
-            
             const float buttonWidth = 200f;
             
             return UI.Column(
@@ -88,9 +86,11 @@ namespace PrefsGUI.RosettaUI.Editor
                     UI.DynamicElementIf(
                         () => order == Order.GameObject,
                         () => UI.Field(() => showComponent)
-                    )
-                ).SetHeight(200f),
-                CreateLineElement(),
+                    ),
+                    UI.Space(),
+                    _objCheckExtension?.Title()
+                ).SetHeight(230f),
+                PrefsGUIEditorRosettaUIComponent.CreateLineElement(),
                 UI.ScrollViewVertical(scrollViewHeight,
                     UI.Indent(
                         UI.DynamicElementOnStatusChanged(
@@ -122,13 +122,18 @@ namespace PrefsGUI.RosettaUI.Editor
                     prefsObjAll.Select(po =>
                     {
                         var (prefs, obj) = po;
-                        
-                        return UI.Row(
-                            new[] {prefs.CreateElement()}
-                                .Concat(
-                                    CreateObjectFieldWithAssetMarkElement(obj, includeAssets)
-                                )
-                        );
+
+                        var prefsElement = PrefsGUIEditorRosettaUIComponent
+                            .CreateObjectFieldWithAssetMarkParts(obj, includeAssets)
+                            .Prepend(prefs.CreateElement());
+
+
+                        return _objCheckExtension != null
+                            ? UI.Row(
+                                _objCheckExtension.PrefsLeft(prefs),
+                                UI.Indent(UI.Row(prefsElement))
+                            )
+                            : UI.Row(prefsElement);
                     })
                 );
             }
@@ -152,93 +157,113 @@ namespace PrefsGUI.RosettaUI.Editor
                                 return Array.Empty<Element>();
                             }
 
+                            var prefsListForObj = (objNameHit
+                                    ? op.PrefsAll
+                                    : FilterPrefs(op.PrefsAll)
+                                ).ToList();
+
                             if (showComponent)
                             {
+                                var objFieldParts = PrefsGUIEditorRosettaUIComponent.CreateObjectFieldWithAssetMarkParts(op.obj);
+
                                 return new Element[]
                                 {
-                                    UI.Row(CreateObjectFieldWithAssetMarkElement(op.obj)),
+                                    UI.Row(
+                                        _objCheckExtension == null
+                                        ? objFieldParts
+                                        : objFieldParts.Prepend(_objCheckExtension.PrefsSetLeft(prefsListForObj))
+                                    ),
                                     UI.Indent(
                                         op.holders.SelectMany(holder =>
                                         {
                                             var enableFilter = !objNameHit &&
                                                                !IsContainWord(holder.component.GetType().ToString(), word);
+
+                                            var prefsList = (enableFilter
+                                                    ? FilterPrefs(holder.prefsSet)
+                                                    : holder.prefsSet
+                                                ).ToList();
                                             
-                                            return CreateObjFieldAndPrefsListElement(holder.component,
-                                                holder.prefsSet.ToList(), enableFilter, false);
+                                            return CreateObjFieldAndPrefsListElement(holder.component, prefsList, false);
                                         })
                                     )
                                 };
                             }
                             else
                             {
-                                return CreateObjFieldAndPrefsListElement(op.obj, op.PrefsAll.ToList(), !objNameHit, true, 2);
+                                return CreateObjFieldAndPrefsListElement(op.obj, prefsListForObj, true, 2);
                             }
                         })
                 );
 
-                IEnumerable<Element> CreateObjFieldAndPrefsListElement(Object obj, List<PrefsParam> prefsList, bool enableFilter, bool enableAssetMark, int indentLevel = 1)
-                {
-                    var prefsSet = enableFilter
-                        ? prefsList.Where(prefs => IsContainWord(prefs.key, word))
-                        : prefsList;
+                IEnumerable<PrefsParam> FilterPrefs(IEnumerable<PrefsParam> prefsSet) =>
+                    prefsSet.Where(prefs => IsContainWord(prefs.key, word));
 
+                IEnumerable<Element> CreateObjFieldAndPrefsListElement(Object obj, List<PrefsParam> prefsList, bool enableAssetMark, int indentLevel = 1)
+                {
                     return new[]
                     {
                         CreateObjectFieldAndEditPrefs(obj, prefsList, enableAssetMark),
                         UI.Indent(
-                            prefsSet.Select(prefs => prefs.CreateElement()),
+                            prefsList.Select(CreatePrefsElement),
                             indentLevel
                         )
                     };
+
+                    Element CreatePrefsElement(PrefsParam prefs)
+                    {
+                        var prefsElement = prefs.CreateElement(); 
+                        
+                        return _objCheckExtension == null
+                            ? prefsElement
+                            : UI.Row(
+                                _objCheckExtension.PrefsLeft(prefs),
+                                UI.Indent(
+                                    prefsElement
+                                )
+                            );
+                    }
                 }
                 
-                Element CreateObjectFieldAndEditPrefs(Object obj, List<PrefsParam> prefsList, bool enableAssetMark)
+                Element CreateObjectFieldAndEditPrefs(Object obj, IReadOnlyCollection<PrefsParam> prefsList, bool enableAssetMark)
                 {
-                    var objectFieldEnumerable = enableAssetMark
-                        ? CreateObjectFieldWithAssetMarkElement(obj, false)
-                        : new[] {CreateObjectField(obj)};
-                    
+                    var objectFieldParts = enableAssetMark
+                        ? PrefsGUIEditorRosettaUIComponent.CreateObjectFieldWithAssetMarkParts(obj, false)
+                        : new[] {PrefsGUIEditorRosettaUIComponent.CreateObjectField(obj)};
+
+                    var objectFieldAndEditPrefsParts = objectFieldParts.Concat(
+                        new[]
+                        {
+                            UI.Space().SetWidth(20f),
+                            UI.Field(
+                                UI.Label("KeyPrefix").SetWidth(100f),
+                                () => prefsList
+                                    .Select(prefs => prefs.key)
+                                    .Select(PrefsKeyUtility.GetPrefix)
+                                    .FirstOrDefault(s => !string.IsNullOrEmpty(s)),
+                                prefixNew => PrefsGUIEditorUtility.UpdateKeyPrefix(prefixNew, obj, prefsList)
+                            ).SetWidth(300f)
+                        });
+
+
+
                     return UI.Row(
-                        objectFieldEnumerable.Concat(
-                            new[]
-                            {
-                                UI.Space().SetWidth(20f),
-                                UI.Field(
-                                    UI.Label("KeyPrefix").SetWidth(100f),
-                                    () => prefsList
-                                        .Select(prefs => prefs.key)
-                                        .Select(PrefsKeyUtility.GetPrefix)
-                                        .FirstOrDefault(s => !string.IsNullOrEmpty(s)),
-                                    prefixNew => PrefsGUIEditorUtility.UpdateKeyPrefix(prefixNew, obj, prefsList)
-                                ).SetWidth(300f)
-                            })
+                        _objCheckExtension != null
+                            ? objectFieldAndEditPrefsParts.Prepend(_objCheckExtension.PrefsSetLeft(prefsList))
+                            : objectFieldAndEditPrefsParts
                     );
                 }
             }
             
             
             static bool IsContainWord(string word, string searchWordLower) => word.ToLower().Contains(searchWordLower);
+
+            static bool IsAsset(Object obj) => PrefsGUIEditorRosettaUIComponent.IsAsset(obj);
         }
 
-        public static Element CreateLineElement() => UI.Space().SetHeight(2f).SetBackgroundColor(Color.gray);
-        
-        public static Element CreateObjectField(Object obj) => UIEditor.ObjectFieldReadOnly(null, () => obj).SetWidth(objectFieldWidth);
-        
-        public static IEnumerable<Element> CreateObjectFieldWithAssetMarkElement(Object obj, bool enableSpace = false)
+        public static void RegisterObjCheckExtension(IPrefsGUIEditorRosettaUIObjCheckExtension objCheckExtension)
         {
-            yield return CreateObjectField(obj);
-
-            if (IsAsset(obj))
-            {
-                yield return CreateAssetMarkElement();
-            }
-            else if (enableSpace)
-            {
-                yield return CreateAssetMarkElement();
-            }
+            _objCheckExtension = objCheckExtension;
         }
-      
-        static Element CreateAssetMarkElement() => UI.Label("asset").SetColor(new Color(0.9f, 0.6f, 0.1f, 1f));
-        static bool IsAsset(Object obj) => PrefabUtility.IsPartOfPrefabAsset(obj);
     }
 }
