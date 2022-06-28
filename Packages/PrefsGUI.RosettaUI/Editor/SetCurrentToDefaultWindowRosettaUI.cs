@@ -122,7 +122,7 @@ namespace PrefsGUI.RosettaUI.Editor
             
 
             Element CreatePrefsCheckElement(PrefsParam prefs)
-                => UI.Field(null,
+                => UI.Toggle(null,
                     () => IsChecked(prefs),
                     flag => prefsCheckTable[prefs] = flag
                 );
@@ -130,7 +130,7 @@ namespace PrefsGUI.RosettaUI.Editor
 
         private static Element CreatePrefsListCheckElement(List<PrefsParam> prefsSet)
         {
-            return UI.Field(null,
+            return UI.Toggle(null,
                 () => prefsSet.Any(IsChecked),
                 flag =>
                 {
