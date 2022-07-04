@@ -83,12 +83,12 @@ namespace PrefsGUI.RosettaUI.Editor
                         )
                     ),
                     UI.Space().SetHeight(20f),
-                    UI.Field(() => searchWord),
-                    UI.Field(() => order),
-                    UI.Field(() => includeAssets),
+                    UI.Field("Search word", () => searchWord),
+                    UI.Field("Order", () => order),
+                    UI.Field("Include assets", () => includeAssets),
                     UI.DynamicElementIf(
                         () => order == Order.GameObject,
-                        () => UI.Field(() => showComponent)
+                        () => UI.Field("Show component", () => showComponent)
                     ),
                     UI.Space(),
                     _objCheckExtension?.Title()
