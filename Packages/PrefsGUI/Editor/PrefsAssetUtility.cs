@@ -102,7 +102,7 @@ namespace PrefsGUI.Editor
 
         private static bool needUpdate = true;
 
-        public static IReadOnlyList<ObjPrefs> ObjPrefsList 
+        public static IEnumerable<ObjPrefs> ObjPrefsList 
         {
             get
             {
@@ -111,15 +111,19 @@ namespace PrefsGUI.Editor
             }
         }
 
-        public static IEnumerable<(PrefsParam prefs, Object obj)> PrefsObjEnumerable
-            => ObjPrefsList.SelectMany(op => 
-                op.holders.SelectMany(holder => 
+        public static IEnumerable<ObjPrefs> GetObjPrefsList(bool includeAssets)
+        {
+            return includeAssets
+                ? ObjPrefsList
+                : ObjPrefsList.Where(op => op.obj != null && !PrefabUtility.IsPartOfPrefabAsset(op.obj));
+        }
+        
+        public static IEnumerable<(PrefsParam prefs, Object obj)> GetPrefsObjEnumerable(bool includeAssets)
+            => GetObjPrefsList(includeAssets).SelectMany(op =>
+                op.holders.SelectMany(holder =>
                     holder.prefsSet.Select(prefs => (prefs, op.obj))));
 
-          
-
         private static bool IsInScene(GameObject go) => go.scene.name != null;
-
 
         public static void UpdateObjPrefsIfNeed()
         {

@@ -71,11 +71,14 @@ namespace PrefsGUI.RosettaUI.Editor
                         }).SetWidth(buttonWidth),
                         UI.Space(),
                         UI.Button("Open Set Current To Default Window",
-                            () => GetWindow<SetCurrentToDefaultWindowRosettaUI>(true)
-                        ).RegisterUpdateCallback(e =>
+                            () =>
+                            {
+                                var window = GetWindow<SetCurrentToDefaultWindowRosettaUI>(true);
+                                window.includeAssets = includeAssets;
+                            }).RegisterUpdateCallback(e =>
                             e.SetInteractable(
                                 !Application.isPlaying
-                                && PrefsAssetUtility.ObjPrefsList.Any(op => op.PrefsAll.Any(p => !p.IsDefault))
+                                && PrefsAssetUtility.GetObjPrefsList(includeAssets).Any(op => op.PrefsAll.Any(p => !p.IsDefault))
                             )
                         )
                     ),
@@ -113,8 +116,7 @@ namespace PrefsGUI.RosettaUI.Editor
 
             Element CreatePrefsUIAtoZ(string word)
             {
-                var prefsObjAll = PrefsAssetUtility.PrefsObjEnumerable
-                    .Where(po => includeAssets || !IsAsset(po.obj))
+                var prefsObjAll = PrefsAssetUtility.GetPrefsObjEnumerable(includeAssets)
                     .Where(po => IsContainWord(po.prefs.key, word))
                     .OrderBy(po => po.prefs.key);
                 
@@ -141,8 +143,7 @@ namespace PrefsGUI.RosettaUI.Editor
             Element CreatePrefsGameObject(string word)
             {
                 return UI.Column(
-                    PrefsAssetUtility.ObjPrefsList
-                        .Where(op => includeAssets || !IsAsset(op.obj))
+                    PrefsAssetUtility.GetObjPrefsList(includeAssets)
                         .SelectMany(op =>
                         {
                             var objNameHit = IsContainWord(op.obj.name, word);
@@ -257,8 +258,6 @@ namespace PrefsGUI.RosettaUI.Editor
             
             
             static bool IsContainWord(string word, string searchWordLower) => word.ToLower().Contains(searchWordLower);
-
-            static bool IsAsset(Object obj) => PrefsGUIEditorRosettaUIComponent.IsAsset(obj);
         }
 
         public static void RegisterObjCheckExtension(IPrefsGUIEditorRosettaUIObjCheckExtension objCheckExtension)

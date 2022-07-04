@@ -11,6 +11,7 @@ namespace PrefsGUI.RosettaUI.Editor
     public class SetCurrentToDefaultWindowRosettaUI : RosettaUIEditorWindowUIToolkit
     {
         private static readonly Dictionary<PrefsParam, bool> prefsCheckTable = new();
+        public bool includeAssets;
         
         static bool IsChecked(PrefsParam prefs)
         {
@@ -62,17 +63,17 @@ namespace PrefsGUI.RosettaUI.Editor
                 return updated;
             }
 
-            static IEnumerable<PrefsParam> GetPrefsNonDefaults()
+            IEnumerable<PrefsParam> GetPrefsNonDefaults()
             {
-                return PrefsAssetUtility.PrefsObjEnumerable
+                return PrefsAssetUtility.GetPrefsObjEnumerable(includeAssets)
                     .Select(po => po.prefs)
                     .Where(prefs => !prefs.IsDefault);
             }
         }
 
-        static void SetCurrentToDefault()
+        void SetCurrentToDefault()
         {
-            var holders = PrefsAssetUtility.ObjPrefsList.SelectMany(objPrefs => objPrefs.holders);
+            var holders = PrefsAssetUtility.GetObjPrefsList(includeAssets).SelectMany(objPrefs => objPrefs.holders);
 
             using var listPool = ListPool<PrefsParam>.Get(out var prefsNonDefaults);
 
@@ -90,9 +91,9 @@ namespace PrefsGUI.RosettaUI.Editor
             }
         }
         
-        private static IEnumerable<Element> CreateObjectPrefsElements()
+        private IEnumerable<Element> CreateObjectPrefsElements()
         {
-            return  PrefsAssetUtility.ObjPrefsList.SelectMany(objPrefs =>
+            return  PrefsAssetUtility.GetObjPrefsList(includeAssets).SelectMany(objPrefs =>
             {
                 var prefsList = objPrefs.PrefsAll.Where(prefs => !prefs.IsDefault).ToList();
                 if (!prefsList.Any())
