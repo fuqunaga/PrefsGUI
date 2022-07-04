@@ -82,7 +82,7 @@ Display loaded PrefsParams with partial key match
 
 ## EditorWindow
 
-![](Documentation~/PrefsGUIEditor.gif)
+![](Documentation~/EditorWindow.gif)
 - **Window -> PrefsGUI**
 - Display all loaded prefs that can be modified
 - You can also feed back the current value as a default value
