@@ -39,17 +39,17 @@ namespace PrefsGUI.Example
         #endregion
 
         // define PrefsParams with key.
-        public PrefsBool prefsBool = new PrefsBool("PrefsBool");
-        public PrefsInt prefsInt = new PrefsInt("PrefsInt");
-        public PrefsFloat prefsFloat = new PrefsFloat("PrefsFloat");
-        public PrefsString prefsString = new PrefsString("PrefsString");
-        public PrefsParam<EnumSample> prefsEnum = new PrefsParam<EnumSample>("PrefsEnum");
-        public PrefsColor prefsColor = new PrefsColor("PrefsColor");
-        public PrefsVector2 prefsVector2 = new PrefsVector2("PrefsVector2");
-        public PrefsVector3 prefsVector3 = new PrefsVector3("PrefsVector3");
-        public PrefsVector4 prefsVector4 = new PrefsVector4("PrefsVector4");
-        public PrefsAny<CustomClass> prefsClass = new PrefsAny<CustomClass>("PrefsClass");
-        public PrefsList<CustomClass> prefsList = new PrefsList<CustomClass>("PrefsList");
+        public PrefsBool              prefsBool    = new("PrefsBool");
+        public PrefsInt               prefsInt     = new("PrefsInt");
+        public PrefsFloat             prefsFloat   = new("PrefsFloat");
+        public PrefsString            prefsString  = new("PrefsString");
+        public PrefsParam<EnumSample> prefsEnum    = new("PrefsEnum");
+        public PrefsColor             prefsColor   = new("PrefsColor");
+        public PrefsVector2           prefsVector2 = new("PrefsVector2");
+        public PrefsVector3           prefsVector3 = new("PrefsVector3");
+        public PrefsVector4           prefsVector4 = new("PrefsVector4");
+        public PrefsAny<CustomClass>  prefsClass   = new("PrefsClass");
+        public PrefsList<CustomClass> prefsList    = new("PrefsList");
 
         public void DoGUI()
         {
@@ -111,11 +111,11 @@ namespace PrefsGUI.Example
             List<CustomClass> list = prefsList;
         }
 
-        public Element CreateElement(LabelElement _)
+        public Element CreateElement(LabelElement label)
         {
             return UI.Column(
                 prefsBool.CreateElement(),
-                prefsInt.CreateElement().RegisterValueChangeCallback(() => Debug.Log("CreateElement: Changed. " + prefsInt.Get())),
+                prefsInt.CreateElement(),
                 prefsFloat.CreateElement(),
                 prefsFloat.CreateSlider(),
                 prefsString.CreateElement(),
