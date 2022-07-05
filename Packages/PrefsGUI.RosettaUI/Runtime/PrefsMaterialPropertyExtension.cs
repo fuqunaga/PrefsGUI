@@ -15,14 +15,14 @@ namespace PrefsGUI.RosettaUI
         static void RegisterUI()
         {
             UICustom.RegisterElementCreationFunc<PrefsMaterialProperty>(
-                (label, menu) => menu.CreateElement()
+                (label, menu) => menu.CreateElement(label)
             );
         }
 
-        public static Element CreateElement(this PrefsMaterialProperty menu)
+        public static Element CreateElement(this PrefsMaterialProperty menu, LabelElement label = null)
         {
             return menu.IsEnable
-                ? UI.Fold(menu._material.name, menu.CreateElementRaw())
+                ? UI.Fold(label ?? menu._material.name, menu.CreateElementRaw())
                 : null;
         }
         
