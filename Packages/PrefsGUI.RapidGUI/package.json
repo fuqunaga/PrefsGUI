@@ -1,6 +1,6 @@
 {
   "name": "ga.fuquna.prefsgui.rapidgui",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "displayName": "PrefsGUI - RapidGUI",
   "description": "RapidGUI implementation of PrefsGUI",
   "unity": "2021.3",
