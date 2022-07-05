@@ -1,0 +1,23 @@
+{
+    "name": "PrefsGUI.RosettaUI.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2b1b0416520827b409049c7e4d90bcc1",
+        "GUID:e707c3091e2a19c4aa687e0b6273f7c1",
+        "GUID:67c1970bd9058a0479e10c81ebcc0eb9",
+        "GUID:436548315e6ca5b499a1008921425bfb",
+        "GUID:e295d064953ab4d448060d2c2a386f0f",
+        "GUID:9160181cbc72aab4b869710b61b8f148"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

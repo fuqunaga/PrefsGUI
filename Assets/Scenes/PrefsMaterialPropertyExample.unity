@@ -323,7 +323,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1408913456
 MonoBehaviour:
@@ -338,7 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _material: {fileID: 2100000, guid: 97bcde61a033b844493b18ad03fa3157, type: 2}
-  _ignoreTexEnv: 0
+  _ignoreTexEnv: 1
   _ignoreProperties: []
   _propertySet:
     colors:
@@ -375,12 +375,11 @@ MonoBehaviour:
     - name: _OcclusionStrength
       min: 0
       max: 1
-    texEnvs:
-    - _MainTex
+    texEnvs: []
     ints: []
   _colors:
   - _key: ExampleMaterial-_Color
-    defaultValue: {r: 0.375, g: 0.375, b: 0.375, a: 1}
+    defaultValue: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
   - _key: ExampleMaterial-_EmissionColor
     defaultValue: {r: 0, g: 0, b: 0, a: 1}
   _vectors: []
@@ -418,9 +417,7 @@ MonoBehaviour:
     defaultValue: 0.02
   - _key: ExampleMaterial-_OcclusionStrength
     defaultValue: 1
-  _texEnvs:
-  - _key: ExampleMaterial-_MainTex
-    defaultValue: {x: 1, y: 1, z: 0, w: 0}
+  _texEnvs: []
   _ints: []
 --- !u!1 &2070039755
 GameObject:
@@ -549,7 +546,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2073270507
 MonoBehaviour:
@@ -563,7 +560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea2e4ffaf96fe60428b7e63abbe8dde5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefsMaterialProperty: {fileID: 1408913456}
+  prefsMaterialProperty: {fileID: 0}
 --- !u!1001 &5266964441093056897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -574,11 +571,11 @@ PrefabInstance:
     - target: {fileID: 1339723815, guid: ae7b067c7f22561448b2762e67a3d793, type: 3}
       propertyPath: debugMenu
       value: 
-      objectReference: {fileID: 1408913456}
+      objectReference: {fileID: 0}
     - target: {fileID: 1339723815, guid: ae7b067c7f22561448b2762e67a3d793, type: 3}
       propertyPath: prefsMaterialProperty
       value: 
-      objectReference: {fileID: 1408913456}
+      objectReference: {fileID: 0}
     - target: {fileID: 4716189057564480893, guid: ae7b067c7f22561448b2762e67a3d793,
         type: 3}
       propertyPath: m_Name
@@ -587,7 +584,7 @@ PrefabInstance:
     - target: {fileID: 6243543152550526293, guid: ae7b067c7f22561448b2762e67a3d793,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6243543152550526293, guid: ae7b067c7f22561448b2762e67a3d793,
         type: 3}

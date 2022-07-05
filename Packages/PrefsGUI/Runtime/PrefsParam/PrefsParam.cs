@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PrefsGUI.Kvs;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.Serialization;
 
 namespace PrefsGUI
@@ -19,18 +20,32 @@ namespace PrefsGUI
         public string key
         {
             get => _key;
-            set => ChangeKey(value);
+            set
+            {
+                if (_key != value && !string.IsNullOrEmpty(value))
+                {
+                    var old = _key;
+                    _key = value;
+                    OnKeyChanged(old, _key);
+                }
+            }
         }
 
 
-        protected PrefsParam(string key)
-        {
-            _key = key;
-            Register();
-        }
+        protected PrefsParam(string key) => this.key = key;
 
         public virtual void Delete() => PrefsKvs.DeleteKey(key);
 
+
+        protected virtual void OnKeyChanged(string oldKey, string newKey)
+        {
+            if (!string.IsNullOrEmpty(oldKey))
+            {
+                AllDic.Remove(oldKey);
+            }
+
+            Register();
+        }
 
 
         #region abstract
@@ -54,9 +69,15 @@ namespace PrefsGUI
         static readonly HashSet<PrefsParam> All = new();
         static readonly Dictionary<string, PrefsParam> AllDic = new();
 
-        public void OnBeforeSerialize() { }
+        public void OnBeforeSerialize() {}
 
-        public void OnAfterDeserialize() { Register(); } // To Register Array/List In Inspector. Constructor not called.
+        // To Register Array/List In Inspector. constructor is not called.
+        // Inspectorで値を変えても呼ばれる。Key、DefaultValueが更新されてる可能性がある
+        public virtual void OnAfterDeserialize()
+        {
+            // _key が書き換えられてる場合があるのでOnKeyChange()を直接呼ぶ
+            OnKeyChanged(null, _key);
+        }
 
         void Register()
         {
@@ -70,24 +91,16 @@ namespace PrefsGUI
                 var alreadyExist = !All.Add(this);
                 if (alreadyExist)
                 {
-                    foreach(var removeKey in AllDic.Where(pair => pair.Value == this).Select(pair => pair.Key).ToArray())
+                    using var _ = ListPool<string>.Get(out var keys);
+                    keys.AddRange(AllDic.Where(pair => pair.Value == this).Select(pair => pair.Key));
+
+                    foreach(var removeKey in keys)
                     {
                         AllDic.Remove(removeKey);
                     }
                 }
 
                 AllDic[key] = this;
-            }
-        }
-
-        void ChangeKey(string newKey)
-        {
-            if (key != newKey && !string.IsNullOrEmpty(newKey))
-            {
-                AllDic.Remove(key);
-
-                _key = newKey;
-                Register();
             }
         }
 

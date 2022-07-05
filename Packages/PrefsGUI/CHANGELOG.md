@@ -1,6 +1,18 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [3.2.0] - 2022.7.05
+### Added
+ - PrefsGUIEditorRosettaUI
+
+### Changed
+ - Rename PrefsGUIEditor > PrefsGUIEditorRapidGUI
+
+### Fixed
+ - Different PrefsParam instances Get() may return different values for the same key.
+ - PrefsParam.defaultValue could be changed from outside after SetCurrentToDefault() when TOuter is a class.
+
+
 ## [3.1.0] - 2022.6.03
 ### Changed
  - PrefsParamOuterInner InnerValue access via IPrefsInnnerAccessor

@@ -7,7 +7,7 @@
   "documentationUrl": "https://github.com/fuqunaga/PrefsGUI#readme",
   "license": "MIT",
   "dependencies": {
-    "ga.fuquna.prefsgui": "3.1.0",
+    "ga.fuquna.prefsgui": "3.2.0",
     "ga.fuquna.rapidgui": "1.2.3"
   },
   "keywords": [

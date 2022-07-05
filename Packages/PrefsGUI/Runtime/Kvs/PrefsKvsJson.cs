@@ -26,7 +26,7 @@ namespace PrefsGUI.Kvs.Json
         #endregion
 
         
-        private readonly KvsCache ksvCache = new();
+        private readonly KvsCache kvsCache = new();
         private Dictionary<string, string> jsonDic = new();
         
         private string path => PrefsKvsPathSelector.path + "/Prefs.json";
@@ -40,7 +40,7 @@ namespace PrefsGUI.Kvs.Json
 
         public void Save()
         {
-            foreach(var (key,obj) in ksvCache)
+            foreach(var (key,obj) in kvsCache)
             {
                 var json = JsonUtilityEx.ToJson(obj);
                 jsonDic[key] = json;
@@ -63,35 +63,35 @@ namespace PrefsGUI.Kvs.Json
                 var kvList = JsonUtility.FromJson<ListWrapper>(str).list;
                 jsonDic = kvList?.ToDictionary(kv => kv.key, kv => kv.value);
 
-                ksvCache.Clear();
+                kvsCache.Clear();
             }
         }
 
 
-        public bool HasKey(string key) => ksvCache.ContainsKey(key) || jsonDic.ContainsKey(key);
+        public bool HasKey(string key) => kvsCache.ContainsKey(key) || jsonDic.ContainsKey(key);
 
         public void DeleteKey(string key)
         {
-            ksvCache.Remove(key);
+            kvsCache.Remove(key);
             jsonDic.Remove(key);
         }
 
         public void DeleteAll()
         {
-            ksvCache.Clear();
+            kvsCache.Clear();
             jsonDic.Clear();
         }
 
 
         public T Get<T>(string key, T defaultValue)
         {
-            if (!ksvCache.TryGetValue<T>(key, out var value))
+            if (!kvsCache.TryGetValue<T>(key, out var value))
             {
                 value = jsonDic.TryGetValue(key, out var json)
                     ? JsonUtilityEx.FromJson<T>(json)
                     : defaultValue;
 
-                ksvCache.Set(key, value);
+                kvsCache.Set(key, value);
             }
             
             return value;
@@ -99,7 +99,7 @@ namespace PrefsGUI.Kvs.Json
 
         public void Set<T>(string key, T v)
         {
-            ksvCache.Set(key, v);
+            kvsCache.Set(key, v);
         }
     }
 }

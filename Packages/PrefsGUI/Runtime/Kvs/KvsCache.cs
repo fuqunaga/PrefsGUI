@@ -53,7 +53,11 @@ namespace PrefsGUI.Kvs
         public bool Remove(string key) => keyToListAndIndex.Remove(key);
 
 
-        public void Clear() => keyToListAndIndex.Clear();
+        public void Clear()
+        {
+            keyToListAndIndex.Clear();
+            typeToList.Clear();
+        }
 
 
         public IEnumerator<(string, object)> GetEnumerator()

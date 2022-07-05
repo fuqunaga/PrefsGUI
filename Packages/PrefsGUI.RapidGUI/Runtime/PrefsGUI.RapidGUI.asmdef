@@ -1,0 +1,17 @@
+{
+    "name": "PrefsGUI.RapidGUI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:436548315e6ca5b499a1008921425bfb",
+        "GUID:3d35d6db7bb67824691179b12a2ce031"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

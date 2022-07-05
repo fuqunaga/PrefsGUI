@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace PrefsGUI.Kvs.Editor
@@ -8,15 +9,47 @@ namespace PrefsGUI.Kvs.Editor
     {
         public override void OnInspectorGUI()
         {
-            PrefsKvsPathCustom tg = (PrefsKvsPathCustom)target;
+            var pathCustom = (PrefsKvsPathCustom)target;
 
-            base.OnInspectorGUI();
-            var tmp = GUI.enabled;
+            serializedObject.Update();
+            var prop = serializedObject.GetIterator();
+            
+            
+            // Script field
+            prop.NextVisible(true);
             GUI.enabled = false;
+            EditorGUILayout.PropertyField(prop);
+            GUI.enabled = true;
+            
+            // Other fields
+            while(prop.NextVisible(false))
+            {
+                if (prop.name == nameof(PrefsKvsPathCustom.Platform))
+                {
+                    PlatformMaskGUI(prop);
+                }
+                else
+                {
+                    EditorGUILayout.PropertyField(prop);
+                }
+            }
+            
+            GUI.enabled = false;
+            GUILayout.TextField(pathCustom.path);
 
-            GUILayout.TextField(tg.path);
+            if (GUI.changed)
+            {
+                serializedObject.ApplyModifiedProperties();
+            }
+        }
 
-            GUI.enabled = tmp;
+        static void PlatformMaskGUI(SerializedProperty prop)
+        {
+            prop.enumValueFlag = EditorGUILayout.MaskField(
+                ObjectNames.NicifyVariableName(prop.name),
+                prop.enumValueFlag,
+                Enum.GetNames(typeof(PrefsKvsPathCustom.Platform))
+            );
         }
     }
 }

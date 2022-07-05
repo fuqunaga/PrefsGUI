@@ -12,24 +12,23 @@ namespace PrefsGUI.Kvs
 
     public static class PrefsKvsPathSelector
     {
-        static bool first = true;
-        static IPrefsKvsPath _path;
+        static bool _first = true;
+        static string _path;
 
         public static string path
         {
             get
             {
-                if (first)
+                if (_first)
                 {
-                    first = false;
+                    _first = false;
                     _path = Resources
                         .FindObjectsOfTypeAll<MonoBehaviour>()
-                        .Select(b => b.GetComponent<IPrefsKvsPath>())
-                        .FirstOrDefault(o => o != null);
+                        .Select(b => b.GetComponent<IPrefsKvsPath>()?.path)
+                        .FirstOrDefault(str => str != null);
                 }
-                return _path?.path ?? Application.persistentDataPath;
+                return _path ?? Application.persistentDataPath;
             }
         }
-
     }
 }
