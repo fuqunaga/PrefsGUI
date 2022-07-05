@@ -66,35 +66,37 @@ Select `MyRegistries` in `Packages:`
 ![](Documentation~/2022-04-12-17-40-26.png)
 
 Install `PrefsGUI - RosettaUI` and `RosettaUI - UIToolkit`  
-If you prefer IMGUI, please select `PrefsGUI - RapidGUI` instead.
+If you prefer IMGUI, select the `PrefsGUI - RapidGUI` instead.
 
 ![](Documentation~/2022-04-21-17-00-54.png)
 
-If you do not see it, please make sure that your Unity version is 2021.3 or higher.
+If you do not see it, make sure that your Unity version is 2021.3 or higher.
 
 
 ## PrefsSearch
 
-![](Documentation~/PrefsSearch.gif)
+Display loaded PrefsParams with a partial key match.
 
-Display loaded PrefsParams with partial key match
+![](Documentation~/PrefsSearch.gif)
 
 
 ## EditorWindow
 
+**Window -> PrefsGUI**
+
 ![](Documentation~/EditorWindow.gif)
-- **Window -> PrefsGUI**
-- Display all loaded prefs that can be modified
-- You can also feed back the current value as a default value
-- You can edit the key prefix for each GameObject by displaying it in order of GameObject
+- Display all loaded PrefsParams that can be modified.
+- Feed back the current value as a default value.
+- Edit the key prefix for each GameObject.
 
 ### JSON file path
 ```
 Application.persistentDataPath + "/Prefs.json"
 ```
 
-You can customize it by placing PrefsWrapperPathCustom in the scene and setting the `_path` field.
+You can customize it by placing `PrefsWrapperPathCustom` in the scene and setting the `Path` field.
 Special folder names and environment variables are also available.
+
 ```
 - %dataPath% -> Application.dataPath
 - %companyName% -> Application.companyName
@@ -102,23 +104,23 @@ Special folder names and environment variables are also available.
 - other %[word]% -> System.Environment.GetEnvironmentVariable([word])
 ```
 
-
-## MaterialPropertyDebugMenu
-
-Auto-create material GUI menu
-
-![](Documentation~/MaterialPropertyDebugMenu.gif)
+![](Documentation~/2022-07-05-15-47-42.png)
 
 
-## Sync Prefs over a network
+## PrefsMaterialProperty
 
-**PrefsGUISyncUNET**
-https://github.com/fuqunaga/PrefsGUISyncUNET
+Auto-create material menu.
+
+![](Documentation~/prefsmaterialproperty.gif)
+
+
+## Sync PrefsParams over a network
+
+see [PrefsGUISyncForMirror](https://github.com/fuqunaga/PrefsGUISyncForMirror)
 
 
 ## References
 
-- **RapidGUI**
-https://github.com/fuqunaga/RapidGUI
-- **PrefsGUISyncUNET**
-https://github.com/fuqunaga/PrefsGUISyncUNET
+- [RosettaUI](https://github.com/fuqunaga/RosettaUI)
+- [RapidGUI](https://github.com/fuqunaga/RapidGUI)
+- [PrefsGUISyncForMirror](https://github.com/fuqunaga/PrefsGUISyncForMirror)
