@@ -16,9 +16,60 @@ namespace PrefsGUI.Kvs
     /// </summary>
     public class PrefsKvsPathCustom : MonoBehaviour, IPrefsKvsPath
     {
+        #region Type Define
+        
+        /// <summary>
+        /// Platform flags
+        /// RuntimePlatform is too much, define it myself
+        /// https://docs.unity3d.com/ScriptReference/RuntimePlatform.html
+        /// </summary>
+        [Flags]
+        public enum Platform
+        {
+            OSXEditor      = (1 << 0),
+            OSXPlayer      = (1 << 1),
+            WindowsPlayer  = (1 << 2),
+            WindowsEditor  = (1 << 3),
+            IPhonePlayer   = (1 << 4),
+            Android        = (1 << 5),
+            LinuxPlayer    = (1 << 6),
+            LinuxEditor    = (1 << 7),
+            WebGLPlayer    = (1 << 8),
+            WSAPlayerX86   = (1 << 9),
+            WSAPlayerX64   = (1 << 10),
+            WSAPlayerARM   = (1 << 11),
+            PS4            = (1 << 12),
+            XboxOne        = (1 << 13),
+            tvOS           = (1 << 14),
+            Switch         = (1 << 15),
+            Stadia         = (1 << 16),
+            CloudRendering = (1 << 17),
+            PS5            = (1 << 18),
+            LinuxServer    = (1 << 19),
+            WindowsServer  = (1 << 20),
+            OSXServer      = (1 << 21),
+        }
+        
+        #endregion
+        
+        
         #region Static
 
-        public static ulong MakePlatformMask(params RuntimePlatform[] platforms) => platforms.Aggregate((ulong)0, (mask, platform) => mask | ((ulong)1 << (int)platform));
+        static bool IsPlatformActive(Platform platform)
+        {
+            var name = Enum.GetName(typeof(RuntimePlatform), Application.platform);
+            Platform current;
+            try
+            {
+                current = Enum.Parse<Platform>(name);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return platform.HasFlag(current);
+        }
 
         public string ReplaceMagicWord(string rawString)
         {
@@ -34,10 +85,8 @@ namespace PrefsGUI.Kvs
 
         #endregion
 
-
         [SerializeField]
-        protected ulong platformMask = MakePlatformMask(RuntimePlatform.WindowsEditor, RuntimePlatform.WindowsPlayer);
-
+        public Platform platform = (Platform.WindowsEditor | Platform.WindowsPlayer);        
 
         [SerializeField]
         protected string _path = "%dataPath%/../../%productName%Prefs";
@@ -45,20 +94,9 @@ namespace PrefsGUI.Kvs
         protected virtual string rawPath => _path;
 
 
-        public string path
-        {
-            get
-            {
-                string ret = null;
-
-                var enable = (platformMask & MakePlatformMask(Application.platform)) != 0;
-                if (enable)
-                {
-                    ret = ReplaceMagicWord(rawPath);
-                }
-
-                return ret;
-            }
-        }
+        public string path =>
+            IsPlatformActive(platform)
+                ? ReplaceMagicWord(rawPath)
+                : null;
     }
 }
