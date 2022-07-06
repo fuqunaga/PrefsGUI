@@ -40,7 +40,7 @@ public Element CreateElement(LabelElement label)
 }
 ```
 
-## Installation
+# Installation
 
 This package uses the [scoped registry] feature to resolve package dependencies. 
 
@@ -73,28 +73,12 @@ If you prefer IMGUI, select the `PrefsGUI - RapidGUI` instead.
 If you do not see it, make sure that your Unity version is 2021.3 or higher.
 
 
-## PrefsSearch
-
-Display loaded PrefsParams with a partial key match.
-
-![](Documentation~/PrefsSearch.gif)
-
-
-## EditorWindow
-
-**Window -> PrefsGUI**
-
-![](Documentation~/EditorWindow.gif)
-- Display all loaded PrefsParams that can be modified.
-- Feed back the current value as a default value.
-- Edit the key prefix for each GameObject.
-
-### JSON file path
+# JSON file path
 ```
 Application.persistentDataPath + "/Prefs.json"
 ```
 
-You can customize it by placing `PrefsWrapperPathCustom` in the scene and setting the `Path` field.
+You can customize it by placing `PrefsKvsPathCustom` in the scene and setting the `Path` field.  
 Special folder names and environment variables are also available.
 
 ```
@@ -107,19 +91,37 @@ Special folder names and environment variables are also available.
 ![](Documentation~/2022-07-05-15-47-42.png)
 
 
-## PrefsMaterialProperty
+# PrefsSearch
+
+Display loaded PrefsParams with a partial key match.
+
+![](Documentation~/PrefsSearch.gif)
+
+
+# EditorWindow
+
+**Window -> PrefsGUI**
+
+![](Documentation~/editorwindow.gif)
+
+- Display all loaded PrefsParams that can be modified.
+- Feed back the current value as a default value.
+- Edit the key prefix for each GameObject.
+
+
+# PrefsMaterialProperty
 
 Auto-create material menu.
 
 ![](Documentation~/prefsmaterialproperty.gif)
 
 
-## Sync PrefsParams over a network
+# Sync PrefsParams over a network
 
 see [PrefsGUISyncForMirror](https://github.com/fuqunaga/PrefsGUISyncForMirror)
 
 
-## References
+# References
 
 - [RosettaUI](https://github.com/fuqunaga/RosettaUI)
 - [RapidGUI](https://github.com/fuqunaga/RapidGUI)
