@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -9,10 +10,11 @@ namespace PrefsGUI.Kvs
     /// Custom File Path for PrefsKvs
     /// Relative to Application.dataPath
     /// you can use magic path
-    /// - %dataPath% -> Application.dataPath
-    /// - %companyName% -> Application.companyName
-    /// - %productName% -> Application.productName
-    /// - other %[word]% -> System.Environment.GetEnvironmentVariable([word])
+    /// - %dataPath% Application.dataPath
+    /// - %companyName% Application.companyName
+    /// - %productName% Application.productName
+    /// - %currentDir% Path.GetFileName(Directory.GetCurrentDirectory()))
+    /// - other %[word]% System.Environment.GetEnvironmentVariable([word]))]
     /// </summary>
     public class PrefsKvsPathCustom : MonoBehaviour, IPrefsKvsPath
     {
@@ -52,7 +54,6 @@ namespace PrefsGUI.Kvs
         
         #endregion
         
-        
         #region Static
 
         static bool IsPlatformActive(Platform platform)
@@ -76,7 +77,8 @@ namespace PrefsGUI.Kvs
             var ret = rawString
                 .Replace("%dataPath%", Application.dataPath)
                 .Replace("%companyName%", Application.companyName)
-                .Replace("%productName%", Application.productName);
+                .Replace("%productName%", Application.productName)
+                .Replace("%currentDir%", Path.GetFileName(Directory.GetCurrentDirectory()));
 
             var matches = Regex.Matches(ret, @"%\w+?%").Cast<Match>();
 
@@ -89,6 +91,15 @@ namespace PrefsGUI.Kvs
         public Platform platform = (Platform.WindowsEditor | Platform.WindowsPlayer);        
 
         [SerializeField]
+        [Tooltip(@"Custom File Path for PrefsKvs
+Relative to Application.dataPath
+you can use magic path
+- %dataPath% Application.dataPath
+- %companyName% Application.companyName
+- %productName% Application.productName
+- %currentDir% Path.GetFileName(Directory.GetCurrentDirectory()))
+- other %[word]% System.Environment.GetEnvironmentVariable([word]))]
+")]
         protected string _path = "%dataPath%/../../%productName%Prefs";
 
         protected virtual string rawPath => _path;
