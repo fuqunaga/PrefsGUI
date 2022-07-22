@@ -54,9 +54,10 @@ namespace PrefsGUI.Kvs
         
         #endregion
         
+        
         #region Static
 
-        static bool IsPlatformActive(Platform platform)
+        private static bool IsPlatformActive(Platform platform)
         {
             var name = Enum.GetName(typeof(RuntimePlatform), Application.platform);
             Platform current;
@@ -72,7 +73,7 @@ namespace PrefsGUI.Kvs
             return platform.HasFlag(current);
         }
 
-        public string ReplaceMagicWord(string rawString)
+        public static string ReplaceMagicWord(string rawString)
         {
             var ret = rawString
                 .Replace("%dataPath%", Application.dataPath)
@@ -87,10 +88,11 @@ namespace PrefsGUI.Kvs
 
         #endregion
 
+        
         [SerializeField]
         public Platform platform = (Platform.WindowsEditor | Platform.WindowsPlayer);        
 
-        [SerializeField]
+        
         [Tooltip(@"Custom File Path for PrefsKvs
 Relative to Application.dataPath
 you can use magic path
@@ -100,14 +102,13 @@ you can use magic path
 - %currentDir% Path.GetFileName(Directory.GetCurrentDirectory()))
 - other %[word]% System.Environment.GetEnvironmentVariable([word]))]
 ")]
+        [SerializeField]
         protected string _path = "%dataPath%/../../%productName%Prefs";
-
-        protected virtual string rawPath => _path;
-
-
-        public string path =>
-            IsPlatformActive(platform)
-                ? ReplaceMagicWord(rawPath)
+        
+        public string path => IsPlatformActive(platform)
+                ? pathWithoutPlatformCheck
                 : null;
+
+        public string pathWithoutPlatformCheck => ReplaceMagicWord(_path);
     }
 }
