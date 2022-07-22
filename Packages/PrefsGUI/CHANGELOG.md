@@ -1,6 +1,11 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [3.2.2] - 2022.7.22
+
+### Fixed
+ - multi PrefsKvsPathCustom doesn't work
+
 ## [3.2.1] - 2022.7.12
 
 ### Added
