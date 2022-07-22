@@ -1,6 +1,11 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [3.2.3] - 2022.7.22
+
+### Fixed
+fix: PrefsMinMax.MinMax does not serialized
+
 ## [3.2.2] - 2022.7.22
 
 ### Fixed
