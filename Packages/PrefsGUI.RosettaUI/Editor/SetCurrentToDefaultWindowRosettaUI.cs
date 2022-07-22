@@ -126,7 +126,7 @@ namespace PrefsGUI.RosettaUI.Editor
                 => UI.Toggle(null,
                     () => IsChecked(prefs),
                     flag => prefsCheckTable[prefs] = flag
-                );
+                ).SetHeight(28f);
         }
 
         private static Element CreatePrefsListCheckElement(List<PrefsParam> prefsSet)
