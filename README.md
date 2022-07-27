@@ -122,7 +122,7 @@ see [PrefsGUISyncForMirror](https://github.com/fuqunaga/PrefsGUISyncForMirror)
 
 
 # References
-
+- [UV Checker Map Maker](http://uvchecker.byvalle.com/)(CustomUVChecker_byValle_1K.png)
 - [RosettaUI](https://github.com/fuqunaga/RosettaUI)
 - [RapidGUI](https://github.com/fuqunaga/RapidGUI)
 - [PrefsGUISyncForMirror](https://github.com/fuqunaga/PrefsGUISyncForMirror)
