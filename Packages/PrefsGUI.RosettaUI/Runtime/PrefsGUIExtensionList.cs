@@ -4,7 +4,10 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionList
     {
-        public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label = null)
+        public static Element CreateElement<T>(this PrefsList<T> prefs, ListViewOption option)
+            => prefs.CreateElement(null, option);
+        
+        public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label = null, ListViewOption option = null)
         {
             var element = UI.Row(
                 UI.List(
@@ -27,7 +30,8 @@ namespace PrefsGUI.RosettaUI
                         }
 
                         return ret;
-                    }
+                    },
+                    option
                 ),
                 prefs.CreateDefaultButtonElement()
             );

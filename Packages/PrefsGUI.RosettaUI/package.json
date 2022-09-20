@@ -1,6 +1,6 @@
 {
   "name": "ga.fuquna.prefsgui.rosettaui",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "displayName": "PrefsGUI - RosettaUI",
   "description": "RosettaUI implementation of PrefsGUI",
   "unity": "2021.3",
