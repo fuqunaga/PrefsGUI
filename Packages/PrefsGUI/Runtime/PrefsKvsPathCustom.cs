@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -9,10 +10,11 @@ namespace PrefsGUI.Kvs
     /// Custom File Path for PrefsKvs
     /// Relative to Application.dataPath
     /// you can use magic path
-    /// - %dataPath% -> Application.dataPath
-    /// - %companyName% -> Application.companyName
-    /// - %productName% -> Application.productName
-    /// - other %[word]% -> System.Environment.GetEnvironmentVariable([word])
+    /// - %dataPath% Application.dataPath
+    /// - %companyName% Application.companyName
+    /// - %productName% Application.productName
+    /// - %currentDir% Path.GetFileName(Directory.GetCurrentDirectory()))
+    /// - other %[word]% System.Environment.GetEnvironmentVariable([word]))]
     /// </summary>
     public class PrefsKvsPathCustom : MonoBehaviour, IPrefsKvsPath
     {
@@ -55,7 +57,7 @@ namespace PrefsGUI.Kvs
         
         #region Static
 
-        static bool IsPlatformActive(Platform platform)
+        private static bool IsPlatformActive(Platform platform)
         {
             var name = Enum.GetName(typeof(RuntimePlatform), Application.platform);
             Platform current;
@@ -71,12 +73,13 @@ namespace PrefsGUI.Kvs
             return platform.HasFlag(current);
         }
 
-        public string ReplaceMagicWord(string rawString)
+        public static string ReplaceMagicWord(string rawString)
         {
             var ret = rawString
                 .Replace("%dataPath%", Application.dataPath)
                 .Replace("%companyName%", Application.companyName)
-                .Replace("%productName%", Application.productName);
+                .Replace("%productName%", Application.productName)
+                .Replace("%currentDir%", Path.GetFileName(Directory.GetCurrentDirectory()));
 
             var matches = Regex.Matches(ret, @"%\w+?%").Cast<Match>();
 
@@ -85,18 +88,27 @@ namespace PrefsGUI.Kvs
 
         #endregion
 
+        
         [SerializeField]
         public Platform platform = (Platform.WindowsEditor | Platform.WindowsPlayer);        
 
+        
+        [Tooltip(@"Custom File Path for PrefsKvs
+Relative to Application.dataPath
+you can use magic path
+- %dataPath% Application.dataPath
+- %companyName% Application.companyName
+- %productName% Application.productName
+- %currentDir% Path.GetFileName(Directory.GetCurrentDirectory()))
+- other %[word]% System.Environment.GetEnvironmentVariable([word]))]
+")]
         [SerializeField]
         protected string _path = "%dataPath%/../../%productName%Prefs";
-
-        protected virtual string rawPath => _path;
-
-
-        public string path =>
-            IsPlatformActive(platform)
-                ? ReplaceMagicWord(rawPath)
+        
+        public string path => IsPlatformActive(platform)
+                ? pathWithoutPlatformCheck
                 : null;
+
+        public string pathWithoutPlatformCheck => ReplaceMagicWord(_path);
     }
 }

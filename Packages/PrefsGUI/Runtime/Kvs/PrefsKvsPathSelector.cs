@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-
 namespace PrefsGUI.Kvs
 {
     public interface IPrefsKvsPath
@@ -23,8 +22,8 @@ namespace PrefsGUI.Kvs
                 {
                     _first = false;
                     _path = Resources
-                        .FindObjectsOfTypeAll<MonoBehaviour>()
-                        .Select(b => b.GetComponent<IPrefsKvsPath>()?.path)
+                        .FindObjectsOfTypeAll<GameObject>()
+                        .SelectMany(go => go.GetComponents<IPrefsKvsPath>().Select(kvsPath => kvsPath.path))
                         .FirstOrDefault(str => str != null);
                 }
                 return _path ?? Application.persistentDataPath;

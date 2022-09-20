@@ -1,7 +1,10 @@
-﻿namespace PrefsGUI
+﻿using System;
+
+namespace PrefsGUI
 {
     public abstract class PrefsMinMax<T> : PrefsAny<PrefsMinMax<T>.MinMax>, IPrefsSlider<T>   
     {
+        [Serializable]
         public class MinMax
         {
             public T min;

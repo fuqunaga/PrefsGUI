@@ -1,6 +1,21 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [3.2.3] - 2022.7.22
+
+### Fixed
+fix: PrefsMinMax.MinMax does not serialized
+
+## [3.2.2] - 2022.7.22
+
+### Fixed
+ - multi PrefsKvsPathCustom doesn't work
+
+## [3.2.1] - 2022.7.12
+
+### Added
+ - PrefsKvsPathCustom new magic path %currentDir%
+
 ## [3.2.0] - 2022.7.05
 ### Added
  - PrefsGUIEditorRosettaUI
