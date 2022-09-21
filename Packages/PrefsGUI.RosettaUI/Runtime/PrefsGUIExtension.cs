@@ -23,7 +23,16 @@ namespace PrefsGUI.RosettaUI
             if (definitionType == typeof(PrefsList<>))
             {
                 _listCreateElementMethodInfo ??= typeof(PrefsGUIExtensionList)
-                    .GetMethod(nameof(PrefsGUIExtensionList.CreateElement), BindingFlags.Static | BindingFlags.Public);
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .Where(mi => mi.Name == nameof(PrefsGUIExtensionList.CreateElement))
+                    .FirstOrDefault(mi =>
+                    {
+                        var parameterInfos = mi.GetParameters();
+                        return
+                            parameterInfos[0].ParameterType.GetGenericTypeDefinition() == typeof(PrefsList<>)
+                            && parameterInfos[0].ParameterType == typeof(LabelElement)
+                            ;
+                    });
 
                 return _listCreateElementMethodInfo;
             }
