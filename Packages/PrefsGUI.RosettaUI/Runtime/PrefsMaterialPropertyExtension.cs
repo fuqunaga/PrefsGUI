@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RosettaUI;
 using UnityEngine;
 
 namespace PrefsGUI.RosettaUI
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public class PrefsMaterialPropertyCustom
+    {
+        // ReSharper disable once UnassignedField.Global
+        public bool useDescriptionToLabel;
+    }
+    
     public static class PrefsMaterialPropertyExtension
     {
-        public static Dictionary<string, Func<string, PrefsVector4, Element>> customVectorUI = new();
-            
-
+        public static PrefsMaterialPropertyCustom Custom { get; } = new();
+        
         [RuntimeInitializeOnLoadMethod]
-        static void RegisterUI()
+        private static void RegisterUI()
         {
             UICustom.RegisterElementCreationFunc<PrefsMaterialProperty>(
-                (label, menu) => menu.CreateElement(label)
+                (label, getMenu) => getMenu().CreateElement(label)
             );
         }
 
@@ -32,20 +37,15 @@ namespace PrefsGUI.RosettaUI
                 UI.Column(
                     new[]
                         {
-                            menu.Colors.Select(prefs => prefs.CreateElement(menu.KeyToPropertyName(prefs.key))),
-                            menu.Vectors.Select(prefs =>
-                            {
-                                var key = menu.KeyToPropertyName(prefs.key);
-                                return customVectorUI.TryGetValue(key, out var func)
-                                    ? func(key, prefs)
-                                    : prefs.CreateSlider(key);
-                            }),
-                            menu.Floats.Select(prefs => prefs.CreateElement(menu.KeyToPropertyName(prefs.key))),
+                            CreateElements(menu.Colors),
+                            CreateElements(menu.Vectors),
+                            CreateElements(menu.Floats),
                             menu.Ranges.Select(prefs =>
                             {
                                 var key = menu.KeyToPropertyName(prefs.key);
+                                var label = KeyToLabelString(prefs.key);
                                 var range = menu._propertySet.ranges.First(r => r.name == key);
-                                return prefs.CreateSlider(key, range.min, range.max);
+                                return prefs.CreateSlider(label, range.min, range.max);
                             }),
                             menu.TexEnvs.Select(prefs =>
                             {
@@ -56,13 +56,25 @@ namespace PrefsGUI.RosettaUI
                                     ("w", "Offset.y")
                                 );
 
-                                var key = menu.KeyToPropertyName(prefs.key);
-                                return prefs.CreateSlider(key, new Vector4(10, 10, 1, 1));
+                                var label = KeyToLabelString(prefs.key);
+                                return prefs.CreateSlider(label, new Vector4(10, 10, 1, 1));
                             }),
-                            menu.Ints.Select(prefs => prefs.CreateElement(menu.KeyToPropertyName(prefs.key)))
+                            CreateElements(menu.Ints)
                         }
                         .SelectMany(element => element)
                 );
+
+            IEnumerable<Element> CreateElements<T>(IEnumerable<PrefsParamOuter<T>> prefsSet) 
+                => prefsSet.Select(prefs => prefs.CreateElement(KeyToLabelString(prefs.key)));
+
+            string KeyToLabelString(string key)
+            {
+                var name = menu.KeyToPropertyName(key);
+
+                return Custom.useDescriptionToLabel
+                    ? menu._propertySet.GetDescription(name)
+                    : name;
+            }
         }
     }
 }
