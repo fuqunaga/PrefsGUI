@@ -17,6 +17,13 @@ namespace PrefsGUI.Utility
         public class PropertySet
         {
             [Serializable]
+            public class NameAndDescription
+            {
+                public string name;
+                public string description;
+            }
+            
+            [Serializable]
             public class RangeData
             {
                 public string name;
@@ -31,6 +38,10 @@ namespace PrefsGUI.Utility
             public List<string> texEnvs = new();
             public List<string> ints = new();
 
+            public List<NameAndDescription> propertyNameToDescription = new();
+
+            private Dictionary<string, string> _propertyNameToDescription;
+
             public bool Any() => colors.Any() || vectors.Any() || floats.Any() || ranges.Any() || texEnvs.Any() ||
                                  ints.Any();
 
@@ -42,6 +53,18 @@ namespace PrefsGUI.Utility
                 ranges.Clear();
                 texEnvs.Clear();
                 ints.Clear();
+                
+                propertyNameToDescription.Clear();
+            }
+
+            public string GetDescription(string name)
+            {
+                _propertyNameToDescription ??= propertyNameToDescription.ToDictionary(
+                    nameAndDescription => nameAndDescription.name,
+                    nameAndDescription => nameAndDescription.description
+                );
+
+                return _propertyNameToDescription.TryGetValue(name, out var description) ? description : null;
             }
         }
 
@@ -69,16 +92,19 @@ namespace PrefsGUI.Utility
             for (var i = 0; i < count; ++i)
             {
                 var propertyName = ShaderUtil.GetPropertyName(shader, i);
+                
+                
                 if (!_ignoreProperties.Contains(propertyName))
                 {
+                    var propertyDescription = ShaderUtil.GetPropertyDescription(shader, i);
+                    _propertySet.propertyNameToDescription.Add(new (){name = propertyName, description = propertyDescription});
+                    
                     var type = ShaderUtil.GetPropertyType(shader, i);
                     switch (type)
                     {
-                        case ShaderUtil.ShaderPropertyType.Color: _propertySet.colors.Add(propertyName); break;
+                        case ShaderUtil.ShaderPropertyType.Color:  _propertySet.colors.Add(propertyName); break;
                         case ShaderUtil.ShaderPropertyType.Vector: _propertySet.vectors.Add(propertyName); break;
-                        case ShaderUtil.ShaderPropertyType.Float:
-                            _propertySet.floats.Add(propertyName);
-                            break;
+                        case ShaderUtil.ShaderPropertyType.Float:  _propertySet.floats.Add(propertyName); break;
                         case ShaderUtil.ShaderPropertyType.Range:
                         {
                             var rangeData = new PropertySet.RangeData()
