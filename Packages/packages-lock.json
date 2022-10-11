@@ -121,7 +121,8 @@
       "source": "embedded",
       "dependencies": {
         "ga.fuquna.prefsgui": "3.2.0",
-        "ga.fuquna.rosettaui.uitoolkit": "0.0.9"
+        "ga.fuquna.rosettaui": "0.4.3",
+        "ga.fuquna.rosettaui.uitoolkit": "0.0.10"
       }
     },
     "ga.fuquna.rapidgui": {
@@ -132,18 +133,18 @@
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui": {
-      "version": "0.4.1",
+      "version": "0.4.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui.uitoolkit": {
-      "version": "0.0.9",
-      "depth": 1,
+      "version": "0.0.10",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
-        "ga.fuquna.rosettaui": "0.4.0"
+        "ga.fuquna.rosettaui": "0.4.1"
       },
       "url": "https://registry.npmjs.com"
     },

@@ -9,19 +9,19 @@ namespace PrefsGUI.RosettaUI
 {
     public static class UICustomPrefsGUI
     {
-        private static readonly Dictionary<Type, Func<PrefsParam, Element>> CreationFuncTable = new();
+        private static readonly Dictionary<Type, Func<Func<PrefsParam>, Element>> CreationFuncTable = new();
 
         [RuntimeInitializeOnLoadMethod]
         public static void RegisterUICustom()
         {
-            UICustom.RegisterElementCreationFunc<PrefsParam>((label, prefsParam) =>
+            UICustom.RegisterElementCreationFunc<PrefsParam>((label, getPrefsParam) =>
             {
-                var type = prefsParam.GetType();
+                var type = getPrefsParam().GetType();
                 var func = GetCreationFunc(type);
-                return func(prefsParam);
+                return func(getPrefsParam);
             });
 
-            static Func<PrefsParam, Element> GetCreationFunc(Type type)
+            static Func<Func<PrefsParam>, Element> GetCreationFunc(Type type)
             {
                 if (!CreationFuncTable.TryGetValue(type, out var func))
                 {
@@ -36,9 +36,9 @@ namespace PrefsGUI.RosettaUI
 
                     var parameters = new object[] {null, null};
 
-                    func = (prefsParam) =>
+                    func = (getPrefsParam) =>
                     {
-                        parameters[0] = prefsParam;
+                        parameters[0] = getPrefsParam();
                         return methodInfo?.Invoke(null, parameters) as Element;
                     };
 
