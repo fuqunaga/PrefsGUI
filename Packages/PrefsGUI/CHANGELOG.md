@@ -1,6 +1,10 @@
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
+## [3.2.4] - 2022.10.11
+### Added
+MaterialPropertySerializer now also holds the description
+
 ## [3.2.3] - 2022.7.22
 
 ### Fixed
