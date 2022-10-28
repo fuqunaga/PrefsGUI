@@ -22,10 +22,7 @@ namespace PrefsGUI.RosettaUI
                         {
                             ret = UI.Row(
                                 field,
-                                PrefsGUIElement.CreateDefaultButtonElement(
-                                    onClick: () => prefs.ResetToDefaultAt(idx),
-                                    isDefault: () => prefs.IsDefaultAt(idx)
-                                )
+                                prefs.CreateDefaultButtonElementAt(idx)
                             );
                         }
 
@@ -39,6 +36,14 @@ namespace PrefsGUI.RosettaUI
             PrefsGUIExtension.SubscribeSyncedFlag(prefs, element);
 
             return element;
+        }
+
+        public static Element CreateDefaultButtonElementAt<T>(this PrefsList<T> prefs, int index)
+        {
+            return PrefsGUIElement.CreateDefaultButtonElement(
+                onClick: () => prefs.ResetToDefaultAt(index),
+                isDefault: () => prefs.IsDefaultAt(index)
+            );
         }
     }
 }
