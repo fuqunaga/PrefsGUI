@@ -1,3 +1,7 @@
+# 0.0.10
+### Features
+* Depends PrefsGUI v3.2.4
+
 # 0.0.9
 ### Features
 * PrefsList.CreateDefaultButtonElementAt()
