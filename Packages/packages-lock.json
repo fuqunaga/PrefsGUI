@@ -58,7 +58,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.core": {
-      "version": "1.4.3",
+      "version": "1.6.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -142,20 +142,18 @@
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui": {
-      "version": "1.0.2",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://registry.npmjs.com"
+      "version": "file:C:/unity/RosettaUI/Packages/RosettaUI",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
     },
     "ga.fuquna.rosettaui.uitoolkit": {
-      "version": "1.0.2",
+      "version": "file:C:/unity/RosettaUI/Packages/RosettaUI.UIToolkit",
       "depth": 0,
-      "source": "registry",
+      "source": "local",
       "dependencies": {
         "ga.fuquna.rosettaui": "1.0.2"
-      },
-      "url": "https://registry.npmjs.com"
+      }
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

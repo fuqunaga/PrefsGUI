@@ -116,11 +116,9 @@ namespace PrefsGUI.Example
 
         public Element CreateElement(LabelElement label)
         {
-            var recreateList = true;
-            var reorderable = true;
-            var fixedSize = false;
+            var listOption = ListOption.Default;
 
-            return UI.Page(
+            return UI.Column(
                 prefsBool.CreateElement(),
                 prefsInt.CreateElement(),
                 prefsFloat.CreateElement(),
@@ -134,18 +132,7 @@ namespace PrefsGUI.Example
                 prefsVector3.CreateSlider(),
                 prefsVector4.CreateElement(),
                 prefsVector4.CreateSlider(),
-                UI.Row(UI.Label(nameof(ListViewOption)),
-                    UI.Toggle(() => reorderable),
-                    UI.Toggle(() => fixedSize)
-                ).RegisterValueChangeCallback(() => recreateList = true),
-                UI.DynamicElementOnTrigger(
-                    _ => recreateList,
-                    () =>
-                    {
-                        recreateList = false;
-                        return prefsList.CreateElement(new ListViewOption(reorderable, fixedSize));
-                    }
-                )
+                prefsList.CreateElement()
             );
         }
     }
