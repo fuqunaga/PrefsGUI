@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "ga.fuquna.prefsgui": "3.2.4",
-    "ga.fuquna.rosettaui": "0.4.3",
+    "ga.fuquna.rosettaui": "1.1.0",
     "ga.fuquna.rosettaui.uitoolkit": "0.0.10"
   },
   "keywords": [
