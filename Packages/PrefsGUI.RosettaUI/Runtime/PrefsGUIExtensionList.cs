@@ -4,10 +4,10 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionList
     {
-        public static Element CreateElement<T>(this PrefsList<T> prefs, ListViewOption option)
+        public static Element CreateElement<T>(this PrefsList<T> prefs, in ListViewOption option)
             => prefs.CreateElement(null, option);
         
-        public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label = null, ListViewOption option = null)
+        public static Element CreateElement<T>(this PrefsList<T> prefs, LabelElement label = null, in ListViewOption? option = null)
         {
             var element = UI.Row(
                 UI.List(

@@ -116,43 +116,21 @@ namespace PrefsGUI.Example
 
         public Element CreateElement(LabelElement label)
         {
-            var recreateList = true;
-            var reorderable = true;
-            var fixedSize = false;
-            
-            return UI.Row(
-                UI.Page(
-                    prefsBool.CreateElement(),
-                    prefsInt.CreateElement(),
-                    prefsFloat.CreateElement(),
-                    prefsFloat.CreateSlider(),
-                    prefsString.CreateElement(),
-                    prefsEnum.CreateElement(),
-                    prefsColor.CreateElement(),
-                    prefsVector2.CreateElement(),
-                    prefsVector2.CreateSlider(),
-                    prefsVector3.CreateElement(),
-                    prefsVector3.CreateSlider(),
-                    prefsVector4.CreateElement(),
-                    prefsVector4.CreateSlider(),
-                    prefsClass.CreateElement()
-                ),
-                UI.Page(
-                    UI.Row(UI.Label(nameof(ListViewOption)),
-                        UI.Toggle(() => reorderable),
-                        UI.Toggle(() => fixedSize)
-                    ).RegisterValueChangeCallback(() => recreateList = true),
-                    UI.DynamicElementOnTrigger(
-                        _ => recreateList,
-                        () =>
-                        {
-                            recreateList = false;
-                            return UI.Box(
-                                prefsList.CreateElement(new ListViewOption(reorderable, fixedSize))
-                            );
-                        }
-                    )
-                )
+            return UI.Column(
+                prefsBool.CreateElement(),
+                prefsInt.CreateElement(),
+                prefsFloat.CreateElement(),
+                prefsFloat.CreateSlider(),
+                prefsString.CreateElement(),
+                prefsEnum.CreateElement(),
+                prefsColor.CreateElement(),
+                prefsVector2.CreateElement(),
+                prefsVector2.CreateSlider(),
+                prefsVector3.CreateElement(),
+                prefsVector3.CreateSlider(),
+                prefsVector4.CreateElement(),
+                prefsVector4.CreateSlider(),
+                prefsList.CreateElement()
             );
         }
     }

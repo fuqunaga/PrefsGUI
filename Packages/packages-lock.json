@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.unity.ai.navigation": {
+      "version": "1.1.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.ai": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.collab-proxy": {
       "version": "1.17.7",
       "depth": 0,
@@ -17,7 +26,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.16",
+      "version": "3.0.18",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -26,7 +35,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.16",
+      "version": "2.0.17",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -49,7 +58,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.services.core": {
-      "version": "1.4.3",
+      "version": "1.6.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -80,7 +89,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.6.4",
+      "version": "1.7.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -121,7 +130,7 @@
       "source": "embedded",
       "dependencies": {
         "ga.fuquna.prefsgui": "3.2.4",
-        "ga.fuquna.rosettaui": "0.4.3",
+        "ga.fuquna.rosettaui": "1.1.0",
         "ga.fuquna.rosettaui.uitoolkit": "0.0.10"
       }
     },
@@ -133,18 +142,18 @@
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui": {
-      "version": "1.0.2",
+      "version": "1.1.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui.uitoolkit": {
-      "version": "1.0.2",
+      "version": "1.1.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "ga.fuquna.rosettaui": "1.0.2"
+        "ga.fuquna.rosettaui": "1.1.0"
       },
       "url": "https://registry.npmjs.com"
     },
