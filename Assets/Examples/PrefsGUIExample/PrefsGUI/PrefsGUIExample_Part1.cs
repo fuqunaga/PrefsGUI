@@ -116,8 +116,6 @@ namespace PrefsGUI.Example
 
         public Element CreateElement(LabelElement label)
         {
-            var listOption = ListOption.Default;
-
             return UI.Column(
                 prefsBool.CreateElement(),
                 prefsInt.CreateElement(),

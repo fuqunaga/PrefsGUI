@@ -27,7 +27,7 @@ namespace PrefsGUI.RosettaUI
                             _ => UI.List(
                                 () => ps.PrefsList,
                                 (binder, idx) => UI.Field(null, binder),
-                                new ListOption(false, true, false)
+                                new ListViewOption(false, true, false)
                                 ).SetMaxHeight(500f).SetMinWidth(800f)
                         )
                     )
