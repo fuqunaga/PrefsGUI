@@ -3,47 +3,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RosettaUI;
+#if UNITY_EDITOR
+using UnityEditor;
+#else
 using UnityEngine;
+#endif
 
 namespace PrefsGUI.RosettaUI
 {
     public static class UICustomPrefsGUI
     {
-        private static readonly Dictionary<Type, Func<Func<PrefsParam>, Element>> CreationFuncTable = new();
-
+        private static readonly Dictionary<Type, Func<IBinder<PrefsParam>, Element>> CreationFuncTable = new();
+        
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+#else
         [RuntimeInitializeOnLoadMethod]
+#endif
         public static void RegisterUICustom()
         {
-            UICustom.RegisterElementCreationFunc<PrefsParam>((label, getPrefsParam) =>
+            UICustom.RegisterElementCreationFunc<PrefsParam>((label, binder) =>
             {
-                var type = getPrefsParam().GetType();
-                var func = GetCreationFunc(type);
-                return func(getPrefsParam);
+                var func = GetCreationFunc(binder.Get().GetType());
+                return func(binder);
             });
 
-            static Func<Func<PrefsParam>, Element> GetCreationFunc(Type type)
+            static Func<IBinder<PrefsParam>, Element> GetCreationFunc(Type type)
             {
-                if (!CreationFuncTable.TryGetValue(type, out var func))
+                if (CreationFuncTable.TryGetValue(type, out var func)) return func;
+                
+                var prefsParamOuterType = GetPrefsParamOuterType(type);
+                var outerType = prefsParamOuterType.GetGenericArguments().First();
+
+                var methodInfo = typeof(PrefsGUIExtensionField)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .Where(mi => mi.Name == nameof(PrefsGUIExtensionField.CreateElement) && mi.GetParameters().Length == 2)
+                    .Select(mi => mi.MakeGenericMethod(outerType))
+                    .FirstOrDefault();
+
+                var parameters = new object[] {null, null};
+
+                func = (binder) =>
                 {
-                    var prefsParamOuterType = GetPrefsParamOuterType(type);
-                    var outerType = prefsParamOuterType.GetGenericArguments().First();
+                    parameters[0] = binder.Get();
+                    return methodInfo?.Invoke(null, parameters) as Element;
+                };
 
-                    var methodInfo = typeof(PrefsGUIExtensionField)
-                        .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                        .Where(mi => mi.Name == nameof(PrefsGUIExtensionField.CreateElement) && mi.GetParameters().Length == 2)
-                        .Select(mi => mi.MakeGenericMethod(outerType))
-                        .FirstOrDefault();
-
-                    var parameters = new object[] {null, null};
-
-                    func = (getPrefsParam) =>
-                    {
-                        parameters[0] = getPrefsParam();
-                        return methodInfo?.Invoke(null, parameters) as Element;
-                    };
-
-                    CreationFuncTable[type] = func;
-                }
+                CreationFuncTable[type] = func;
 
                 return func;
             }

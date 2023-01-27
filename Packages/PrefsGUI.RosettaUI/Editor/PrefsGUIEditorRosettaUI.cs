@@ -83,7 +83,7 @@ namespace PrefsGUI.RosettaUI.Editor
                         )
                     ),
                     UI.Space().SetHeight(20f),
-                    UI.Field("Search word", () => searchWord),
+                    UI.Field("Search word", () => searchWord, new FieldOption() { delayInput = true }),
                     UI.Field("Order", () => order),
                     UI.Field("Include assets", () => includeAssets),
                     UI.DynamicElementIf(
@@ -94,109 +94,129 @@ namespace PrefsGUI.RosettaUI.Editor
                     _objCheckExtension?.Title()
                 ).SetHeight(230f),
                 PrefsGUIEditorRosettaUIComponent.CreateLineElement(),
-                UI.ScrollViewVertical(scrollViewHeight,
-                    UI.Indent(
-                        UI.DynamicElementOnStatusChanged(
-                            () => (order, searchWord.ToLower(), includeAssets, showComponent, objPrefsListChangeCount),
-                            _ =>
-                            {
-                                var word = searchWord.ToLower();
+                UI.DynamicElementOnStatusChanged(
+                    () => (order, searchWord.ToLower(), includeAssets, showComponent, objPrefsListChangeCount),
+                    _ =>
+                    {
+                        var word = searchWord.ToLower();
 
-                                return order switch
-                                {
-                                    Order.Key => CreatePrefsUIAtoZ(word),
-                                    Order.GameObject => CreatePrefsGameObject(word),
-                                    _ => throw new ArgumentOutOfRangeException()
-                                };
-                            }
-                        )
-                    )
-                )
+                        return order switch
+                        {
+                            Order.Key => CreatePrefsUIAtoZ(word),
+                            Order.GameObject => CreatePrefsGameObject(word),
+                            _ => throw new ArgumentOutOfRangeException()
+                        };
+                    }
+                ).SetHeight(scrollViewHeight)
             );
 
             Element CreatePrefsUIAtoZ(string word)
             {
                 var prefsObjAll = PrefsAssetUtility.GetPrefsObjEnumerable(includeAssets)
                     .Where(po => IsContainWord(po.prefs.key, word))
-                    .OrderBy(po => po.prefs.key);
-                
-                return UI.Column(
-                    prefsObjAll.Select(po =>
+                    .OrderBy(po => po.prefs.key)
+                    .ToList();
+
+                return UI.List(null,
+                    () => prefsObjAll,
+                    (binder, index) =>
                     {
-                        var (prefs, obj) = po;
+                        var (prefs, obj) = ((IBinder<(PrefsParam, Object)>)binder).Get();
 
                         var prefsElement = PrefsGUIEditorRosettaUIComponent
                             .CreateObjectFieldWithAssetMarkParts(obj, includeAssets)
                             .Prepend(prefs.CreateElement());
-
 
                         return _objCheckExtension != null
                             ? UI.Row(
                                 _objCheckExtension.PrefsLeft(prefs),
                                 UI.Indent(UI.Row(prefsElement))
                             )
-                            : UI.Row(prefsElement);
-                    })
+                            : UI.Indent(UI.Row(prefsElement));
+                    },
+                    new ListViewOption(false, true, false)
                 );
             }
 
             Element CreatePrefsGameObject(string word)
             {
-                return UI.Column(
-                    PrefsAssetUtility.GetObjPrefsList(includeAssets)
-                        .SelectMany(op =>
-                        {
-                            var objNameHit = IsContainWord(op.obj.name, word);
-                            var componentNameHit = op.holders
-                                .Select(holder => holder.component)
-                                .Any(parent => IsContainWord(parent.GetType().ToString(), word)
-                                );
-                            var prefsHit = op.PrefsAll.Any(p => IsContainWord(p.key, word));
+                var objPrefsList = PrefsAssetUtility.GetObjPrefsList(includeAssets)
+                    .Where(objPrefs =>
+                    {
+                        var objNameHit = IsContainWord(objPrefs.obj.name, word);
+                        var componentNameHit = objPrefs.holders
+                            .Select(holder => holder.component)
+                            .Any(parent => IsContainWord(parent.GetType().ToString(), word)
+                            );
+                        var prefsHit = objPrefs.PrefsAll.Any(p => IsContainWord(p.key, word));
 
-                            if (!objNameHit && !prefsHit && !(showComponent && componentNameHit))
-                            {
-                                return Array.Empty<Element>();
-                            }
+                        return objNameHit || prefsHit || showComponent && componentNameHit;
+                    })
+                    .ToList();
+                
+                return UI.List(null,
+                    () => objPrefsList, (binder, idx) =>
+                    {
+                        var typedBinder = (IBinder<PrefsAssetUtility.ObjPrefs>)binder;
+                        return CreateObjPrefsElement(typedBinder.Get());
+                    },
+                    new ListViewOption(false, true, false)
+                    );
 
-                            var prefsListForObj = (objNameHit
-                                    ? op.PrefsAll
-                                    : FilterPrefs(op.PrefsAll)
-                                ).ToList();
+                Element CreateObjPrefsElement(PrefsAssetUtility.ObjPrefs objPrefs)
+                {
+                    var objNameHit = IsContainWord(objPrefs.obj.name, word);
+                    var componentNameHit = objPrefs.holders
+                        .Select(holder => holder.component)
+                        .Any(parent => IsContainWord(parent.GetType().ToString(), word)
+                        );
+                    var prefsHit = objPrefs.PrefsAll.Any(p => IsContainWord(p.key, word));
 
-                            if (showComponent)
-                            {
-                                var objFieldParts = PrefsGUIEditorRosettaUIComponent.CreateObjectFieldWithAssetMarkParts(op.obj);
+                    if (!objNameHit && !prefsHit && !(showComponent && componentNameHit))
+                    {
+                        return null;
+                    }
 
-                                return new Element[]
+                    var prefsListForObj = (objNameHit
+                            ? objPrefs.PrefsAll
+                            : FilterPrefs(objPrefs.PrefsAll)
+                        ).ToList();
+
+                    if (showComponent)
+                    {
+                        var objFieldParts =
+                            PrefsGUIEditorRosettaUIComponent.CreateObjectFieldWithAssetMarkParts(objPrefs.obj);
+
+                        return UI.Column(
+                            UI.Row(
+                                _objCheckExtension == null
+                                    ? objFieldParts
+                                    : objFieldParts.Prepend(_objCheckExtension.PrefsSetLeft(prefsListForObj))
+                            ),
+                            UI.Indent(
+                                objPrefs.holders.SelectMany(holder =>
                                 {
-                                    UI.Row(
-                                        _objCheckExtension == null
-                                        ? objFieldParts
-                                        : objFieldParts.Prepend(_objCheckExtension.PrefsSetLeft(prefsListForObj))
-                                    ),
-                                    UI.Indent(
-                                        op.holders.SelectMany(holder =>
-                                        {
-                                            var enableFilter = !objNameHit &&
-                                                               !IsContainWord(holder.component.GetType().ToString(), word);
+                                    var enableFilter = !objNameHit &&
+                                                       !IsContainWord(holder.component.GetType().ToString(), word);
 
-                                            var prefsList = (enableFilter
-                                                    ? FilterPrefs(holder.prefsSet)
-                                                    : holder.prefsSet
-                                                ).ToList();
-                                            
-                                            return CreateObjFieldAndPrefsListElement(holder.component, prefsList, false);
-                                        })
-                                    )
-                                };
-                            }
-                            else
-                            {
-                                return CreateObjFieldAndPrefsListElement(op.obj, prefsListForObj, true, 2);
-                            }
-                        })
-                );
+                                    var prefsList = (enableFilter
+                                            ? FilterPrefs(holder.prefsSet)
+                                            : holder.prefsSet
+                                        ).ToList();
 
+                                    return CreateObjFieldAndPrefsListElement(holder.component, prefsList, false);
+                                })
+                            )
+                        );
+                    }
+                    else
+                    {
+                        return UI.Column(
+                            CreateObjFieldAndPrefsListElement(objPrefs.obj, prefsListForObj, true, 2)
+                        );
+                    }
+                }
+         
                 IEnumerable<PrefsParam> FilterPrefs(IEnumerable<PrefsParam> prefsSet) =>
                     prefsSet.Where(prefs => IsContainWord(prefs.key, word));
 

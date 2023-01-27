@@ -20,7 +20,7 @@ namespace PrefsGUI.RosettaUI
         private static void RegisterUI()
         {
             UICustom.RegisterElementCreationFunc<PrefsMaterialProperty>(
-                (label, getMenu) => getMenu().CreateElement(label)
+                (label, binder) => binder.Get().CreateElement(label)
             );
         }
 
