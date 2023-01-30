@@ -16,7 +16,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        pkg_root: [./Packages/PrefsGUI, ./Packages/PrefsGUI.RapidGUI, ./Packages/PrefsGUI.RosettaUI,]
+        pkg_root: [./Packages/PrefsGUI, ./Packages/PrefsGUI.RosettaUI, ./Packages/PrefsGUI.RapidGUI,]
 
     steps:
     - name: Checkout
