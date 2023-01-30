@@ -13,7 +13,7 @@ namespace PrefsGUI.RosettaUI
 {
     public static class UICustomPrefsGUI
     {
-        private static readonly Dictionary<Type, Func<IBinder<PrefsParam>, Element>> CreationFuncTable = new();
+        private static readonly Dictionary<Type, Func<IBinder, Element>> CreationFuncTable = new();
         
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]
@@ -22,13 +22,13 @@ namespace PrefsGUI.RosettaUI
 #endif
         public static void RegisterUICustom()
         {
-            UICustom.RegisterElementCreationFunc<PrefsParam>((label, binder) =>
+            UICustom.RegisterElementCreationFunc(typeof(PrefsParam), (label, binder) =>
             {
-                var func = GetCreationFunc(binder.Get().GetType());
+                var func = GetCreationFunc(binder.GetObject().GetType());
                 return func(binder);
             });
 
-            static Func<IBinder<PrefsParam>, Element> GetCreationFunc(Type type)
+            static Func<IBinder, Element> GetCreationFunc(Type type)
             {
                 if (CreationFuncTable.TryGetValue(type, out var func)) return func;
                 
@@ -45,7 +45,7 @@ namespace PrefsGUI.RosettaUI
 
                 func = (binder) =>
                 {
-                    parameters[0] = binder.Get();
+                    parameters[0] = binder.GetObject();
                     return methodInfo?.Invoke(null, parameters) as Element;
                 };
 
