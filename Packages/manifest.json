@@ -10,6 +10,8 @@
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.7.2",
     "com.unity.ugui": "1.0.0",
+    "ga.fuquna.rosettaui": "file:C:/unity/RosettaUI/Packages/RosettaUI",
+    "ga.fuquna.rosettaui.uitoolkit": "file:C:/unity/RosettaUI/Packages/RosettaUI.UIToolkit",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
