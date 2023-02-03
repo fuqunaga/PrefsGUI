@@ -131,7 +131,7 @@
       "dependencies": {
         "ga.fuquna.prefsgui": "3.2.4",
         "ga.fuquna.rosettaui": "1.1.3",
-        "ga.fuquna.rosettaui.uitoolkit": "1.1.0"
+        "ga.fuquna.rosettaui.uitoolkit": "1.1.1"
       }
     },
     "ga.fuquna.rapidgui": {
@@ -152,7 +152,7 @@
       "depth": 0,
       "source": "local",
       "dependencies": {
-        "ga.fuquna.rosettaui": "1.1.0"
+        "ga.fuquna.rosettaui": "1.1.3"
       }
     },
     "com.unity.modules.ai": {
