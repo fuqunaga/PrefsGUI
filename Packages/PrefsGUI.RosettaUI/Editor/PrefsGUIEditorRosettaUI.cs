@@ -11,26 +11,25 @@ namespace PrefsGUI.RosettaUI.Editor
 {
     public class PrefsGUIEditorRosettaUI : RosettaUIEditorWindowUIToolkit
     {
-        [UnityEditor.MenuItem("Window/PrefsGUI")]
-        public static void ShowWindow() => GetWindow<PrefsGUIEditorRosettaUI>("PrefsGUI");
-
-        public static float scrollViewHeight = 1000f;
-        
-
-        public enum Order
+        private enum Order
         {
             GameObject,
             Key,
         }
 
+        
+        [UnityEditor.MenuItem("Window/PrefsGUI")]
+        public static void ShowWindow() => GetWindow<PrefsGUIEditorRosettaUI>("PrefsGUI");
+
+        public static float scrollViewHeight = 1000f;
+
         private static string searchWord = "";
         private static Order order;
         private static bool includeAssets = true;
         private static bool showComponent;
+        private static IPrefsGUIEditorRosettaUIObjCheckExtension _objCheckExtension;
         
         private int objPrefsListChangeCount;
-
-        private static IPrefsGUIEditorRosettaUIObjCheckExtension _objCheckExtension;
         
         private void OnEnable()
         {
@@ -57,8 +56,8 @@ namespace PrefsGUI.RosettaUI.Editor
         {
             const float buttonWidth = 200f;
             
-            return UI.Column(
-                UI.Page(
+            return UI.Page(
+                UI.Column(
                     UI.Row(
                         UI.Button("Save", Prefs.Save).SetWidth(buttonWidth),
                         UI.Button("Load", Prefs.Load).SetWidth(buttonWidth),
