@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.unity.ai.navigation": "1.1.1",
-    "com.unity.collab-proxy": "1.17.7",
+    "com.unity.collab-proxy": "2.0.0",
     "com.unity.ext.nunit": "1.0.6",
     "com.unity.ide.rider": "3.0.18",
     "com.unity.ide.visualstudio": "2.0.17",
@@ -10,8 +10,7 @@
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.7.2",
     "com.unity.ugui": "1.0.0",
-    "ga.fuquna.rosettaui": "file:C:/unity/RosettaUI/Packages/RosettaUI",
-    "ga.fuquna.rosettaui.uitoolkit": "file:C:/unity/RosettaUI/Packages/RosettaUI.UIToolkit",
+    "ga.fuquna.rosettaui.uitoolkit": "1.1.1",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
