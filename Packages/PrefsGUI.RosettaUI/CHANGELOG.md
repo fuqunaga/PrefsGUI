@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui.rosettaui-v1.0.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.0.1...ga.fuquna.prefsgui.rosettaui-v1.0.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* update PrefsGUI.RosettaUI dependencies to latest RosettaUI.UIToolKit ([9ee1e0e](https://github.com/fuqunaga/PrefsGUI/commit/9ee1e0e9d73c322c95a3674914577132f563ae0d))
+
 # 0.0.10
 ### Features
 * Depends PrefsGUI v3.2.4
