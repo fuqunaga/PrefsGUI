@@ -21,8 +21,10 @@ namespace PrefsGUI.RosettaUI
                                 new ListViewOption(false, true, false)
                             )
                         )
-                    )
-                ).SetMinWidth(500f)
+                        // ここで高さ制限しないとUIToolkitのListView初期化がうまくいかない@Unity2021.3
+                        // 本来はUIToolkit側修正すべきだが大変そうなので暫定対処
+                    ).SetMinWidth(850f).SetMaxHeight(1000f) 
+                )
             );
         }
     }
