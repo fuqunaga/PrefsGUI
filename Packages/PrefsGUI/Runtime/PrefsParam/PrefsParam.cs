@@ -47,7 +47,6 @@ namespace PrefsGUI
             Register();
         }
 
-
         #region abstract
 
         public abstract Type GetInnerType();
@@ -66,9 +65,12 @@ namespace PrefsGUI
         public static IReadOnlyCollection<PrefsParam> all => All;
         public static IReadOnlyDictionary<string, PrefsParam> allDic => AllDic;
 
-        static readonly HashSet<PrefsParam> All = new();
-        static readonly Dictionary<string, PrefsParam> AllDic = new();
+        private static readonly HashSet<PrefsParam> All = new();
+        private static readonly Dictionary<string, PrefsParam> AllDic = new();
 
+        
+        #region ISerializationCallbackReceiver
+        
         public void OnBeforeSerialize() {}
 
         // To Register Array/List In Inspector. constructor is not called.
@@ -78,8 +80,11 @@ namespace PrefsGUI
             // _key が書き換えられてる場合があるのでOnKeyChange()を直接呼ぶ
             OnKeyChanged(null, _key);
         }
+        
+        #endregion
+        
 
-        void Register()
+        private void Register()
         {
             if (!string.IsNullOrEmpty(key))
             {
