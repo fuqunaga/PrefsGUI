@@ -6,10 +6,18 @@ namespace PrefsGUI.Test.Editor
 {
     public class TestMultiInstance
     {
+        [SetUp]
+        public void SetUp() => Prefs.DeleteAll();
+
+        [TearDown]
+        public void TearDown() => Prefs.DeleteAll();
+
         [TestCaseSource(nameof(PrefsSource))]
         public void GetAndSet<TPrefs, TValue>(TPrefs prefs0, TPrefs prefs1, TValue value) 
             where TPrefs : PrefsParamOuter<TValue>
         {
+            Prefs.DeleteAll();
+            
             prefs0.Get(); // get for making cache
             prefs1.Set(value);
             
@@ -20,15 +28,15 @@ namespace PrefsGUI.Test.Editor
         public void ValueChangedCallback<TPrefs, TValue>(TPrefs prefs0, TPrefs prefs1, TValue value) 
             where TPrefs : PrefsParamOuter<TValue>
         {
-            var prefs0EventTriggered = false;
-            var prefs1EventTriggered = false;
-            prefs0.RegisterValueChangedCallback(() => prefs0EventTriggered = true);
-            prefs1.RegisterValueChangedCallback(() => prefs1EventTriggered = true);
+            var prefs0EventCalled = false;
+            var prefs1EventCalled = false;
+            prefs0.RegisterValueChangedCallback(() => prefs0EventCalled = true);
+            prefs1.RegisterValueChangedCallback(() => prefs1EventCalled = true);
 
             prefs0.Set(value);
             
-            Assert.IsTrue(prefs0EventTriggered);
-            Assert.IsTrue(prefs1EventTriggered);
+            Assert.IsTrue(prefs0EventCalled, "prefs0 event is not called");
+            Assert.IsTrue(prefs1EventCalled, "prefs1 event is not called");
         }
         
 

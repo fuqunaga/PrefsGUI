@@ -48,14 +48,14 @@ namespace PrefsGUI
         }
         
         #endregion
+        
 
         private static readonly Dictionary<string, OuterInnerCache> keyToCache = new();
+        
 
         private CachedValue<TInner> _defaultValueInnerCache = new();
         private OuterInnerCache _cache;
         private PrefsInnerAccessor _prefsInnerAccessor;
-        private event Action onValueChanged;
-
         
         protected PrefsParamOuterInner(string key, TOuter defaultValue = default) : base(key, defaultValue)
         {
@@ -93,7 +93,7 @@ namespace PrefsGUI
                 PrefsKvs.Set(key, v);
                 _cache.Clear();
 
-                onValueChanged?.Invoke();
+                OnValueChanged();
             }
 
             return updateValue;
@@ -109,7 +109,13 @@ namespace PrefsGUI
 
 
         #region override
-
+        
+        public override void ClearCache()
+        {
+            base.ClearCache();
+            _cache.Clear();
+        }
+        
         protected override void OnKeyChanged(string oldKey, string newKey)
         {
             base.OnKeyChanged(oldKey, newKey);
@@ -157,10 +163,6 @@ namespace PrefsGUI
             defaultValue = ToOuter(GetInner());
             _defaultValueInnerCache.Clear();
         }
-
-        public override void RegisterValueChangedCallback(Action callback) => onValueChanged += callback;
-        public override void UnregisterValueChangedCallback(Action callback) => onValueChanged -= callback;
-
 
         public override IPrefsInnerAccessor<T> GetInnerAccessor<T>()
         {

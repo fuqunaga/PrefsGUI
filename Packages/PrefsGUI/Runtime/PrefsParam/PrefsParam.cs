@@ -13,6 +13,20 @@ namespace PrefsGUI
     /// </summary>
     public abstract partial class PrefsParam : ISerializationCallbackReceiver
     {
+        #region Static
+        
+        public static IReadOnlyCollection<PrefsParam> all => All;
+        public static IReadOnlyDictionary<string, PrefsParam> allDic => AllDic;
+        
+        private static readonly HashSet<PrefsParam> All = new();
+        private static readonly Dictionary<string, PrefsParam> AllDic = new();
+        
+        private static readonly Dictionary<string, Action> keyToOnValueChangedCallback = new();
+        
+        
+        #endregion
+        
+        
         [SerializeField]
         [FormerlySerializedAs("key")]
         private string _key;
@@ -34,8 +48,15 @@ namespace PrefsGUI
 
         protected PrefsParam(string key) => this.key = key;
 
-        public virtual void Delete() => PrefsKvs.DeleteKey(key);
+        public virtual void Delete()
+        {
+            ClearCache();
+            PrefsKvs.DeleteKey(key);
+        }
 
+        public virtual void ClearCache()
+        {
+        }
 
         protected virtual void OnKeyChanged(string oldKey, string newKey)
         {
@@ -47,26 +68,38 @@ namespace PrefsGUI
             Register();
         }
 
+        protected virtual void OnValueChanged()
+        {
+            if (keyToOnValueChangedCallback.TryGetValue(key, out var action))
+            {
+                action?.Invoke();
+            }
+        }
+
+        public void RegisterValueChangedCallback(Action callback)
+        {
+            keyToOnValueChangedCallback.TryGetValue(key, out var action);
+            keyToOnValueChangedCallback[key] = action + callback;
+        }
+
+        public void UnregisterValueChangedCallback(Action callback)
+        {
+            if (!keyToOnValueChangedCallback.TryGetValue(key, out var action)) return;
+            keyToOnValueChangedCallback[key] = action - callback;
+        }
+
         #region abstract
 
         public abstract Type GetInnerType();
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
         public abstract void ResetToDefault();
-        public abstract void RegisterValueChangedCallback(Action callback);
-        public abstract void UnregisterValueChangedCallback(Action callback);
         public abstract IPrefsInnerAccessor<T> GetInnerAccessor<T>();
 
         #endregion
 
 
         #region RegistAllInstance
-
-        public static IReadOnlyCollection<PrefsParam> all => All;
-        public static IReadOnlyDictionary<string, PrefsParam> allDic => AllDic;
-
-        private static readonly HashSet<PrefsParam> All = new();
-        private static readonly Dictionary<string, PrefsParam> AllDic = new();
 
         
         #region ISerializationCallbackReceiver
