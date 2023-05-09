@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.2.5](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.2.4...ga.fuquna.prefsgui-v3.2.5) (2023-05-09)
+
+
+### Bug Fixes
+
+* ValueChangeCallback is now called even if the value is changed from another PrefsParam instance ([3ff78b2](https://github.com/fuqunaga/PrefsGUI/commit/3ff78b2930e1d6c5e4f9d01254074874f68b0171))
+
 # PrefsGUI
 Accessors and GUIs for persistent preference values using JSON file
 
