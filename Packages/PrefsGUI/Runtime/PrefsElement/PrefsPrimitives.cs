@@ -7,18 +7,6 @@ using UnityEngine;
 
 namespace PrefsGUI
 {
-    #region Static
-    
-    public static class Prefs
-    {
-        public static void Save() => PrefsKvs.Save();
-        public static void Load() => PrefsKvs.Load();
-        public static void DeleteAll() => PrefsKvs.DeleteAll();
-    }
-    
-    #endregion
-
-
     [Serializable]
     public class PrefsString : PrefsParamOuterInner<string, string>
     {
