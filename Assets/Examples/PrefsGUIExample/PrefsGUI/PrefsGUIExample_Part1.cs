@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using PrefsGUI.RapidGUI;
 using PrefsGUI.RosettaUI;
 using RapidGUI;
 using RosettaUI;
 using UnityEngine;
-using UnityEngine.UIElements;
-// ReSharper disable ConditionIsAlwaysTrueOrFalse
-// ReSharper disable ConvertToConstant.Local
 
 namespace PrefsGUI.Example
 {
@@ -87,11 +85,14 @@ namespace PrefsGUI.Example
             }
         }
 
-        void Update()
+        private void Update()
         {
             TestImplicitCast();
         }
 
+        [SuppressMessage("ReSharper", "UnusedVariable")]
+        [SuppressMessage("ReSharper", "NotAccessedVariable")]
+        [SuppressMessage("ReSharper", "RedundantAssignment")]
         protected void TestImplicitCast()
         {
             bool b = prefsBool;

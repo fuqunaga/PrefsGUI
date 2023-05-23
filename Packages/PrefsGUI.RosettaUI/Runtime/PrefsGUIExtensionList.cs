@@ -16,17 +16,13 @@ namespace PrefsGUI.RosettaUI
                     (binder, idx) =>
                     {
                         var field = UI.ListItemDefault(binder, idx);
-                        var ret = field;
 
-                        if (idx < prefs.DefaultValueCount)
-                        {
-                            ret = UI.Row(
+                        return (idx < prefs.DefaultValueCount)
+                            ? UI.Row(
                                 field,
                                 prefs.CreateDefaultButtonElementAt(idx)
-                            );
-                        }
-
-                        return ret;
+                            )
+                            : field;
                     },
                     option
                 ),
