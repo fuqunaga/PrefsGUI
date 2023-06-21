@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui.rosettaui-v1.0.3](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.0.2...ga.fuquna.prefsgui.rosettaui-v1.0.3) (2023-06-21)
+
+
+### Bug Fixes
+
+* **dependency:** RosettaUI 1.4.2 ([f17a789](https://github.com/fuqunaga/PrefsGUI/commit/f17a789e694486aeaf5a0671adc47395e4287d3c))
+
 # [ga.fuquna.prefsgui.rosettaui-v1.0.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.0.1...ga.fuquna.prefsgui.rosettaui-v1.0.2) (2023-02-06)
 
 
