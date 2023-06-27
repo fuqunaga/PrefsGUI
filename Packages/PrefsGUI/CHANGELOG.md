@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.3.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.3.0...ga.fuquna.prefsgui-v3.3.1) (2023-06-27)
+
+
+### Bug Fixes
+
+* **rosettaui:** update dependency ([16646df](https://github.com/fuqunaga/PrefsGUI/commit/16646dfdf2b73325762283ca9c017009f647d8ef))
+
 # [ga.fuquna.prefsgui-v3.3.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.2.5...ga.fuquna.prefsgui-v3.3.0) (2023-06-27)
 
 
