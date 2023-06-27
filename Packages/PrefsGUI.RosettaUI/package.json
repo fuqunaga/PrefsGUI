@@ -7,7 +7,7 @@
   "documentationUrl": "https://github.com/fuqunaga/PrefsGUI#readme",
   "license": "MIT",
   "dependencies": {
-    "ga.fuquna.prefsgui": "3.2.4",
+    "ga.fuquna.prefsgui": "3.3.0",
     "ga.fuquna.rosettaui": "1.4.2",
     "ga.fuquna.rosettaui.uitoolkit": "1.4.1"
   },
