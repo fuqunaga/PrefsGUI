@@ -21,7 +21,7 @@ namespace PrefsGUI
         private static readonly HashSet<PrefsParam> All = new();
         private static readonly Dictionary<string, PrefsParam> AllDic = new();
         
-        private static readonly Dictionary<string, Action> keyToOnValueChangedCallback = new();
+        private static readonly Dictionary<string, Action> KeyToOnValueChangedCallback = new();
         
         
         #endregion
@@ -70,7 +70,7 @@ namespace PrefsGUI
 
         protected virtual void OnValueChanged()
         {
-            if (keyToOnValueChangedCallback.TryGetValue(key, out var action))
+            if (KeyToOnValueChangedCallback.TryGetValue(key, out var action))
             {
                 action?.Invoke();
             }
@@ -78,14 +78,14 @@ namespace PrefsGUI
 
         public void RegisterValueChangedCallback(Action callback)
         {
-            keyToOnValueChangedCallback.TryGetValue(key, out var action);
-            keyToOnValueChangedCallback[key] = action + callback;
+            KeyToOnValueChangedCallback.TryGetValue(key, out var action);
+            KeyToOnValueChangedCallback[key] = action + callback;
         }
 
         public void UnregisterValueChangedCallback(Action callback)
         {
-            if (!keyToOnValueChangedCallback.TryGetValue(key, out var action)) return;
-            keyToOnValueChangedCallback[key] = action - callback;
+            if (!KeyToOnValueChangedCallback.TryGetValue(key, out var action)) return;
+            KeyToOnValueChangedCallback[key] = action - callback;
         }
 
         #region abstract
