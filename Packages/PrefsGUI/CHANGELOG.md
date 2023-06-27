@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.3.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.2.5...ga.fuquna.prefsgui-v3.3.0) (2023-06-27)
+
+
+### Features
+
+* Add PrefsParam.RegisterValueChangeCallbackAndCallOnce() ([722b516](https://github.com/fuqunaga/PrefsGUI/commit/722b516aa3540bfd3a0e70f099948dfdd27ce9ae))
+
 # [ga.fuquna.prefsgui-v3.2.5](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.2.4...ga.fuquna.prefsgui-v3.2.5) (2023-05-09)
 
 
