@@ -40,7 +40,7 @@ namespace PrefsGUI.RosettaUI
         public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)
         {
             var element = UI.Row(
-                _CreateSlider(prefs, label, minGetter, maxGetter),
+                CreateSliderRaw(prefs, label ?? UI.Label(() => prefs.key), minGetter, maxGetter),
                 prefs.CreateDefaultButtonElement()
             );
             
@@ -49,10 +49,20 @@ namespace PrefsGUI.RosettaUI
             return element;
         }
 
-        private static Element _CreateSlider<T>(PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)
+        public static Element CreateSliderRaw<T>(this PrefsParamOuter<T> prefs, LabelElement label, T max)
+        {
+            return CreateSliderRaw(prefs, label, default, max);
+        }
+        
+        public static Element CreateSliderRaw<T>(this PrefsParamOuter<T> prefs, LabelElement label, T min, T max)
+        {
+            return CreateSliderRaw(prefs, label, ConstGetter.Create(min), ConstGetter.Create(max));
+        }
+        
+        public static Element CreateSliderRaw<T>(this PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)
         {
             return UI.Slider(
-                label ?? UI.Label(() => prefs.key),
+                label,
                 Binder.Create(prefs.Get, v => prefs.Set(v)),
                 minGetter,
                 maxGetter

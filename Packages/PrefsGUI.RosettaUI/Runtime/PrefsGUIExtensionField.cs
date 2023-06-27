@@ -7,11 +7,7 @@ namespace PrefsGUI.RosettaUI
         public static Element CreateElement<T>(this PrefsParamOuter<T> prefs, LabelElement label = null)
         {
             var element = UI.Row(
-                UI.Field(
-                    label ?? UI.Label(() => prefs.key),
-                    prefs.Get,
-                    v => prefs.Set(v)
-                ),
+                prefs.CreateFieldRaw(label ?? UI.Label(() => prefs.key)),
                 prefs.CreateDefaultButtonElement()
             );
 
@@ -19,6 +15,12 @@ namespace PrefsGUI.RosettaUI
 
             return element;
         }
+        
+        public static Element CreateFieldRaw<T>(this PrefsParamOuter<T> prefs, LabelElement label = null)
+        {
+            return UI.Field(label, prefs.Get, v => prefs.Set(v));
+        }
+
 
         public static Element CreateElement<TPrefs0, TPrefs1, TOuter0, TOuter1>(
             this PrefsSet<TPrefs0, TPrefs1, TOuter0, TOuter1> prefs)
