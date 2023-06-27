@@ -1,3 +1,15 @@
+# [ga.fuquna.prefsgui.rosettaui-v1.1.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.0.3...ga.fuquna.prefsgui.rosettaui-v1.1.0) (2023-06-27)
+
+
+### Bug Fixes
+
+* **rosettaui:** update dependency ([16646df](https://github.com/fuqunaga/PrefsGUI/commit/16646dfdf2b73325762283ca9c017009f647d8ef))
+
+
+### Features
+
+* add CreateFieldRaw(), CreateSliderRaw() ([4c19757](https://github.com/fuqunaga/PrefsGUI/commit/4c1975740a46d0eb2d9617fe15e74457de1e8db6))
+
 # [ga.fuquna.prefsgui.rosettaui-v1.0.3](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.0.2...ga.fuquna.prefsgui.rosettaui-v1.0.3) (2023-06-21)
 
 
