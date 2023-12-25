@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.3.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.3.1...ga.fuquna.prefsgui-v3.3.2) (2023-12-25)
+
+
+### Bug Fixes
+
+* PrefsIPEndPoints do not appear in inspector ([a748377](https://github.com/fuqunaga/PrefsGUI/commit/a748377115b981810710e4c04f47bbf476255051))
+
 # [ga.fuquna.prefsgui-v3.3.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.3.0...ga.fuquna.prefsgui-v3.3.1) (2023-06-27)
 
 
