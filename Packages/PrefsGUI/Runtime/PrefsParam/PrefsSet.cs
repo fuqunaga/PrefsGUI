@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI
@@ -6,14 +7,15 @@ namespace PrefsGUI
     /// <summary>
     /// Combination of PrefsParams
     /// </summary>
+    [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     public abstract class PrefsSet<TPrefs0, TPrefs1, TOuter0, TOuter1>
         where TPrefs0 : PrefsParamOuter<TOuter0>
         where TPrefs1 : PrefsParamOuter<TOuter1>
     {
         public readonly string key;
         public readonly string[] paramNames;
-        public readonly TPrefs0 prefs0;
-        public readonly TPrefs1 prefs1;
+        public TPrefs0 prefs0;
+        public TPrefs1 prefs1;
         
         protected virtual string GenerateParamKey(string keyString, string paramName) => $"{keyString}_{paramName}";
 
