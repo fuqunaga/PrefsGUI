@@ -2,6 +2,7 @@
 using System.Linq;
 using RosettaUI;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace PrefsGUI.RosettaUI
 {
@@ -39,7 +40,7 @@ namespace PrefsGUI.RosettaUI
                         {
                             CreateElements(menu.Colors),
                             CreateElements(menu.Vectors),
-                            CreateElements(menu.Floats),
+                            menu.Floats.Select(CreateFloatElement),
                             menu.Ranges.Select(prefs =>
                             {
                                 var key = menu.KeyToPropertyName(prefs.key);
@@ -65,8 +66,34 @@ namespace PrefsGUI.RosettaUI
                 );
 
             IEnumerable<Element> CreateElements<T>(IEnumerable<PrefsParamOuter<T>> prefsSet) 
-                => prefsSet.Select(prefs => prefs.CreateElement(KeyToLabelString(prefs.key)));
+                 => prefsSet.Select(prefs => prefs.CreateElement(KeyToLabelString(prefs.key)));
 
+            Element CreateFloatElement(PrefsParamOuter<float> prefs)
+            {
+                var propertyName = menu.KeyToPropertyName(prefs.key);
+                var shader = menu._material.shader;
+                var propertyIndex = shader.FindPropertyIndex(propertyName);
+                var attributes = shader.GetPropertyAttributes(propertyIndex);
+                var enumBlendMode = attributes.FirstOrDefault(attr => attr.StartsWith("Enum(UnityEngine.Rendering.BlendMode)"));
+                if (enumBlendMode != null)
+                {
+                    return CreateEnumBlendModeElement(prefs);
+                }
+
+                return prefs.CreateElement(KeyToLabelString(prefs.key));
+            }
+     
+             Element CreateEnumBlendModeElement(PrefsParamOuter<float> prefs)
+             {
+                 return UI.Row(
+                     UI.Field(KeyToLabelString(prefs.key),
+                         () => (BlendMode)prefs.Get(),
+                         blendMode => prefs.Set((float)(int)blendMode)
+                     ),
+                     prefs.CreateDefaultButtonElement()
+                 );
+             }
+             
             string KeyToLabelString(string key)
             {
                 var name = menu.KeyToPropertyName(key);
@@ -76,5 +103,7 @@ namespace PrefsGUI.RosettaUI
                     : name;
             }
         }
+
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using PrefsGUI.RosettaUI;
+﻿using System.Collections.Generic;
+using System.Linq;
+using PrefsGUI.RosettaUI;
 using RosettaUI;
 using UnityEngine;
 
@@ -7,7 +9,7 @@ namespace PrefsGUI.Example
     [RequireComponent(typeof(RosettaUIRoot))]
     public class PrefsMaterialPropertyRosettaUIExample : MonoBehaviour
     {
-        public PrefsMaterialProperty prefsMaterialProperty;
+        public List<PrefsMaterialProperty> prefsMaterialProperties;
         public Vector2 position;
         
         public void Start()
@@ -16,7 +18,7 @@ namespace PrefsGUI.Example
             
             rosettaUIRoot.Build(
                 UI.Window(
-                    prefsMaterialProperty.CreateElement()
+                    prefsMaterialProperties.Select(pm => pm.CreateElement())
                 ).SetPosition(position)
             );
         }
