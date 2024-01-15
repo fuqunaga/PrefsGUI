@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui.rosettaui-v1.2.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.1.0...ga.fuquna.prefsgui.rosettaui-v1.2.0) (2024-01-15)
+
+
+### Features
+
+* PrefsGUI.RosetatUI supports "Enum(UnityEngine.Rendering.BlendMode)" property attribute ([2b9577b](https://github.com/fuqunaga/PrefsGUI/commit/2b9577b774d09a62ad91ab5ff6cd2af2b0b3a07f))
+
 # [ga.fuquna.prefsgui.rosettaui-v1.1.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.0.3...ga.fuquna.prefsgui.rosettaui-v1.1.0) (2023-06-27)
 
 
