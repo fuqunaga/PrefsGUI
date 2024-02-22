@@ -1,16 +1,7 @@
 {
   "dependencies": {
-    "com.unity.ai.navigation": {
-      "version": "1.1.1",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.ai": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.collab-proxy": {
-      "version": "2.0.0",
+      "version": "2.2.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -24,7 +15,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.21",
+      "version": "3.0.27",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -33,7 +24,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.18",
+      "version": "2.0.22",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -60,7 +51,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.textmeshpro": {
-      "version": "3.0.6",
+      "version": "3.0.8",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -69,7 +60,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.7.2",
+      "version": "1.7.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -110,8 +101,8 @@
       "source": "embedded",
       "dependencies": {
         "ga.fuquna.prefsgui": "3.3.0",
-        "ga.fuquna.rosettaui": "1.4.2",
-        "ga.fuquna.rosettaui.uitoolkit": "1.4.1"
+        "ga.fuquna.rosettaui": "1.5.4",
+        "ga.fuquna.rosettaui.uitoolkit": "1.5.0"
       }
     },
     "ga.fuquna.rapidgui": {
@@ -122,18 +113,18 @@
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui": {
-      "version": "1.4.2",
+      "version": "1.5.4",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui.uitoolkit": {
-      "version": "1.4.1",
+      "version": "1.5.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "ga.fuquna.rosettaui": "1.4.1"
+        "ga.fuquna.rosettaui": "1.5.2"
       },
       "url": "https://registry.npmjs.com"
     },

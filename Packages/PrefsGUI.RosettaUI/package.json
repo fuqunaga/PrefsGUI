@@ -3,13 +3,13 @@
   "version": "1.2.0",
   "displayName": "PrefsGUI - RosettaUI",
   "description": "RosettaUI implementation of PrefsGUI",
-  "unity": "2021.3",
+  "unity": "2022.3",
   "documentationUrl": "https://github.com/fuqunaga/PrefsGUI#readme",
   "license": "MIT",
   "dependencies": {
     "ga.fuquna.prefsgui": "3.3.0",
-    "ga.fuquna.rosettaui": "1.4.2",
-    "ga.fuquna.rosettaui.uitoolkit": "1.4.1"
+    "ga.fuquna.rosettaui": "1.5.4",
+    "ga.fuquna.rosettaui.uitoolkit": "1.5.0"
   },
   "keywords": [
     "unity",
