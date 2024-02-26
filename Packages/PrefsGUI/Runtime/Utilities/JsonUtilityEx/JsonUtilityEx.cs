@@ -16,7 +16,7 @@ namespace PrefsGUI.Utility
 
         public static object FromJson(string json, Type type)
         {
-            object ret = null;
+            object ret;
 
             if (ValueWrapper.NeedWrap(type))
             {
@@ -38,7 +38,7 @@ namespace PrefsGUI.Utility
             return JsonUtility.ToJson(WrapObject(obj), prettyPrint);
         }
 
-        static object WrapObject(object obj)
+        private static object WrapObject(object obj)
         {
             if ( obj != null)
             {

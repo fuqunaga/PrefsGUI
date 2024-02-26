@@ -26,6 +26,8 @@ namespace PrefsGUI.Kvs.Json
         #endregion
 
         
+        public Action<string, Type, string, Exception> onJsonParseFailed;
+        
         private readonly KvsCache kvsCache = new();
         private Dictionary<string, string> jsonDic = new();
         
@@ -85,16 +87,33 @@ namespace PrefsGUI.Kvs.Json
 
         public T Get<T>(string key, T defaultValue)
         {
-            if (!kvsCache.TryGetValue<T>(key, out var value))
+            if (kvsCache.TryGetValue<T>(key, out var value))
             {
-                value = jsonDic.TryGetValue(key, out var json)
-                    ? JsonUtilityEx.FromJson<T>(json)
-                    : defaultValue;
+                return value;
+            }
 
-                kvsCache.Set(key, value);
+            value = defaultValue;
+            if (jsonDic.TryGetValue(key, out var json))
+            {
+                try
+                {
+                    value = JsonUtilityEx.FromJson<T>(json);
+                }
+                catch (Exception e)
+                {
+                    var callback = onJsonParseFailed ?? OnJsonParseFailedDefault;
+                    callback(key, typeof(T), json, e);
+                }
             }
             
+            kvsCache.Set(key, value);
+
             return value;
+        }
+        
+        public void OnJsonParseFailedDefault(string key, Type type, string json, Exception e)
+        {
+            Debug.LogError($"Json parse failed. key[{key}] type[{type.Name}] json[{json}]\n Exception[{e}]");
         }
 
         public void Set<T>(string key, T v)
