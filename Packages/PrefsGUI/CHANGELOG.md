@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.4.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.3.2...ga.fuquna.prefsgui-v3.4.0) (2024-02-26)
+
+
+### Features
+
+* PrefsGradient on RosettaUI ([f67901e](https://github.com/fuqunaga/PrefsGUI/commit/f67901e3732fc240738ba45dede1946f32f0c6fc))
+
 # [ga.fuquna.prefsgui-v3.3.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.3.1...ga.fuquna.prefsgui-v3.3.2) (2023-12-25)
 
 
