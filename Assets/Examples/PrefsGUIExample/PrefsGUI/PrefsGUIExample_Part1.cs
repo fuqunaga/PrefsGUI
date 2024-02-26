@@ -40,17 +40,18 @@ namespace PrefsGUI.Example
         #endregion
 
         // define PrefsParams with key.
-        public PrefsBool              prefsBool    = new("PrefsBool");
-        public PrefsInt               prefsInt     = new("PrefsInt");
-        public PrefsFloat             prefsFloat   = new("PrefsFloat");
-        public PrefsString            prefsString  = new("PrefsString");
-        public PrefsParam<EnumSample> prefsEnum    = new("PrefsEnum");
-        public PrefsColor             prefsColor   = new("PrefsColor");
-        public PrefsVector2           prefsVector2 = new("PrefsVector2");
-        public PrefsVector3           prefsVector3 = new("PrefsVector3");
-        public PrefsVector4           prefsVector4 = new("PrefsVector4");
-        public PrefsAny<CustomClass>  prefsClass   = new("PrefsClass");
-        public PrefsList<CustomClass> prefsList    = new("PrefsList");
+        public PrefsBool              prefsBool     = new("PrefsBool");
+        public PrefsInt               prefsInt      = new("PrefsInt");
+        public PrefsFloat             prefsFloat    = new("PrefsFloat");
+        public PrefsString            prefsString   = new("PrefsString");
+        public PrefsParam<EnumSample> prefsEnum     = new("PrefsEnum");
+        public PrefsColor             prefsColor    = new("PrefsColor");
+        public PrefsGradient          prefsGradient = new("PrefsGradient");
+        public PrefsVector2           prefsVector2  = new("PrefsVector2");
+        public PrefsVector3           prefsVector3  = new("PrefsVector3");
+        public PrefsVector4           prefsVector4  = new("PrefsVector4");
+        public PrefsAny<CustomClass>  prefsClass    = new("PrefsClass");
+        public PrefsList<CustomClass> prefsList     = new("PrefsList");
         
         public void DoGUI()
         {
@@ -70,6 +71,7 @@ namespace PrefsGUI.Example
             prefsString.DoGUI();
             prefsEnum.DoGUI();
             prefsColor.DoGUI();
+            // prefsGradient.DoGUI(); // not supported
             prefsVector2.DoGUI();
             prefsVector2.DoGUISlider();
             prefsVector3.DoGUI();
@@ -101,6 +103,7 @@ namespace PrefsGUI.Example
             string s = prefsString;
             EnumSample e = prefsEnum;
             Color c = prefsColor;
+            Gradient g = prefsGradient;
             Vector2 v2 = prefsVector2;
             Vector3 v3 = prefsVector2;
             Vector4 v4 = prefsVector2;
@@ -125,6 +128,7 @@ namespace PrefsGUI.Example
                 prefsString.CreateElement(),
                 prefsEnum.CreateElement(),
                 prefsColor.CreateElement(),
+                prefsGradient.CreateElement(),
                 prefsVector2.CreateElement(),
                 prefsVector2.CreateSlider(),
                 prefsVector3.CreateElement(),

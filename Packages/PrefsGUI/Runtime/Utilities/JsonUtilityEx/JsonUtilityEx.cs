@@ -60,7 +60,8 @@ namespace PrefsGUI.Utility
                 typeof(string),
                 typeof(Vector2Int), typeof(Vector3Int),
                 typeof(Rect), typeof(RectOffset),
-                typeof(Bounds), typeof(BoundsInt)
+                typeof(Bounds), typeof(BoundsInt),
+                typeof(Gradient)
             };
             
             private static readonly Dictionary<Type, bool> needWrapTable = new();

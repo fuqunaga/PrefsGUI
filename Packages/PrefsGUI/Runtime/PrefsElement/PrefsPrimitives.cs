@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using PrefsGUI.Kvs;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -29,6 +28,13 @@ namespace PrefsGUI
         public PrefsColor(string key, Color defaultValue = default) : base(key, defaultValue) { }
     }
 
+    [Serializable]
+    public class PrefsGradient : PrefsAny<Gradient>
+    {
+        public PrefsGradient(string key, Gradient defaultValue = default) : base(key, defaultValue) { }
+    }
+    
+    
     [Serializable]
     public class PrefsInt : PrefsSlider<int>
     {
