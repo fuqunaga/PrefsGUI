@@ -15,24 +15,23 @@ namespace PrefsGUI
         
         public class CachedValue<T>
         {
-            private bool hasValue;
             private T value;
 
-            public bool HasValue => hasValue;
-            
+            public bool HasValue { get; private set; }
+
             public bool TryGet(out T v)
             {
                 v = value;
-                return hasValue;
+                return HasValue;
             }
 
             public void Set(T v)
             {
                 value = v;
-                hasValue = true;
+                HasValue = true;
             }
 
-            public void Clear() => hasValue = false;
+            public void Clear() => HasValue = false;
         }
         
         public class OuterInnerCache
@@ -91,7 +90,21 @@ namespace PrefsGUI
             if (updateValue)
             {
                 PrefsKvs.Set(key, v);
-                _cache.Clear();
+                if (typeof(TInner).IsValueType)
+                {
+                    _cache.Clear();
+                }
+                // 非ValueTypeならできるだけ参照先を保持したいため、_cache.outer.Clear()はInnerと異なる場合のみ行う
+                // 参照先が異なると以前と同じ値がどうか判定が難しくなり不必要なUIの更新が発生するケースがある
+                else 
+                {
+                    _cache.inner.Clear();
+                    var skipClearOuter = _cache.outer.TryGet(out var outerValue) && Equals(ToInner(outerValue), GetInner());
+                    if (!skipClearOuter)
+                    {
+                        _cache.outer.Clear();
+                    }
+                }
 
                 OnValueChanged();
             }
