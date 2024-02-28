@@ -101,7 +101,7 @@
       "source": "embedded",
       "dependencies": {
         "ga.fuquna.prefsgui": "3.3.0",
-        "ga.fuquna.rosettaui": "1.5.4",
+        "ga.fuquna.rosettaui": "1.6.0",
         "ga.fuquna.rosettaui.uitoolkit": "1.5.1"
       }
     },
@@ -113,7 +113,7 @@
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui": {
-      "version": "1.5.4",
+      "version": "1.6.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
