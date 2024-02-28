@@ -1,6 +1,6 @@
 {
   "name": "ga.fuquna.prefsgui",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "displayName": "PrefsGUI",
   "description": "Accessors and GUIs for persistent preference values using JSON file",
   "unity": "2021.3",

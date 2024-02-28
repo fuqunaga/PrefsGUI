@@ -1,3 +1,11 @@
+# [ga.fuquna.prefsgui-v3.4.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.0...ga.fuquna.prefsgui-v3.4.1) (2024-02-28)
+
+
+### Bug Fixes
+
+* Changed PrefsParamOuterInner to keep references as much as possible when TOuter is not a ValueType ([a73af95](https://github.com/fuqunaga/PrefsGUI/commit/a73af956df5251f865210ed709c9db9084f575b5))
+* Make it easy to understand errors when Json and code have the same key but different types. [#24](https://github.com/fuqunaga/PrefsGUI/issues/24) ([7ce68c6](https://github.com/fuqunaga/PrefsGUI/commit/7ce68c634d44e5ecbd5819acd8d4f340d9fa2eae))
+
 # [ga.fuquna.prefsgui-v3.4.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.3.2...ga.fuquna.prefsgui-v3.4.0) (2024-02-26)
 
 
