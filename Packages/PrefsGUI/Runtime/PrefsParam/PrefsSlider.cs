@@ -17,7 +17,7 @@
     }
 
 
-    public interface IPrefsSlider<TOuter>
+    public interface IPrefsSlider<out TOuter>
     {
         TOuter defaultMin { get; }
         TOuter defaultMax { get; }
