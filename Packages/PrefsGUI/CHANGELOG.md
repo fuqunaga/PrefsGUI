@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.4.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.1...ga.fuquna.prefsgui-v3.4.2) (2024-04-17)
+
+
+### Bug Fixes
+
+* PrefsKvsPathSelector now resets the path when Exit edit or play mode ([84307eb](https://github.com/fuqunaga/PrefsGUI/commit/84307ebdcda007fcb650c89fcddd7b75097082bb))
+
 # [ga.fuquna.prefsgui-v3.4.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.0...ga.fuquna.prefsgui-v3.4.1) (2024-02-28)
 
 
