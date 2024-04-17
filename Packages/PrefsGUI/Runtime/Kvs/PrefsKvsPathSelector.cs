@@ -1,5 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace PrefsGUI.Kvs
 {
@@ -11,8 +16,8 @@ namespace PrefsGUI.Kvs
 
     public static class PrefsKvsPathSelector
     {
-        static bool _first = true;
-        static string _path;
+        private static bool _first = true;
+        private static string _path;
 
         public static string path
         {
@@ -29,5 +34,28 @@ namespace PrefsGUI.Kvs
                 return _path ?? Application.persistentDataPath;
             }
         }
+
+#if UNITY_EDITOR
+        static PrefsKvsPathSelector()
+        {
+            EditorApplication.playModeStateChanged += state =>
+            {
+                switch (state)
+                {
+                    case PlayModeStateChange.ExitingEditMode:
+                    case PlayModeStateChange.ExitingPlayMode:
+                        _first = true;
+                        break;
+
+                    case PlayModeStateChange.EnteredEditMode:
+                    case PlayModeStateChange.EnteredPlayMode:
+                        break;
+                    
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(state), state, null);
+                }
+            };
+        }
+#endif
     }
 }
