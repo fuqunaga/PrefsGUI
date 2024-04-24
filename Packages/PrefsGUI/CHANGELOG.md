@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.4.3](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.2...ga.fuquna.prefsgui-v3.4.3) (2024-04-24)
+
+
+### Bug Fixes
+
+* PrefsParam<T>.RegisterValueChangedCallbackAndCallOnce() > PrefsParam.RegisterValueChangedCallbackAndCallOnce() ([dc03593](https://github.com/fuqunaga/PrefsGUI/commit/dc03593f8e0aa766dc09b02e807aef101aa41b0e))
+
 # [ga.fuquna.prefsgui-v3.4.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.1...ga.fuquna.prefsgui-v3.4.2) (2024-04-17)
 
 
