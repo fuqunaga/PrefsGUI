@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using PrefsGUI.RapidGUI;
 using PrefsGUI.RosettaUI;
+using PrefsGUI.Utility;
 using RapidGUI;
 using RosettaUI;
 using UnityEngine;
@@ -52,6 +53,11 @@ namespace PrefsGUI.Example
         public PrefsVector4           prefsVector4  = new("PrefsVector4");
         public PrefsAny<CustomClass>  prefsClass    = new("PrefsClass");
         public PrefsList<CustomClass> prefsList     = new("PrefsList");
+        public PrefsDictionary<string, int> prefsDictionary = new("PrefsDictionary");
+        
+        // public SerializableDictionary<string, int> dictionary = new();
+        public List<SerializableDictionary<string, Color>> list = new();
+        public SerializableDictionary<string, Color>[] ary = new SerializableDictionary<string, Color>[3];
         
         public void DoGUI()
         {
@@ -137,6 +143,12 @@ namespace PrefsGUI.Example
                 prefsVector4.CreateSlider(),
                 prefsList.CreateElement()
             );
+        }
+
+        [ContextMenu(nameof(ChangeDictionary))]
+        public void ChangeDictionary()
+        {
+            // dictionary.Add("Hoge", 1);
         }
     }
 }
