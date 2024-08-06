@@ -6,8 +6,14 @@ using UnityEngine;
 
 namespace PrefsGUI.Utility
 {
+    public interface ISerializableDictionary
+    {
+        IEnumerable<int> GetDuplicatedKeyIndices();
+        int SerializableItemCount { get; }
+    }
+    
     [Serializable]
-    public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISerializationCallbackReceiver
+    public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISerializationCallbackReceiver, ISerializableDictionary
     {
         [Serializable]
         private struct KeyValue
@@ -18,7 +24,8 @@ namespace PrefsGUI.Utility
             public KeyValue(TKey key, TValue value) => (this.key, this.value) = (key, value);
         }
 
-        [SerializeField] private List<KeyValue> _list;
+        [SerializeField] 
+        private List<KeyValue> _list;
 
         private readonly Dictionary<TKey, TValue> _dictionary = new();
 
@@ -99,7 +106,7 @@ namespace PrefsGUI.Utility
 
         #endregion
 
-
+        
         #region ISerializationCallbackReceiver
 
         public void OnBeforeSerialize()
@@ -114,12 +121,29 @@ namespace PrefsGUI.Utility
         public void OnAfterDeserialize()
         {
             _dictionary.Clear();
+            if (_list == null) return;
             foreach (var item in _list.Where(kv => kv.key != null))
             {
                 _dictionary.TryAdd(item.key, item.value);
             }
         }
 
+        #endregion
+        
+        
+        #region ISerializableDictionary
+
+        public IEnumerable<int> GetDuplicatedKeyIndices()
+        {
+            return _list.Select((kv, index) => (kv.key, index))
+                .GroupBy(kv => kv.key, _dictionary.Comparer)
+                .Where(g => g.Count() > 1)
+                .SelectMany(g => g.Skip(1))
+                .Select(kv => kv.index);
+        }
+        
+        public int SerializableItemCount => _list.Count;
+        
         #endregion
     }
 }
