@@ -25,13 +25,33 @@ namespace PrefsGUI.Utility
         }
 
         [SerializeField] 
-        private List<KeyValue> _list;
+        private List<KeyValue> _list = new();
 
-        private readonly Dictionary<TKey, TValue> _dictionary = new();
+        private readonly Dictionary<TKey, TValue> _dictionary;
 
-        private bool _isDirty;
+        private bool _isDirty = true;
 
 
+        public SerializableDictionary() => _dictionary = new Dictionary<TKey, TValue>();
+
+        public SerializableDictionary(IDictionary<TKey, TValue> dictionary)
+            => _dictionary = new Dictionary<TKey, TValue>(dictionary);
+
+        public SerializableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
+            => _dictionary = new Dictionary<TKey, TValue>(dictionary, comparer);
+
+        public SerializableDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
+            => _dictionary = new Dictionary<TKey, TValue>(collection);
+
+        public SerializableDictionary(
+            IEnumerable<KeyValuePair<TKey, TValue>> collection,
+            IEqualityComparer<TKey> comparer)
+            => _dictionary = new Dictionary<TKey, TValue>(collection, comparer);
+
+        public SerializableDictionary(IEqualityComparer<TKey> comparer)
+            => _dictionary = new Dictionary<TKey, TValue>(comparer);
+        
+        
         protected void SetDirty() => _isDirty = true;
 
 
