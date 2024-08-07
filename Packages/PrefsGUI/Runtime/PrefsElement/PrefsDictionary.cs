@@ -25,6 +25,63 @@ namespace PrefsGUI
             action(value);
             Set(value);
         }
+        
+        protected bool UpdateValueIfSuccess(Func<SerializableDictionary<TKey, TValue>, bool> func)
+        {
+            var value = Get();
+            var success = func(value);
+            {
+                Set(value);
+            }
+
+            return success;
+        }
+        
+        
+        #region Dictionary Methods
+
+        public bool ContainsValue(TValue value) => Get().ContainsValue(value);
+        
+        public bool TryAdd(TKey dictionaryKey, TValue value) => UpdateValueIfSuccess(d => d.TryAdd(dictionaryKey, value));
+        
+        #endregion
+        
+        
+        #region IEnumerable
+        
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        
+        #endregion
+
+        
+        #region IEnumerable<KeyValuePair<TKey, TValue>>,
+
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => Get().GetEnumerator();
+
+        #endregion
+
+
+        #region ICollection<KeyValuePair<TKey, TValue>>
+        
+        public int Count => Get().Count;
+        
+        public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)Get()).IsReadOnly;
+
+        public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+
+        public void Clear() => UpdateValue(d => d.Clear());
+        
+        public bool Contains(KeyValuePair<TKey, TValue> item) => Get().Contains(item);
+        
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            ((ICollection<KeyValuePair<TKey, TValue>>)Get()).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(TKey dictionaryKey) => UpdateValueIfSuccess(d => d.Remove(dictionaryKey));
+        
+        #endregion
+
 
         
         #region IDictionary<TKey, TValue>
@@ -42,52 +99,11 @@ namespace PrefsGUI
         public void Add(TKey dictionaryKey, TValue value) => UpdateValue(d => d.Add(dictionaryKey, value));
         
         public bool ContainsKey(TKey dictionaryKey) => Get().ContainsKey(dictionaryKey);
-
-        public bool Remove(TKey dictionaryKey)
-        {
-            var value = Get();
-            var success = value.Remove(dictionaryKey);
-            if (success)
-            {
-                Set(value);
-            }
-            return success;
-        }
-
+        
+        public bool Remove(KeyValuePair<TKey, TValue> item) => UpdateValueIfSuccess(d => ((ICollection<KeyValuePair<TKey, TValue>>)d).Remove(item));
+        
         public bool TryGetValue(TKey dictionaryKey, out TValue value) => Get().TryGetValue(dictionaryKey, out value);
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => Get().GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
-
-        public void Clear() => UpdateValue(d => d.Clear());
-
-        public bool Contains(KeyValuePair<TKey, TValue> item) => Get().Contains(item);
-        
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<TKey, TValue>>)Get()).CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            var value = Get();
-            var success = ((ICollection<KeyValuePair<TKey, TValue>>)value).Remove(item);
-            if (success)
-            {
-                Set(value);
-            }
-            return success;
-        }
-
-        public int Count => Get().Count;
-        public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)Get()).IsReadOnly;
-
         #endregion
-
-
-        
     }
 }

@@ -116,14 +116,15 @@ namespace PrefsGUI.Editor.Utility
         {
             var color = new Color(0.9f, 0.4f, 0.1f);
             var backgroundColor = new Color(0.2f, 0.2f, 0.2f);
-            const float borderRadius = 10f;
+            const float borderRadius = 7f;
             const float marginLR = 4f;
-            const float paddingLR = 4f;
+            const float paddingLR = 6f;
 
             var mark = new Label()
             {
                 name = duplicatedKeyMarkName,
-                text = "duplicated key",
+                text = "duplicate key",
+                tooltip = "This item will not be added to the dictionary.",
                 style =
                 {
                     color = color,

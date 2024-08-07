@@ -54,7 +54,75 @@ namespace PrefsGUI.Utility
         
         protected void SetDirty() => _isDirty = true;
 
+        #region Dictionary Methods
 
+        public bool ContainsValue(TValue value) => _dictionary.ContainsValue(value);
+        
+        public bool TryAdd(TKey key, TValue value)
+        {
+            var success = _dictionary.TryAdd(key, value);
+            if (success)
+            {
+                SetDirty();
+            }
+
+            return success;
+        }
+        
+        #endregion
+        
+        
+        #region IEnumerable
+        
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        
+        #endregion
+
+        
+        #region IEnumerable<KeyValuePair<TKey, TValue>>,
+
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _dictionary.GetEnumerator();
+
+        #endregion
+        
+        
+        #region ICollection<KeyValuePair<TKey, TValue>>
+        
+        public int Count => _dictionary.Count;
+        
+        public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).IsReadOnly;
+
+        public void Add(KeyValuePair<TKey, TValue> item)
+        {
+            _dictionary.Add(item.Key, item.Value);
+            SetDirty();
+        }
+
+        public void Clear()
+        {
+            _dictionary.Clear();
+            SetDirty();
+        }
+        
+        public bool Contains(KeyValuePair<TKey, TValue> item) => _dictionary.Contains(item);
+        
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            if (!((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).Remove(item))
+                return false;
+
+            SetDirty();
+            return true;
+        }
+        
+        #endregion
+        
+        
         #region IDictionary<TKey, TValue>
 
         public TValue this[TKey key]
@@ -87,42 +155,6 @@ namespace PrefsGUI.Utility
         }
 
         public bool TryGetValue(TKey key, out TValue value) => _dictionary.TryGetValue(key, out value);
-
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _dictionary.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public void Add(KeyValuePair<TKey, TValue> item)
-        {
-            _dictionary.Add(item.Key, item.Value);
-            SetDirty();
-        }
-
-        public void Clear()
-        {
-            _dictionary.Clear();
-            SetDirty();
-        }
-
-        public bool Contains(KeyValuePair<TKey, TValue> item) => _dictionary.Contains(item);
-
-
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            if (!((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).Remove(item))
-                return false;
-
-            SetDirty();
-            return true;
-        }
-
-        public int Count => _dictionary.Count;
-        public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).IsReadOnly;
 
         #endregion
 
