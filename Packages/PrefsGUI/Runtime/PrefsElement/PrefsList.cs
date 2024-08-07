@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 namespace PrefsGUI
 {
@@ -8,13 +9,12 @@ namespace PrefsGUI
     /// List style PrefsGUI
     /// </summary>
     [Serializable]
-    public class PrefsList<T> : PrefsAny<List<T>>, IList<T>, IList
+    public class PrefsList<T> : PrefsListBase<List<T>, PrefsList<T>>, IList<T>, IList
     {
         public PrefsList(string key, List<T> defaultValue = default) : base(key, defaultValue)
         {
         }
 
-        public int DefaultValueCount => defaultValue?.Count ?? 0;
 
         public bool IsDefaultCount => DefaultValueCount == Count;
 
@@ -37,8 +37,29 @@ namespace PrefsGUI
                 Set(list);
             }
         }
+        
+        protected void UpdateValue(Action<List<T>> action)
+        {
+            var v = Get();
+            action(v);
+            Set(v);
+        }
+        
+        
+        #region List Method
 
-        public bool IsDefaultAt(int idx)
+        public void RemoveAll(Predicate<T> predicate) => UpdateValue(v => v.RemoveAll(predicate));
+
+        #endregion
+        
+        
+        #region PrefsListBase<T>
+        
+        protected override IListAccessor<PrefsList<T>> CreateListAccessor() => new ListAccessor(this);
+        
+        public override int DefaultValueCount => defaultValue?.Count ?? 0;
+        
+        public override bool IsDefaultAt(int idx)
         {
             if (idx < DefaultValueCount)
             {
@@ -49,7 +70,7 @@ namespace PrefsGUI
             return false;
         }
 
-        public void ResetToDefaultAt(int idx)
+        public override void ResetToDefaultAt(int idx)
         {
             if (idx < DefaultValueCount)
             {
@@ -58,20 +79,12 @@ namespace PrefsGUI
                 Set(list);
             }
         }
+        
+        #endregion
 
-
+        
         #region IList<T>
-
-        protected void UpdateValue(Action<List<T>> action)
-        {
-            var v = Get();
-            action(v);
-            Set(v);
-        }
-
-        public int Count => Get()?.Count ?? 0;
-        public bool IsReadOnly => false;
-
+        
         public T this[int index]
         {
             get => Get()[index];
@@ -81,11 +94,18 @@ namespace PrefsGUI
         public int IndexOf(T item) => Get().IndexOf(item);
         public void Insert(int index, T item) => UpdateValue((v) => v.Insert(index, item));
         public void RemoveAt(int index) => UpdateValue((v) => v.RemoveAt(index));
+        
+        #endregion
+        
+        
+        #region ICollection<T>
+        
+        public int Count => Get()?.Count ?? 0;
+        bool ICollection<T>.IsReadOnly => (Get() as ICollection<T>)?.IsReadOnly ?? false;
         public void Add(T item) => UpdateValue((v) => v.Add(item));
         public void Clear() => UpdateValue((v) => v.Clear());
         public bool Contains(T item) => Get().Contains(item);
         public void CopyTo(T[] array, int arrayIndex) => Get().CopyTo(array, arrayIndex);
-
         public bool Remove(T item)
         {
             var v = Get();
@@ -93,51 +113,64 @@ namespace PrefsGUI
             Set(v);
             return ret;
         }
-
+        
+        #endregion
+        
+        
+        #region IEnumerable<T>
+        
         public IEnumerator<T> GetEnumerator() => Get().GetEnumerator();
+        
+        #endregion
+
+        
+        #region IEnumerable
+
         IEnumerator IEnumerable.GetEnumerator() => Get().GetEnumerator();
-
+        
         #endregion
 
-
-        #region List like
-
-        public void RemoveAll(Predicate<T> predicate) => UpdateValue(v => v.RemoveAll(predicate));
-
-        #endregion
-
-
+        
         #region IList
 
-        public void CopyTo(Array array, int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsSynchronized => false;
-        public object SyncRoot => this;
-
+        bool IList.IsFixedSize => (Get() as IList)?.IsFixedSize ?? false;
+        bool IList.IsReadOnly => (Get() as IList)?.IsReadOnly ?? false;
+        
         object IList.this[int index]
         {
             get => this[index];
             set => this[index] = (T)value;
         }
 
-        public void Remove(object value) => Remove((T)value);
-
-        public bool IsFixedSize => false;
-
-        public int Add(object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Contains(object value) => Contains((T)value);
-
-        public int IndexOf(object value) => IndexOf((T)value);
-
-        public void Insert(int index, object value) => Insert(index, (T)value);
-
+        int IList.Add(object value) => (Get() as IList)?.Add(value) ?? -1;
+        bool IList.Contains(object value) => (Get() as IList)?.Contains(value) ?? false;
+        int IList.IndexOf(object value) => (Get() as IList)?.IndexOf(value) ?? -1;
+        void IList.Insert(int index, object value) => (Get() as IList)?.Insert(index, value);
+        void IList.Remove(object value) => (Get() as IList)?.Remove(value);
+        
         #endregion
+        
+        
+        #region ICollection
+
+        bool ICollection.IsSynchronized => (Get() as ICollection)?.IsSynchronized ?? false;
+        object ICollection.SyncRoot => (Get() as ICollection)?.SyncRoot ?? this;
+        void ICollection.CopyTo(Array array, int arrayIndex) => (Get() as ICollection)?.CopyTo(array, arrayIndex);
+        
+        #endregion
+
+        
+        private class ListAccessor : IListAccessor<PrefsList<T>>
+        {
+            private readonly PrefsList<T> prefs;
+            
+            public ListAccessor(PrefsList<T> prefs) => this.prefs = prefs;
+
+            public PrefsList<T> InnerList
+            {
+                get => prefs;
+                set => Assert.IsTrue(prefs == value);
+            }
+        }
     }
 }
