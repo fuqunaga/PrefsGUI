@@ -72,7 +72,7 @@ namespace PrefsGUI.Editor.Utility
         {
             _scheduleItem = null;
             
-            if (_rootProperty.GetActualObject() is not ISerializableDictionary serializableDictionary)
+            if (_rootProperty.GetActualObject() is not ISerializableDictionaryForUI serializableDictionary)
             {
                 return;
             }

@@ -6,17 +6,17 @@ using UnityEngine;
 
 namespace PrefsGUI.Utility
 {
-    public interface ISerializableDictionary
+    public interface ISerializableDictionaryForUI
     {
         IEnumerable<int> GetDuplicatedKeyIndices();
         int SerializableItemCount { get; }
     }
     
     [Serializable]
-    public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISerializationCallbackReceiver, ISerializableDictionary
+    public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, ISerializationCallbackReceiver, ISerializableDictionaryForUI
     {
         [Serializable]
-        private struct KeyValue
+        public struct KeyValue
         {
             public TKey key;
             public TValue value;
@@ -31,7 +31,9 @@ namespace PrefsGUI.Utility
 
         private bool _isDirty = true;
 
-
+        internal List<KeyValue> SerializeList => _list;
+        
+        
         public SerializableDictionary() => _dictionary = new Dictionary<TKey, TValue>();
 
         public SerializableDictionary(IDictionary<TKey, TValue> dictionary)
