@@ -8,7 +8,7 @@ namespace PrefsGUI.Utility
 {
     public interface ISerializableDictionaryForUI
     {
-        IEnumerable<int> GetDuplicatedKeyIndices();
+        public IEnumerable<IEnumerable<int>> GetSameKeyIndexGroups();
         int SerializableItemCount { get; }
     }
     
@@ -187,13 +187,11 @@ namespace PrefsGUI.Utility
         
         #region ISerializableDictionary
 
-        public IEnumerable<int> GetDuplicatedKeyIndices()
+        public IEnumerable<IEnumerable<int>> GetSameKeyIndexGroups()
         {
             return _list.Select((kv, index) => (kv.key, index))
                 .GroupBy(kv => kv.key, _dictionary.Comparer)
-                .Where(g => g.Count() > 1)
-                .SelectMany(g => g.Skip(1))
-                .Select(kv => kv.index);
+                .Select(g => g.Select(kv => kv.index).OrderBy(index => index));
         }
         
         public int SerializableItemCount => _list.Count;

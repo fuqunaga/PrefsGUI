@@ -1,9 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using PrefsGUI.Utility;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Pool;
 using UnityEngine.UIElements;
@@ -78,37 +78,82 @@ namespace PrefsGUI.Editor.Utility
             }
 
             var itemCount = serializableDictionary.SerializableItemCount;
-            
 
-            using var _ = HashSetPool<int>.Get(out var duplicatedKeyIndices);
-            duplicatedKeyIndices.UnionWith(serializableDictionary.GetDuplicatedKeyIndices());
-            
-            var propertyFieldsAll = Field.Query<PropertyField>().Build();
-            var propertyFields = Enumerable.Range(0, itemCount)
-                .Select(i => $"{_rootProperty.propertyPath}.{ListPropertyName}.Array.data[{i}]")
-                .Select(path => propertyFieldsAll.FirstOrDefault(pf => pf.bindingPath == path));
 
-            
-            foreach (var (propertyField, index) in propertyFields.Select((pf, index) => (pf, index)))
+            // インデックスから、所属する重複キーのインデックスリストを求めるテーブル
+            using var _ = ListPool<List<int>>.Get(out var indexToSameKeyIndexGroup);
+            indexToSameKeyIndexGroup.AddRange(Enumerable.Repeat<List<int>>(null, itemCount));
+            foreach (var sameKeyIndexGroup in serializableDictionary.GetSameKeyIndexGroups())
             {
-                if (propertyField == null) continue;
+                var list = ListPool<int>.Get();
+                list.AddRange(sameKeyIndexGroup);
                 
-                var duplicated = duplicatedKeyIndices.Contains(index);
-
-                var mark = propertyField.Q<Label>(SerializableDictionaryUIUtility.duplicatedKeyMarkName);
-                if (duplicated)
+                foreach (var index in list)
                 {
-                    if (mark == null)
-                    {
-                        // FoldOutのLabelの横にマークを付ける
-                        var firstLabel = propertyField.Q<Label>();
-                        firstLabel.parent.Add(SerializableDictionaryUIUtility.CreateDuplicatedKeyMark());
-                    }
+                    indexToSameKeyIndexGroup[index] = list;
                 }
-                else
+            }
+            
+            // PropertyFieldごとにマークを脱着
+            var propertyFieldsAll = Field.Query<PropertyField>().Build();
+            for(var i=0; i<itemCount; ++i)
+            {
+                var path = $"{_rootProperty.propertyPath}.{ListPropertyName}.Array.data[{i}]";
+                var propertyField = propertyFieldsAll.FirstOrDefault(pf => pf.bindingPath == path);
+
+            
+                if (propertyField == null) continue;
+
+                VisualElement mark = propertyField.Q<Label>(className: SerializableDictionaryUIUtility.UssClassNameMark);
+                var sameKeyIndices = indexToSameKeyIndexGroup[i];
+                
+                // 重複キーなし
+                if (sameKeyIndices == null || sameKeyIndices.Count == 1)
                 {
                     mark?.RemoveFromHierarchy();
+                    continue;
                 }
+
+                // previous key
+                if (i == sameKeyIndices[0])
+                {
+                    if (mark == null || !mark.ClassListContains(SerializableDictionaryUIUtility.UssClassNameMarkPrevious))
+                    {
+                        mark?.RemoveFromHierarchy();
+                        mark = SerializableDictionaryUIUtility.CreatePreviousKeyMark();
+                        AddMark(propertyField, mark);
+                    }
+                    
+                    mark.tooltip = $"duplicate key index: \n{string.Join(", ", sameKeyIndices.Skip(1))}";
+                }
+                // duplicate key
+                else
+                {
+                    if (mark == null || !mark.ClassListContains(SerializableDictionaryUIUtility.UssClassNameMarkDuplicate))
+                    {
+                        mark?.RemoveFromHierarchy();
+                        mark = SerializableDictionaryUIUtility.CreateDuplicatedKeyMark();
+                        AddMark(propertyField, mark);
+                    }
+                    
+                    mark.tooltip = $"previous key index: {sameKeyIndices[0]}.\nIgnored in the dictionary.";
+                }
+            }
+
+            // sameKeyIndexGroupのリストを返却
+            foreach (var list in indexToSameKeyIndexGroup.Distinct())
+            {
+                ListPool<int>.Release(list);
+            }
+
+            return;
+
+            void AddMark(PropertyField field, VisualElement mark)
+            {
+                // FoldOutのLabelの横にマークを付ける
+                var firstLabel = field.Q<Label>();
+                firstLabel.parent.Add(mark);
+
             }
         }
     }
