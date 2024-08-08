@@ -10,10 +10,10 @@ using UnityEngine.UIElements;
 
 namespace PrefsGUI.Editor.Utility
 {
-    public class SerializedDictionaryInspectorUpdater
+    public class SerializableDictionaryInspectorUpdater
     {
         private const string ListPropertyName = "_list";
-        private const string duplicatedKeyMarkName = "prefsgui-duplicated-key-mark";
+        
         
         private static SerializedProperty GetListSerializedProperty(SerializedProperty property)
         {
@@ -30,7 +30,7 @@ namespace PrefsGUI.Editor.Utility
         public PropertyField Field { get; }
 
         
-        public SerializedDictionaryInspectorUpdater(SerializedProperty property)
+        public SerializableDictionaryInspectorUpdater(SerializedProperty property)
         {
             var name = property.displayName;
             _rootProperty = property;
@@ -95,14 +95,14 @@ namespace PrefsGUI.Editor.Utility
                 
                 var duplicated = duplicatedKeyIndices.Contains(index);
 
-                var mark = propertyField.Q<Label>(duplicatedKeyMarkName);
+                var mark = propertyField.Q<Label>(SerializableDictionaryUIUtility.duplicatedKeyMarkName);
                 if (duplicated)
                 {
                     if (mark == null)
                     {
                         // FoldOutのLabelの横にマークを付ける
                         var firstLabel = propertyField.Q<Label>();
-                        firstLabel.parent.Add(CreateDuplicatedKeyMark());
+                        firstLabel.parent.Add(SerializableDictionaryUIUtility.CreateDuplicatedKeyMark());
                     }
                 }
                 else
@@ -110,37 +110,6 @@ namespace PrefsGUI.Editor.Utility
                     mark?.RemoveFromHierarchy();
                 }
             }
-        }
-        
-        private VisualElement CreateDuplicatedKeyMark()
-        {
-            var color = new Color(0.9f, 0.4f, 0.1f);
-            var backgroundColor = new Color(0.2f, 0.2f, 0.2f);
-            const float borderRadius = 7f;
-            const float marginLR = 4f;
-            const float paddingLR = 6f;
-
-            var mark = new Label()
-            {
-                name = duplicatedKeyMarkName,
-                text = "duplicate key",
-                tooltip = "This item will not be added to the dictionary.",
-                style =
-                {
-                    color = color,
-                    backgroundColor = backgroundColor,
-                    borderBottomLeftRadius = borderRadius,
-                    borderBottomRightRadius = borderRadius,
-                    borderTopLeftRadius = borderRadius,
-                    borderTopRightRadius = borderRadius,
-                    marginLeft = marginLR,
-                    marginRight = marginLR,
-                    paddingLeft = paddingLR,
-                    paddingRight = paddingLR,
-                }
-            };
-
-            return mark;
         }
     }
 }

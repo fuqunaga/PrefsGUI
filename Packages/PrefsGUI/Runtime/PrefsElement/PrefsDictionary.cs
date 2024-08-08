@@ -9,7 +9,7 @@ namespace PrefsGUI
     /// List style PrefsGUI
     /// </summary>
     [Serializable]
-    public class PrefsDictionary<TKey, TValue> : PrefsAny<SerializableDictionary<TKey, TValue>>, IDictionary<TKey, TValue>
+    public class PrefsDictionary<TKey, TValue> : PrefsListBase<SerializableDictionary<TKey, TValue>, List<SerializableDictionary<TKey, TValue>.KeyValue>>, IDictionary<TKey, TValue>
     {
         public PrefsDictionary(string key) : base(key, new SerializableDictionary<TKey, TValue>())
         {

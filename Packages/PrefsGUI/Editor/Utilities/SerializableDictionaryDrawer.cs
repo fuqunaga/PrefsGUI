@@ -11,7 +11,7 @@ namespace PrefsGUI.Editor.Utility
         // SerializableDictionaryDrawer自体のメンバー変数は使わない
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            var inspectorUpdater = new SerializedDictionaryInspectorUpdater(property);
+            var inspectorUpdater = new SerializableDictionaryInspectorUpdater(property);
             return inspectorUpdater.Field;
         }
     }
