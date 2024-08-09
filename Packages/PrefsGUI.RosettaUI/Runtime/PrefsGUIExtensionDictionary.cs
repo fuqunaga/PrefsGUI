@@ -1,8 +1,6 @@
 using PrefsGUI.Utility;
 using RosettaUI;
 
-#if false
-
 namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionDictionary
@@ -19,9 +17,9 @@ namespace PrefsGUI.RosettaUI
                     () => listAccessor.InnerList,
                     (binder, idx) =>
                     {
-                        // var field = CreateDictionaryItemDefault((IBinder<SerializableDictionary<TKey, TValue>.KeyValue>)binder, idx);
+                        var field = CreateDictionaryItemDefault((IBinder<SerializableDictionary<TKey, TValue>.KeyValue>)binder, idx);
             
-                        var field = UI.ListItemDefault(binder, idx);
+                        // var field = UI.ListItemDefault(binder, idx);
 
                         return (idx < prefs.DefaultValueCount)
                             ? UI.Row(
@@ -44,14 +42,17 @@ namespace PrefsGUI.RosettaUI
             IBinder<SerializableDictionary<TKey, TValue>.KeyValue> binder, int idx)
         {
             // キーが１行で表示できるならFoldのヘッダーに表示する
-            var isSingleLine = TypeUtility.IsSingleLine(typeof(TKey));
+            var isKeySingleLine = TypeUtility.IsSingleLine(typeof(TKey));
 
-            if (!isSingleLine)
+            if (!isKeySingleLine)
             {
                 return UI.Fold($"Item {idx}", UI.Field(null, binder));
             }
             
-
+            // Valueが１行で表示できない場合、ラベルは表示しない
+            var isValueSingleLine = TypeUtility.IsSingleLine(typeof(TValue));
+            var valueFieldLabel = isValueSingleLine ? (LabelElement)"Value" : null;
+            
             var fold = UI.Fold(
                 // UI.Row()いらないけどflex-graw:1を効かせるためのハックとして入れている
                 UI.Row(
@@ -64,7 +65,7 @@ namespace PrefsGUI.RosettaUI
                 ),
                 new[]
                 {
-                    UI.Field(null, () => binder.Get().value, v =>
+                    UI.Field(valueFieldLabel, () => binder.Get().value, v =>
                     {
                         var kv = binder.Get();
                         kv.value = v;
@@ -77,5 +78,3 @@ namespace PrefsGUI.RosettaUI
         }
     }
 }
-
-#endif
