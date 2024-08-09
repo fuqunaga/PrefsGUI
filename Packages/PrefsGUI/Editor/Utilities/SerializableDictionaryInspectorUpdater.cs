@@ -141,7 +141,7 @@ namespace PrefsGUI.Editor.Utility
             }
 
             // sameKeyIndexGroupのリストを返却
-            foreach (var list in indexToSameKeyIndexGroup.Distinct())
+            foreach (var list in indexToSameKeyIndexGroup.Distinct().Where(l => l != null))
             {
                 ListPool<int>.Release(list);
             }
