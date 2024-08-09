@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using PrefsGUI.RapidGUI;
 using PrefsGUI.RosettaUI;
 using PrefsGUI.Utility;
@@ -41,23 +42,27 @@ namespace PrefsGUI.Example
         #endregion
 
         // define PrefsParams with key.
-        public PrefsBool              prefsBool     = new("PrefsBool");
-        public PrefsInt               prefsInt      = new("PrefsInt");
-        public PrefsFloat             prefsFloat    = new("PrefsFloat");
-        public PrefsString            prefsString   = new("PrefsString");
-        public PrefsParam<EnumSample> prefsEnum     = new("PrefsEnum");
-        public PrefsColor             prefsColor    = new("PrefsColor");
-        public PrefsGradient          prefsGradient = new("PrefsGradient");
-        public PrefsVector2           prefsVector2  = new("PrefsVector2");
-        public PrefsVector3           prefsVector3  = new("PrefsVector3");
-        public PrefsVector4           prefsVector4  = new("PrefsVector4");
-        public PrefsAny<CustomClass>  prefsClass    = new("PrefsClass");
-        public PrefsList<CustomClass> prefsList     = new("PrefsList");
+        public PrefsBool prefsBool = new("PrefsBool");
+        public PrefsInt prefsInt = new("PrefsInt");
+        public PrefsFloat prefsFloat = new("PrefsFloat");
+        public PrefsString prefsString = new("PrefsString");
+        public PrefsParam<EnumSample> prefsEnum = new("PrefsEnum");
+        public PrefsColor prefsColor = new("PrefsColor");
+        public PrefsGradient prefsGradient = new("PrefsGradient");
+        public PrefsVector2 prefsVector2 = new("PrefsVector2");
+        public PrefsVector3 prefsVector3 = new("PrefsVector3");
+        public PrefsVector4 prefsVector4 = new("PrefsVector4");
+        public PrefsAny<CustomClass> prefsClass = new("PrefsClass");
+        public PrefsList<CustomClass> prefsList = new("PrefsList");
         public PrefsDictionary<string, int> prefsDictionary = new("PrefsDictionary");
-        
-        // public SerializableDictionary<string, int> dictionary = new();
-        public List<SerializableDictionary<string, Color>> list = new();
-        public SerializableDictionary<string, Color>[] ary = new SerializableDictionary<string, Color>[3];
+        public PrefsDictionary<EnumSample, CustomClass> prefsDictionaryComplex = new("prefsDictionaryComplex");
+        public PrefsDictionary<Vector3, CustomClass> prefsDictionaryComplex2 = new("prefsDictionaryComplex2");
+        public PrefsDictionary<CustomClass, int> prefsDictionaryBigHeader = new("prefsDictionaryBigHeader");
+        // public SerializableDictionary<string, int> serializableDictionary;
+        // public SerializableDictionary<EnumSample, CustomClass> serializableDictionaryComplex;
+        // public SerializableDictionary<Vector3, CustomClass> serializableDictionaryComplex2;
+        // public SerializableDictionary<CustomClass, int> serializableDictionaryBigHeader;
+
         
         public void DoGUI()
         {
@@ -126,6 +131,7 @@ namespace PrefsGUI.Example
 
         public Element CreateElement(LabelElement label)
         {
+            var hoge = new PrefsList<int>("hoge");
             return UI.Column(
                 prefsBool.CreateElement(),
                 prefsInt.CreateElement(),
@@ -141,14 +147,18 @@ namespace PrefsGUI.Example
                 prefsVector3.CreateSlider(),
                 prefsVector4.CreateElement(),
                 prefsVector4.CreateSlider(),
-                prefsList.CreateElement()
+                prefsClass.CreateElement(),
+                prefsList.CreateElement(),
+                hoge.CreateElement(),
+                prefsDictionary.CreateElement(),
+                UI.TextAreaReadOnly(nameof(prefsDictionary),
+                    () => string.Join("\n", prefsDictionary.Get().Select(pair => $"{pair.Key} : {pair.Value}"))
+                ),
+                
+                prefsDictionaryComplex.CreateElement(),
+                prefsDictionaryComplex2.CreateElement(),
+                prefsDictionaryBigHeader.CreateElement()
             );
-        }
-
-        [ContextMenu(nameof(ChangeDictionary))]
-        public void ChangeDictionary()
-        {
-            // dictionary.Add("Hoge", 1);
         }
     }
 }

@@ -493,8 +493,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7830099221526941841, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
         type: 3}
-      propertyPath: prefsDictionary.defaultValue._list.Array.size
-      value: 1
+      propertyPath: prefsDictionary.defaultValue._list.Array.data[0].key
+      value: first
       objectReference: {fileID: 0}
     - target: {fileID: 7830099223094831404, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
         type: 3}
