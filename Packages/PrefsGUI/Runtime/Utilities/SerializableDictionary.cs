@@ -191,6 +191,7 @@ namespace PrefsGUI.Utility
         {
             return _list.Select((kv, index) => (kv.key, index))
                 .GroupBy(kv => kv.key, _dictionary.Comparer)
+                .Where(g => g.Count() > 1)
                 .Select(g => g.Select(kv => kv.index).OrderBy(index => index));
         }
         
