@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using RosettaUI;
 
@@ -5,12 +6,20 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionList
     {
-        public static Element CreateElement<TList, TListForUI>(this PrefsListBase<TList, TListForUI> prefs, in ListViewOption option) 
+        public static Element CreateElement<TList, TListForUI>(
+            this PrefsListBase<TList, TListForUI> prefs,
+            in ListViewOption option
+        )
             where TList : new()
             where TListForUI : IList
             => prefs.CreateElement(null, option);
-        
-        public static Element CreateElement<TList, TListForUI>(this PrefsListBase<TList, TListForUI> prefs, LabelElement label = null, in ListViewOption? option = null) 
+
+        public static Element CreateElement<TList, TListForUI>(
+            this PrefsListBase<TList, TListForUI> prefs,
+            LabelElement label = null,
+            in ListViewOption? option = null,
+            Func<IBinder, int, Element> createItemElementFunc = null
+        )
             where TList : new()
             where TListForUI : IList
         {
@@ -21,7 +30,8 @@ namespace PrefsGUI.RosettaUI
                     () => listAccessor.InnerList,
                     (binder, idx) =>
                     {
-                        var field = UI.ListItemDefault(binder, idx);
+                        createItemElementFunc ??= UI.ListItemDefault;
+                        var field = createItemElementFunc(binder, idx);
 
                         return (idx < prefs.DefaultValueCount)
                             ? UI.Row(

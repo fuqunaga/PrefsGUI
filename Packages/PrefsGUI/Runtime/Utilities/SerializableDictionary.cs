@@ -185,7 +185,7 @@ namespace PrefsGUI.Utility
         #endregion
         
         
-        #region ISerializableDictionary
+        #region ISerializableDictionaryForUI
 
         public IEnumerable<IEnumerable<int>> GetSameKeyIndexGroups()
         {
