@@ -54,9 +54,14 @@ namespace PrefsGUI.RosettaUI
             var valueFieldLabel = isValueSingleLine ? (LabelElement)"Value" : null;
             
             var fold = UI.Fold(
-                // UI.Row()いらないけどflex-graw:1を効かせるためのハックとして入れている
+                // UI.Row()はflex-grow:1を効かせるためにも必要
+                // 現状UI.Row()の子供にはflex-growを設定しているがデフォルトのスタイルとしては設定されていない
                 UI.Row(
-                    UI.Field($"Key {idx}", () => binder.Get().key, v =>
+                    // UI.Field(label, ...)では、FloatFieldのラベルドラッグなど
+                    // Labelのイベントが反映されてFoldのオープンクローズが反応しない場合があるので
+                    // UI.Field()のラベルは使わず、UI.Label()を別途使用している
+                    UI.Label($"Key {idx}", LabelType.Prefix),
+                    UI.Field(null, () => binder.Get().key, v =>
                     {
                         var kv = binder.Get();
                         kv.key = v;
