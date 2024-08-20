@@ -32,8 +32,8 @@ namespace PrefsGUI.Example
         }
 
         #endregion
-
-        // define PrefsParams with key.
+        
+        
         public PrefsBool              prefsBool     = new("PrefsBool");
         public PrefsInt               prefsInt      = new("PrefsInt");
         public PrefsFloat             prefsFloat    = new("PrefsFloat");
