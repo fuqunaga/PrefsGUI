@@ -17,7 +17,7 @@ namespace PrefsGUI.RapidGUI.Example
             };
             windowLaunchers.Add("Primitive", typeof(PrefsGUIRapidGUIExample_Primitive));
             windowLaunchers.Add("Slider", typeof(PrefsGUIRapidGUIExample_Slider));
-            windowLaunchers.Add("MinMaxSlider", typeof(PrefsGUIExample_MinMax));
+            windowLaunchers.Add("MinMaxSlider", typeof(PrefsGUIRapidGUIExample_MinMaxSlider));
             windowLaunchers.Add("PrefsSearch", PrefsSearch.DoGUI).SetWidth(600f).SetHeight(800f);
 
             windowRect.position = position;

@@ -382,6 +382,18 @@ LightingSettings:
   m_PVRTiledBaking: 0
   m_NumRaysToShootPerTexel: -1
   m_RespectSceneVisibilityWhenBakingGI: 0
+--- !u!114 &845156912 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7830099221792254709, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 7830099221719735727}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99088179b88fc1d46adc2fc60ac2fbee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &985232350
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,6 +465,11 @@ PrefabInstance:
       propertyPath: primitive
       value: 
       objectReference: {fileID: 1704115966}
+    - target: {fileID: 1322886098607774198, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
+        type: 3}
+      propertyPath: minMax
+      value: 
+      objectReference: {fileID: 845156912}
     - target: {fileID: 1902734614948188946, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
         type: 3}
       propertyPath: example
@@ -463,6 +480,16 @@ PrefabInstance:
       propertyPath: primitive
       value: 
       objectReference: {fileID: 1704115966}
+    - target: {fileID: 2584180674348050858, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
+        type: 3}
+      propertyPath: minMax
+      value: 
+      objectReference: {fileID: 845156912}
+    - target: {fileID: 2584180674348050858, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
+        type: 3}
+      propertyPath: minmax
+      value: 
+      objectReference: {fileID: 845156912}
     - target: {fileID: 5708718367842614613, guid: 1a70f7cb24c86ff4cb00da13fcc4f9b9,
         type: 3}
       propertyPath: example
