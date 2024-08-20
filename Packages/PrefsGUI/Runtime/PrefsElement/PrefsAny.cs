@@ -24,7 +24,6 @@ namespace PrefsGUI
     {
         public static string ToInner<TOuter>(TOuter outerV) => (outerV == null) ? "" : JsonUtilityEx.ToJson(outerV);
         public static TOuter ToOuter<TOuter>(string innerV) => string.IsNullOrEmpty(innerV) ? default : JsonUtilityEx.FromJson<TOuter>(innerV);
-        public static bool IsEqual<TOuter>(TOuter lhs, TOuter rhs)
-            =>ToInner(lhs) == PrefsAnyUtility.ToInner(rhs);
+        public static bool IsEqual<TOuter>(TOuter lhs, TOuter rhs) => ToInner(lhs) == ToInner(rhs);
     }
 }
