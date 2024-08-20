@@ -4,7 +4,7 @@ using RosettaUI;
 
 namespace PrefsGUI.RosettaUI
 {
-    public static class PrefsGUIExtensionList
+    public static class PrefsGUIExtensionListBase
     {
         public static Element CreateElement<TList, TListForUI>(
             this PrefsListBase<TList, TListForUI> prefs,

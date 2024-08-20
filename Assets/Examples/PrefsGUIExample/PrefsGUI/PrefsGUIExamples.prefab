@@ -176,6 +176,7 @@ Transform:
   m_Children:
   - {fileID: 5910173124826832050}
   - {fileID: 5910173125652080342}
+  - {fileID: 2122528793330596787}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5910173124934788265
@@ -271,3 +272,95 @@ MonoBehaviour:
     defaultValue:
       min: {x: 0, y: 0, z: 0}
       max: {x: 0, y: 0, z: 0}
+--- !u!1 &7910112138199482675
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2122528793330596787}
+  - component: {fileID: 2435621400607673198}
+  m_Layer: 0
+  m_Name: Dictionary
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2122528793330596787
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910112138199482675}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5910173124934788266}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2435621400607673198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7910112138199482675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05adcfa2b67e481b905f2cc7c6f285c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefsStringIntDictionary:
+    _key: StringIntDictionary
+    defaultValue:
+      _list:
+      - key: first key
+        value: 1
+  prefsStringListDictionary:
+    _key: StringListDictionary
+    defaultValue:
+      _list:
+      - key: 
+        value: 0000000001000000
+  prefsIntClassDictionary:
+    _key: IntClassDictionary
+    defaultValue:
+      _list:
+      - key: 0
+        value:
+          name: first element
+          intValue: 0
+      - key: 1
+        value:
+          name: secound element
+          intValue: 1
+  prefsEnumClassDictionary:
+    _key: EnumClassDictionary
+    defaultValue:
+      _list:
+      - key: 0
+        value:
+          name: first element
+          intValue: 0
+      - key: 1
+        value:
+          name: secound element
+          intValue: 1
+  prefsVector2ClassDictionary:
+    _key: Vector2ClassDictionary
+    defaultValue:
+      _list:
+      - key: {x: 0, y: 1}
+        value:
+          name: first element
+          intValue: 0
+      - key: {x: 1, y: 2}
+        value:
+          name: secound element
+          intValue: 1
