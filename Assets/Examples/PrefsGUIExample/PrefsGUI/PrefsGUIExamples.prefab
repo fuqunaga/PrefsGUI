@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5910173124826832050}
   - component: {fileID: 5910173124826832049}
   m_Layer: 0
-  m_Name: Part1
+  m_Name: Primitive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5910173124826832051}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5910173124934788266}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5910173124826832049
 MonoBehaviour:
@@ -61,7 +61,39 @@ MonoBehaviour:
     defaultValue: 0
   prefsColor:
     _key: PrefsColor
-    defaultValue: {r: 0, g: 0, b: 0, a: 0}
+    defaultValue: {r: 1, g: 0, b: 0, a: 1}
+  prefsGradient:
+    _key: PrefsGradient
+    defaultValue:
+      serializedVersion: 2
+      key0: {r: 1, g: 0, b: 0, a: 1}
+      key1: {r: 0, g: 1, b: 0.07015848, a: 1}
+      key2: {r: 0.002779007, g: 0, b: 1, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 35209
+      ctime2: 65535
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 2
+      m_ColorSpace: -1
+      m_NumColorKeys: 3
+      m_NumAlphaKeys: 2
   prefsVector2:
     _key: PrefsVector2
     defaultValue: {x: 0, y: 0}
@@ -71,109 +103,6 @@ MonoBehaviour:
   prefsVector4:
     _key: PrefsVector4
     defaultValue: {x: 0, y: 0, z: 0, w: 0}
-  prefsClass:
-    _key: PrefsClass
-    defaultValue:
-      name: 
-      intValue: 0
-  prefsList:
-    _key: PrefsList
-    defaultValue:
-    - name: first
-      intValue: 0
---- !u!1 &5910173124934788267
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5910173124934788266}
-  - component: {fileID: 5910173124934788265}
-  m_Layer: 0
-  m_Name: PrefsGUIExamples
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5910173124934788266
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5910173124934788267}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5910173124826832050}
-  - {fileID: 5910173125313911334}
-  - {fileID: 5910173125652080342}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5910173124934788265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5910173124934788267}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f45fdd78baa00824fa0bd95ff0bf37bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  platformMask: 132
-  _path: '%dataPath%/../../%productName%Prefs'
---- !u!1 &5910173125313911335
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5910173125313911334}
-  - component: {fileID: 5910173125313911333}
-  m_Layer: 0
-  m_Name: Part2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5910173125313911334
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5910173125313911335}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5910173124934788266}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5910173125313911333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5910173125313911335}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84e9b87159a01f64da8cb763532f1382, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   prefsVector2Int:
     _key: PrefsVector2Int
     defaultValue: {x: 0, y: 0}
@@ -198,6 +127,71 @@ MonoBehaviour:
     defaultValue:
       m_Position: {x: 0, y: 0, z: 0}
       m_Size: {x: 0, y: 0, z: 0}
+  prefsClass:
+    _key: PrefsClass
+    defaultValue:
+      name: 
+      intValue: 0
+  prefsList:
+    _key: PrefsList
+    defaultValue:
+    - name: first
+      intValue: 0
+  prefsIPEndPoint:
+    prefs0:
+      _key: PrefsIPEndPoint_address
+      defaultValue: localhost
+    prefs1:
+      _key: PrefsIPEndPoint_port
+      defaultValue: 10000
+--- !u!1 &5910173124934788267
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5910173124934788266}
+  - component: {fileID: 5910173124934788265}
+  m_Layer: 0
+  m_Name: PrefsGUIExamples
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5910173124934788266
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173124934788267}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5910173124826832050}
+  - {fileID: 5910173125652080342}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5910173124934788265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5910173124934788267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f45fdd78baa00824fa0bd95ff0bf37bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  platform: 12
+  _path: '%dataPath%/../../%productName%Prefs'
 --- !u!1 &5910173125652080343
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,7 +203,7 @@ GameObject:
   - component: {fileID: 5910173125652080342}
   - component: {fileID: 5910173125652080341}
   m_Layer: 0
-  m_Name: Part3
+  m_Name: MinMax
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,13 +216,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5910173125652080343}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5910173124934788266}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5910173125652080341
 MonoBehaviour:
@@ -244,15 +238,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefsMinMaxInt:
     _key: PrefsMinMaxInt
+    defaultValue:
+      min: 0
+      max: 0
   prefsMinMaxFloat:
     _key: PrefsMinMaxFloat
+    defaultValue:
+      min: 0
+      max: 0
   prefsMinMaxVector2:
     _key: PrefsMinMaxVector2
+    defaultValue:
+      min: {x: 0, y: 0}
+      max: {x: 0, y: 0}
   prefsMinMaxVector3:
     _key: PrefsMinMaxVector3
+    defaultValue:
+      min: {x: 0, y: 0, z: 0}
+      max: {x: 0, y: 0, z: 0}
   prefsMinMaxVector4:
     _key: PrefsMinMaxVector4
+    defaultValue:
+      min: {x: 0, y: 0, z: 0, w: 0}
+      max: {x: 0, y: 0, z: 0, w: 0}
   prefsMinMaxVector2Int:
     _key: PrefsMinMaxVector2Int
+    defaultValue:
+      min: {x: 0, y: 0}
+      max: {x: 0, y: 0}
   prefsMinMaxVector3Int:
     _key: PrefsMinMaxVector3Int
+    defaultValue:
+      min: {x: 0, y: 0, z: 0}
+      max: {x: 0, y: 0, z: 0}

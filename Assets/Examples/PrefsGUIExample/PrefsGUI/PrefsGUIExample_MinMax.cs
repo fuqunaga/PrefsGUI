@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PrefsGUI.Example
 {
-    public class PrefsGUIExample_Part3 : MonoBehaviour, IDoGUI, IElementCreator
+    public class PrefsGUIExample_MinMax : MonoBehaviour, IDoGUI, IElementCreator
     {
         // define PrefsParams with key.
         public PrefsMinMaxInt prefsMinMaxInt = new("PrefsMinMaxInt");
