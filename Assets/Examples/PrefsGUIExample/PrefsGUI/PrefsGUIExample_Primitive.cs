@@ -1,39 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PrefsGUI.Example
 {
     public class PrefsGUIExample_Primitive : MonoBehaviour
     {
-        #region Type Define
-
-        public enum EnumSample
-        {
-            One,
-            Two,
-            Three
-        }
-
-        [Serializable]
-        public class CustomClass
-        {
-            public string name;
-            public int intValue;
-
-            public CustomClass()
-            {
-            }
-
-            public CustomClass(CustomClass other)
-            {
-                name = other.name;
-                intValue = other.intValue;
-            }
-        }
-
-        #endregion
-        
-        
         public PrefsBool              prefsBool     = new("PrefsBool");
         public PrefsInt               prefsInt      = new("PrefsInt");
         public PrefsFloat             prefsFloat    = new("PrefsFloat");

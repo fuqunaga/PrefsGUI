@@ -11,74 +11,14 @@ namespace PrefsGUI.RosettaUI
     {
         private static readonly Dictionary<Type, Func<PrefsParam, LabelElement, Element>> FuncTable = new();
 
+        private static MethodInfo _dictionaryCreateElementMethodInfo;
         private static MethodInfo _listCreateElementMethodInfo;
         private static MethodInfo _fieldCreateElementMethodInfo;
 
-        private static MethodInfo GetNonGenericMethodInfo(Type prefsType)
-        {
-            if (!prefsType.IsGenericType) return null;
-
-            var definitionType = prefsType.GetGenericTypeDefinition();
-            
-            if (definitionType == typeof(PrefsList<>))
-            {
-                _listCreateElementMethodInfo ??= typeof(PrefsGUIExtensionList)
-                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                    .Where(mi => mi.Name == nameof(PrefsGUIExtensionList.CreateElement))
-                    .FirstOrDefault(mi =>
-                    {
-                        var parameterInfos = mi.GetParameters();
-                        return
-                            parameterInfos[0].ParameterType.GetGenericTypeDefinition() == typeof(PrefsList<>)
-                            && parameterInfos[0].ParameterType == typeof(LabelElement)
-                            ;
-                    });
-
-                return _listCreateElementMethodInfo;
-            }
-
-            if (definitionType == typeof(PrefsParamOuter<>))
-            {
-
-                if (_fieldCreateElementMethodInfo == null)
-                {
-                    _fieldCreateElementMethodInfo = typeof(PrefsGUIExtensionField)
-                        .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                        .Where(mi => mi.Name == nameof(PrefsGUIExtensionField.CreateElement))
-                        .FirstOrDefault(mi =>
-                            mi.GetParameters()[0].ParameterType.GetGenericTypeDefinition() ==
-                            typeof(PrefsParamOuter<>));
-                }
-
-                return _fieldCreateElementMethodInfo;
-            }
-
-            return null;
-        }
         
         public static Element CreateElement(this PrefsParam prefs, LabelElement label = null)
         {
-            var originalType = prefs.GetType();
-            if (!FuncTable.TryGetValue(originalType, out var func))
-            {
-                var type = originalType;
-                var mi = GetNonGenericMethodInfo(type);
-                while (mi == null)
-                {
-                    type = type.BaseType;
-                    Assert.IsNotNull(type, originalType.ToString());
-                    
-                    mi = GetNonGenericMethodInfo(type);
-                }
-    
-                var arg = type.GetGenericArguments()[0];
-                mi = mi.MakeGenericMethod(arg);
-                
-                func = (p, l) => mi.Invoke(null, new object[] {p, l}) as Element;
-
-                FuncTable[originalType] = func;
-            }
-
+            var func = GetCreateElementFunc(prefs.GetType());
             return func?.Invoke(prefs, label);
         }
 
@@ -86,16 +26,97 @@ namespace PrefsGUI.RosettaUI
         {
             return PrefsGUIElement.CreateDefaultButtonElement(prefs.ResetToDefault, () => prefs.IsDefault);
         }
-
-
+        
         public static void SubscribeSyncedFlag(PrefsParam prefs, Element element)
         {
             prefs.onSyncedChanged += OnSyncedChanged;
             OnSyncedChanged(prefs.Synced);
-
+            
+            return;
+            
             void OnSyncedChanged(bool synced)
             {
                 element?.SetColor(synced ? PrefsParam.syncedColor : null);
+            }
+        }
+        
+        
+        private static Func<PrefsParam, LabelElement, Element> GetCreateElementFunc(Type originalType)
+        {
+            if (FuncTable.TryGetValue(originalType, out var func))
+            {
+                return func;
+            }
+            
+            // MethodInfoが見つかるまで親クラスをさかのぼっていく
+            var type = originalType;
+            var mi = GetGenericMethodInfo(type);
+            while (mi == null)
+            {
+                type = type.BaseType;
+                Assert.IsNotNull(type, originalType.ToString());
+
+                mi = GetGenericMethodInfo(type);
+            }
+
+            var arg = type.GetGenericArguments();
+            mi = mi.MakeGenericMethod(arg);
+            var parameterCount = mi.GetParameters().Length;
+            var parameterArray = new object[parameterCount];
+
+            func = (p, l) =>
+            {
+                parameterArray[0] = p;
+                parameterArray[1] = l;
+                return mi.Invoke(null, parameterArray) as Element;
+            };
+
+            FuncTable[originalType] = func;
+
+            return func;
+        }
+        
+        
+        private static MethodInfo GetGenericMethodInfo(Type prefsType)
+        {
+            if (!prefsType.IsGenericType) return null;
+
+            var definitionType = prefsType.GetGenericTypeDefinition();
+
+            if (definitionType == typeof(PrefsDictionary<,>))
+            {
+                _dictionaryCreateElementMethodInfo ??= GetCreateElementMethodInfo(typeof(PrefsGUIExtensionDictionary), definitionType);
+                return _dictionaryCreateElementMethodInfo;
+            }
+            
+            if (definitionType == typeof(PrefsListBase<,>))
+            {
+                _listCreateElementMethodInfo ??= GetCreateElementMethodInfo(typeof(PrefsGUIExtensionListBase), definitionType);
+                return _listCreateElementMethodInfo;
+            }
+
+            if (definitionType == typeof(PrefsParamOuter<>))
+            {
+                _fieldCreateElementMethodInfo ??= GetCreateElementMethodInfo(typeof(PrefsGUIExtensionField), definitionType);
+                return _fieldCreateElementMethodInfo;
+            }
+
+            return null;
+            
+            
+            // [ExtensionClass].CreateElement(prefs, label) のMethodInfoを取得する
+            static MethodInfo GetCreateElementMethodInfo(Type ExtensionType, Type prefsType)
+            {
+                return ExtensionType.GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .Where(mi => mi.Name == "CreateElement")
+                    .First(mi =>
+                    {
+                        var parameterInfos = mi.GetParameters();
+                        return
+                            parameterInfos[0].ParameterType.GetGenericTypeDefinition() == prefsType
+                            && parameterInfos[1].ParameterType == typeof(LabelElement)
+                            ;
+                    });
             }
         }
     }

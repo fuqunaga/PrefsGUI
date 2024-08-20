@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using PrefsGUI.Utility;
 using RosettaUI;
@@ -95,9 +96,10 @@ namespace PrefsGUI.RosettaUI
                 );
             }
             
-            // Valueが１行で表示できない場合、ラベルは表示しない
-            var isValueSingleLine = TypeUtility.IsSingleLine(typeof(TValue));
-            var valueFieldLabel = isValueSingleLine ? (LabelElement)"Value" : null;
+            // Valueが１行で表示できない型の場合ラベルにnullを指定してFoldで囲わない
+            // ただしIListは除く
+            var needLabel = TypeUtility.IsSingleLine(typeof(TValue)) || typeof(IList).IsAssignableFrom(typeof(TValue));
+            var valueFieldLabel = needLabel ? (LabelElement)"Value" : null;
             
             var fold = UI.Fold(
                 // UI.Row()はflex-grow:1を効かせるためにも必要

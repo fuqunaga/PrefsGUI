@@ -22,6 +22,7 @@ namespace PrefsGUI.RosettaUI.Example
                 UI.WindowLauncher<PrefsGUIExample_Primitive>("Primitive"),
                 UI.WindowLauncher<PrefsGUIRosettaUIExample_Slider>("Slider"),
                 UI.WindowLauncher<PrefsGUIRosettaUIExample_MinMaxSlider>("MinMaxSlider"),
+                UI.WindowLauncher<PrefsGUIExample_Dictionary>("Dictionary"),
                 UI.WindowLauncher(UI.Window(nameof(PrefsSearch), PrefsSearch.CreateElement())),
                 UI.Space().SetHeight(15f),
                 UI.Label(() => $"file path: {Kvs.PrefsKvsPathSelector.path}"),
