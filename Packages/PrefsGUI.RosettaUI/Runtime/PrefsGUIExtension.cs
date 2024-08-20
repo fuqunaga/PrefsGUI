@@ -31,7 +31,9 @@ namespace PrefsGUI.RosettaUI
         {
             prefs.onSyncedChanged += OnSyncedChanged;
             OnSyncedChanged(prefs.Synced);
-
+            
+            return;
+            
             void OnSyncedChanged(bool synced)
             {
                 element?.SetColor(synced ? PrefsParam.syncedColor : null);
