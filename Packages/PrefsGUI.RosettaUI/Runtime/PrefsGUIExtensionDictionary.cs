@@ -108,7 +108,7 @@ namespace PrefsGUI.RosettaUI
                     // UI.Field(label, ...)では、FloatFieldのラベルドラッグなど
                     // Labelのイベントが反映されてFoldのオープンクローズが反応しない場合があるので
                     // UI.Field()のラベルは使わず、UI.Label()を別途使用している
-                    UI.Label(UI.Label(() => $"Key {idx}  {GetCurrentKeyTypeString()}"), LabelType.Prefix),
+                    UI.Label(() => $"Key {idx}  {GetCurrentKeyTypeString()}", LabelType.Prefix),
                     // mark,
                     UI.Field(null, () => binder.Get().key, v =>
                     {
