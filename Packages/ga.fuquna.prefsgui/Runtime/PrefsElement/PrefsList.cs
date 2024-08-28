@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Assertions;
 
 namespace PrefsGUI
 {
@@ -9,7 +8,7 @@ namespace PrefsGUI
     /// List style PrefsGUI
     /// </summary>
     [Serializable]
-    public class PrefsList<T> : PrefsListBase<List<T>, PrefsList<T>>, IList<T>, IList
+    public class PrefsList<T> : PrefsListBase<List<T>, List<T>>, IList<T>, IList
     {
         public PrefsList(string key, List<T> defaultValue = default) : base(key, defaultValue)
         {
@@ -55,7 +54,7 @@ namespace PrefsGUI
         
         #region PrefsListBase<T>
         
-        protected override IListAccessor<PrefsList<T>> CreateListAccessor() => new ListAccessor(this);
+        protected override IListAccessor<List<T>> CreateListAccessor() => new ListAccessor(this);
         
         public override int DefaultValueCount => defaultValue?.Count ?? 0;
         
@@ -160,16 +159,16 @@ namespace PrefsGUI
         #endregion
 
         
-        private class ListAccessor : IListAccessor<PrefsList<T>>
+        private class ListAccessor : IListAccessor<List<T>>
         {
             private readonly PrefsList<T> prefs;
             
             public ListAccessor(PrefsList<T> prefs) => this.prefs = prefs;
 
-            public PrefsList<T> InnerList
+            public List<T> InnerList
             {
-                get => prefs;
-                set => Assert.IsTrue(prefs == value);
+                get => prefs.Get();
+                set => prefs.Set(value);
             }
         }
     }
