@@ -80,42 +80,56 @@ namespace PrefsGUI.RosettaUI
             );
         }
 
+        /// <summary>
+        /// Dictionaryの要素のUIを作成する
+        /// 
+        /// UI.Field(label, ...)では、FloatFieldのラベルドラッグなど
+        /// Labelのイベントが反映されてFoldのオープンクローズが反応しない場合があるので
+        /// UI.Field()のラベルは使わず、UI.Label()を別途使用している
+        /// </summary>
         public static Element CreateDictionaryItemDefault<TKey, TValue>(
             PrefsDictionaryData<TKey, TValue> prefsDictionaryData,
             IBinder<SerializableDictionary<TKey, TValue>.KeyValue> binder, 
             int idx)
         {
-            // キーが１行で表示できるならFoldのヘッダーに表示する
+            
             var isKeySingleLine = TypeUtility.IsSingleLine(typeof(TKey));
 
+            // キーが複数行ならFoldのヘッダーには表示しない
             if (!isKeySingleLine)
             {
                 return UI.Fold(
-                    UI.Label(() => $"Item {idx} {GetCurrentKeyTypeString()}"),
-                    UI.Field(null, binder)
+                    UI.ClipboardContextMenu(
+                        UI.Label(() => $"Item {idx} {GetCurrentKeyTypeString()}"),
+                        binder
+                    ),
+                    new[]
+                    {
+                        UI.Field(null, binder)
+                    }
                 );
             }
+            
+            // キーが１行で表示できるならFoldのヘッダーに表示する
             
             // Valueが１行で表示できない型の場合ラベルにnullを指定してFoldで囲わない
             // ただしIListは除く
             var needLabel = TypeUtility.IsSingleLine(typeof(TValue)) || typeof(IList).IsAssignableFrom(typeof(TValue));
             var valueFieldLabel = needLabel ? (LabelElement)"Value" : null;
+
+            var keyBinder = new PropertyOrFieldBinder<SerializableDictionary<TKey, TValue>.KeyValue, TKey>(binder,
+                nameof(SerializableDictionary<TKey, TValue>.KeyValue.key));
             
             var fold = UI.Fold(
                 // UI.Row()はflex-grow:1を効かせるためにも必要
                 // 現状UI.Row()の子供にはflex-growを設定しているがデフォルトのスタイルとしては設定されていない
-                UI.Row(
-                    // UI.Field(label, ...)では、FloatFieldのラベルドラッグなど
-                    // Labelのイベントが反映されてFoldのオープンクローズが反応しない場合があるので
-                    // UI.Field()のラベルは使わず、UI.Label()を別途使用している
-                    UI.Label(() => $"Key {idx}  {GetCurrentKeyTypeString()}", LabelType.Prefix),
-                    // mark,
-                    UI.Field(null, () => binder.Get().key, v =>
-                    {
-                        var kv = binder.Get();
-                        kv.key = v;
-                        binder.Set(kv);{}
-                    })
+                UI.ClipboardContextMenu(
+                    UI.Row(
+                        UI.Label(() => $"Key {idx}  {GetCurrentKeyTypeString()}", LabelType.Prefix),
+                        // mark,
+                        UI.Field(null, keyBinder)
+                    ),
+                    keyBinder
                 ),
                 new[]
                 {

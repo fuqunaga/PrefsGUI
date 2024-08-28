@@ -352,15 +352,21 @@ MonoBehaviour:
         value:
           name: secound element
           intValue: 1
-  prefsVector2ClassDictionary:
-    _key: Vector2ClassDictionary
+  prefsVector3RectDictionary:
+    _key: Vector3RectDictionary
     defaultValue:
       _list:
-      - key: {x: 0, y: 1}
+      - key: {x: 0, y: 0, z: 0}
         value:
-          name: first element
-          intValue: 0
-      - key: {x: 1, y: 2}
+          serializedVersion: 2
+          x: 0
+          y: 0
+          width: 0
+          height: 0
+      - key: {x: 0, y: 1, z: 0}
         value:
-          name: secound element
-          intValue: 1
+          serializedVersion: 2
+          x: 0
+          y: 0
+          width: 0
+          height: 0

@@ -9,6 +9,6 @@ namespace PrefsGUI.Example
         public PrefsDictionary<string, List<int>> prefsStringListDictionary = new("StringListDictionary");
         public PrefsDictionary<int, CustomClass> prefsIntClassDictionary = new("IntClassDictionary");
         public PrefsDictionary<EnumSample, CustomClass> prefsEnumClassDictionary = new("EnumClassDictionary");
-        public PrefsDictionary<Vector2, CustomClass> prefsVector2ClassDictionary = new("Vector2ClassDictionary");
+        public PrefsDictionary<Vector3, Rect> prefsVector3RectDictionary = new("Vector3RectDictionary");
     }
 }
