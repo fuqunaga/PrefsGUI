@@ -81,13 +81,13 @@
       }
     },
     "ga.fuquna.prefsgui": {
-      "version": "file:PrefsGUI",
+      "version": "file:ga.fuquna.prefsgui",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
     },
     "ga.fuquna.prefsgui.rapidgui": {
-      "version": "file:PrefsGUI.RapidGUI",
+      "version": "file:ga.fuquna.prefsgui.rapidgui",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
@@ -96,7 +96,7 @@
       }
     },
     "ga.fuquna.prefsgui.rosettaui": {
-      "version": "file:PrefsGUI.RosettaUI",
+      "version": "file:ga.fuquna.prefsgui.rosettaui",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
