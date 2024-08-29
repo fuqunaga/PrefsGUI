@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine.Assertions;
 
@@ -7,6 +7,7 @@ namespace PrefsGUI
     /// <summary>
     /// Combination of PrefsParams
     /// </summary>
+    [Obsolete("PrefsSet is obsolete, consider using PrefsAny instead.")]
     [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
     public abstract class PrefsSet<TPrefs0, TPrefs1, TOuter0, TOuter1>
         where TPrefs0 : PrefsParamOuter<TOuter0>

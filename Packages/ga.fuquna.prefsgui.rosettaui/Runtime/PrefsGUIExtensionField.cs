@@ -23,7 +23,9 @@ namespace PrefsGUI.RosettaUI
 
 
         public static Element CreateElement<TPrefs0, TPrefs1, TOuter0, TOuter1>(
+#pragma warning disable CS0618 // Type or member is obsolete
             this PrefsSet<TPrefs0, TPrefs1, TOuter0, TOuter1> prefs)
+#pragma warning restore CS0618 // Type or member is obsolete
             where TPrefs0 : PrefsParamOuter<TOuter0>
             where TPrefs1 : PrefsParamOuter<TOuter1>
         {

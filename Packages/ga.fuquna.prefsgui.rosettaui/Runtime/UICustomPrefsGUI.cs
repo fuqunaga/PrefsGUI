@@ -1,6 +1,5 @@
 ﻿using System;
 using RosettaUI;
-using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #else
@@ -26,6 +25,20 @@ namespace PrefsGUI.RosettaUI
                 }
 
                 return prefs.CreateElement(label);
+            });
+
+            UICustom.RegisterElementCreationFunc(typeof(AddressAndPort), (label, binder) =>
+            {
+                var addressName = nameof(AddressAndPort.address);
+                var portName = nameof(AddressAndPort.port);
+                var addressBinder = PropertyOrFieldBinder.Create(binder, addressName);
+                var portBinder = PropertyOrFieldBinder.Create(binder, portName);
+
+                return UI.ClipboardContextMenu(new CompositeFieldElement(label, new[]
+                {
+                    UI.Field(addressName, addressBinder).SetWidth(180f),
+                    UI.Field(portName, portBinder).SetWidth(120f)
+                }), binder);
             });
         }
     }

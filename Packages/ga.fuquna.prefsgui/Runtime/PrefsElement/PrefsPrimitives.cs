@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using UnityEngine;
 
 namespace PrefsGUI
@@ -131,29 +128,5 @@ namespace PrefsGUI
         public override BoundsInt defaultMin => default;
 
         public override BoundsInt defaultMax => new(Vector3Int.one * 100, Vector3Int.one * 100);
-    }
-
-
-    [Serializable]
-    public class PrefsIPEndPoint : PrefsSet<PrefsString, PrefsInt, string, int>
-    {
-        public string address => prefs0.Get();
-        public int port => prefs1.Get();
-
-        public PrefsIPEndPoint(string key, string hostname = "localhost", int port = 10000) : base(key, hostname, port, "address", "port") { }
-
-        public static implicit operator IPEndPoint(PrefsIPEndPoint me) => CreateIPEndPoint(me.address, me.port);
-
-        public static IPEndPoint CreateIPEndPoint(string address, int port)
-        {
-            var ip = FindFromHostName(address);
-            return (!Equals(ip, IPAddress.None)) ? new IPEndPoint(ip, port) : null;
-        }
-
-        public static IPAddress FindFromHostName(string hostname)
-        {
-            var address = Dns.GetHostAddresses(hostname).FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-            return address ?? IPAddress.None;
-        }
     }
 }
