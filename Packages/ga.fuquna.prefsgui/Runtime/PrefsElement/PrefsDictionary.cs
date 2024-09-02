@@ -143,7 +143,7 @@ namespace PrefsGUI
                 set
                 {
                     var serializedDictionary = prefs.Get();
-                    Assert.IsTrue(serializedDictionary.SerializeList == value);
+                    serializedDictionary.SerializeList = value;
                     
                     // SerializeListでPrefsのInner(string)を更新する
                     prefs.Set(serializedDictionary);

@@ -29,10 +29,17 @@ namespace PrefsGUI.Utility
 
         private readonly Dictionary<TKey, TValue> _dictionary;
 
-        private bool _isDirty = true;
+        private bool _isDictionaryDirty = true;
 
-        internal List<KeyValue> SerializeList => _list;
-        
+        internal List<KeyValue> SerializeList
+        {
+            get => _list;
+            set
+            {
+                _list = value;
+                UpdateDictionaryFromList();
+            }
+        }
         
         public SerializableDictionary() => _dictionary = new Dictionary<TKey, TValue>();
 
@@ -54,7 +61,7 @@ namespace PrefsGUI.Utility
             => _dictionary = new Dictionary<TKey, TValue>(comparer);
         
         
-        protected void SetDirty() => _isDirty = true;
+        protected void SetDictionaryDirty() => _isDictionaryDirty = true;
 
         #region Dictionary Methods
 
@@ -65,7 +72,7 @@ namespace PrefsGUI.Utility
             var success = _dictionary.TryAdd(key, value);
             if (success)
             {
-                SetDirty();
+                SetDictionaryDirty();
             }
 
             return success;
@@ -97,13 +104,13 @@ namespace PrefsGUI.Utility
         public void Add(KeyValuePair<TKey, TValue> item)
         {
             _dictionary.Add(item.Key, item.Value);
-            SetDirty();
+            SetDictionaryDirty();
         }
 
         public void Clear()
         {
             _dictionary.Clear();
-            SetDirty();
+            SetDictionaryDirty();
         }
         
         public bool Contains(KeyValuePair<TKey, TValue> item) => _dictionary.Contains(item);
@@ -118,7 +125,7 @@ namespace PrefsGUI.Utility
             if (!((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).Remove(item))
                 return false;
 
-            SetDirty();
+            SetDictionaryDirty();
             return true;
         }
         
@@ -133,7 +140,7 @@ namespace PrefsGUI.Utility
             set
             {
                 _dictionary[key] = value;
-                SetDirty();
+                SetDictionaryDirty();
             }
         }
 
@@ -144,7 +151,7 @@ namespace PrefsGUI.Utility
         public void Add(TKey key, TValue value)
         {
             _dictionary.Add(key, value);
-            SetDirty();
+            SetDictionaryDirty();
         }
 
         public bool ContainsKey(TKey key) => _dictionary.ContainsKey(key);
@@ -152,7 +159,7 @@ namespace PrefsGUI.Utility
         public bool Remove(TKey key)
         {
             var success = _dictionary.Remove(key);
-            SetDirty();
+            SetDictionaryDirty();
             return success;
         }
 
@@ -163,24 +170,9 @@ namespace PrefsGUI.Utility
         
         #region ISerializationCallbackReceiver
 
-        public void OnBeforeSerialize()
-        {
-            if (!_isDirty) return;
-            _isDirty = false;
+        public void OnBeforeSerialize() => UpdateDictionaryFromList();
 
-            _list.Clear();
-            _list.AddRange(_dictionary.Select(kv => new KeyValue(kv.Key, kv.Value)));
-        }
-
-        public void OnAfterDeserialize()
-        {
-            _dictionary.Clear();
-            if (_list == null) return;
-            foreach (var item in _list.Where(kv => kv.key != null))
-            {
-                _dictionary.TryAdd(item.key, item.value);
-            }
-        }
+        public void OnAfterDeserialize() => UpdateDictionaryFromList();
 
         #endregion
         
@@ -198,5 +190,25 @@ namespace PrefsGUI.Utility
         public int SerializableItemCount => _list.Count;
         
         #endregion
+
+        
+        private void UpdateDictionaryFromList()
+        {
+            _dictionary.Clear();
+            if (_list == null) return;
+            foreach (var item in _list.Where(kv => kv.key != null))
+            {
+                _dictionary.TryAdd(item.key, item.value);
+            }
+        }
+        
+        private void UpdateListFromDictionary()
+        {
+            if (!_isDictionaryDirty) return;
+            _isDictionaryDirty = false;
+            
+            _list.Clear();
+            _list.AddRange(_dictionary.Select(kv => new KeyValue(kv.Key, kv.Value)));
+        }
     }
 }
