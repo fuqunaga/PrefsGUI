@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace PrefsGUI
 {
@@ -20,5 +21,23 @@ namespace PrefsGUI
         public IListAccessor<TListForUI> GetListAccessor() => _listAccessor ??= CreateListAccessor();
         
         protected abstract IListAccessor<TListForUI> CreateListAccessor();
+        
+        protected bool SetListItemIfNotEqual<T>(IList<T> list, int idx, T value)
+        {
+            if (idx >= list.Count) 
+                return false;
+
+            var listItemInner = PrefsAnyUtility.ToInner(list[idx]);
+            var valueInner = PrefsAnyUtility.ToInner(value);
+
+            if (listItemInner == valueInner)
+                return false;
+            
+            // Tがクラスの場合、list[idx] = value; とすると同じオブジェクトを参照してしまう
+            // ResetToDefaultAt()でdefaultValueの要素を参照してしまうとdefaultValueの値が編集できてしまいまずいので、
+            // Inner型を経由してvalueを別のインスタンスにする
+            list[idx] = PrefsAnyUtility.ToOuter<T>(valueInner);
+            return true;
+        }
     }
 }

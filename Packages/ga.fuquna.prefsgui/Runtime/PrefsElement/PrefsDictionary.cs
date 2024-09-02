@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using PrefsGUI.Utility;
-using UnityEngine.Assertions;
 
 namespace PrefsGUI
 {
@@ -67,9 +66,10 @@ namespace PrefsGUI
 
             var serializableDictionary = Get();
             var list = serializableDictionary.SerializeList;
-            list[idx] = defaultList[idx];
-            
-            Set(serializableDictionary);
+            if (SetListItemIfNotEqual(list, idx, defaultList[idx]))
+            {
+                Set(serializableDictionary);
+            }
         }
 
         protected override IListAccessor<List<SerializableDictionary<TKey, TValue>.KeyValue>> CreateListAccessor()

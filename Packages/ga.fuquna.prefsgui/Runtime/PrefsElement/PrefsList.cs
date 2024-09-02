@@ -74,8 +74,10 @@ namespace PrefsGUI
             if (idx < DefaultValueCount)
             {
                 var list = Get();
-                list[idx] = defaultValue[idx];
-                Set(list);
+                if (SetListItemIfNotEqual(list, idx, defaultValue[idx]))
+                {
+                    Set(list);
+                }
             }
         }
         
