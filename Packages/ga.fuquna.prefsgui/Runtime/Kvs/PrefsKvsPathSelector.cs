@@ -10,7 +10,9 @@ namespace PrefsGUI.Kvs
 {
     public interface IPrefsKvsPath
     {
-        string path { get; }
+        [Obsolete("Use IPrefsKvsPath.Path instead.")]
+        string path => Path;
+        string Path { get; }
     }
 
 
@@ -19,7 +21,9 @@ namespace PrefsGUI.Kvs
         private static bool _first = true;
         private static string _path;
 
-        public static string path
+        [Obsolete("Use PrefsKvsPathSelector.Path instead.")]
+        public static string path => Path;
+        public static string Path
         {
             get
             {
@@ -28,7 +32,7 @@ namespace PrefsGUI.Kvs
                     _first = false;
                     _path = Resources
                         .FindObjectsOfTypeAll<GameObject>()
-                        .SelectMany(go => go.GetComponents<IPrefsKvsPath>().Select(kvsPath => kvsPath.path))
+                        .SelectMany(go => go.GetComponents<IPrefsKvsPath>().Select(kvsPath => kvsPath.Path))
                         .FirstOrDefault(str => str != null);
                 }
                 return _path ?? Application.persistentDataPath;

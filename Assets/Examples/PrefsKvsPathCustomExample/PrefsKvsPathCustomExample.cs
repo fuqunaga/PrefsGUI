@@ -18,7 +18,7 @@ namespace PrefsGUI.Example
             return UI.Window(nameof(PrefsKvsPathCustomExample),
                 UI.Page(
                     UI.Field(() => Application.platform),
-                    UI.Field(() => PrefsKvsPathSelector.path)
+                    UI.Field(() => PrefsKvsPathSelector.Path)
                     )
                 );
         }
