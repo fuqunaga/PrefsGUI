@@ -43,7 +43,7 @@ namespace PrefsGUI.RosettaUI.Editor
                     () => UI.Column(
                         CreatePrefsListCheckElement(GetPrefsNonDefaults().ToList()),
                         PrefsGUIEditorRosettaUIComponent.CreateLineElement(),
-                        UI.ScrollViewVertical(PrefsGUIEditorRosettaUI.scrollViewHeight,
+                        UI.ScrollViewVertical(PrefsGUIEditorWindowRosettaUI.scrollViewHeight,
                             CreateObjectPrefsElements()
                         )
                     )
