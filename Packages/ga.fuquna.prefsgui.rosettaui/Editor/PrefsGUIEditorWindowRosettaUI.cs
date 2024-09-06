@@ -58,36 +58,44 @@ namespace PrefsGUI.RosettaUI.Editor
 
         protected override Element CreateElement()
         {
+            const float rowBetweenSpaceWidth = 20f;
+            
             return UI.Column(
                 CreateTopBar(),
                 UI.Page(
-                    UI.Space().SetHeight(20f),
-                    UI.Field("Search word", () => searchWord, new FieldOption() { delayInput = true }),
-                    UI.Field("Order", () => order),
-                    UI.Field("Include assets", () => includeAssets),
-                    UI.DynamicElementIf(
-                        () => order == Order.GameObject,
-                        () => UI.Field("Show component", () => showComponent)
-                    ),
-                    UI.Space(),
-                    _objCheckExtension?.Title()
-                ).SetHeight(150f),
+                    UI.Space().SetHeight(10f),
+                    UI.Row(
+                        UI.Field(UI.Label("Filter word", LabelType.Standard).SetWidth(70f), 
+                            () => searchWord,
+                            new FieldOption() { delayInput = true }
+                            ).SetMinWidth(300f),
+                        UI.Space().SetWidth(rowBetweenSpaceWidth),
+                        UI.Field(UI.Label("Order").SetWidth(40f), () => order).SetWidth(130f),
+                        // UI.Field("Include assets", () => includeAssets),
+                        UI.Space().SetWidth(rowBetweenSpaceWidth),
+                        UI.DynamicElementIf(
+                            () => order == Order.GameObject,
+                            () => UI.Toggle("Show component", () => showComponent)
+                        ),
+                        UI.Space()
+                    )
+                ).SetHeight(50f),
+                _objCheckExtension?.Title(),
                 PrefsGUIEditorRosettaUIComponent.CreateLineElement(),
-                // UI.DynamicElementOnStatusChanged(
-                //     () => (order, searchWord.ToLower(), includeAssets, showComponent, objPrefsListChangeCount),
-                //     _ =>
-                //     {
-                //         var word = searchWord.ToLower();
-                //
-                //         return order switch
-                //         {
-                //             Order.Key => CreatePrefsUIAtoZ(word),
-                //             Order.GameObject => CreatePrefsGameObject(word),
-                //             _ => throw new ArgumentOutOfRangeException()
-                //         };
-                //     }
-                // ).SetHeight(scrollViewHeight)
-                CreatePrefsGameObject("")
+                UI.DynamicElementOnStatusChanged(
+                    () => (order, searchWord.ToLower(), includeAssets, showComponent, objPrefsListChangeCount),
+                    _ =>
+                    {
+                        var word = searchWord.ToLower();
+                
+                        return order switch
+                        {
+                            Order.Key => CreatePrefsUIAtoZ(word),
+                            Order.GameObject => CreatePrefsGameObject(word),
+                            _ => throw new ArgumentOutOfRangeException()
+                        };
+                    }
+                ).SetFlexShrink(1f)
             ).SetFlexShrink(1f);
 
             Element CreatePrefsUIAtoZ(string word)
@@ -256,7 +264,7 @@ namespace PrefsGUI.RosettaUI.Editor
 
                 Element CreatePrefsElement(PrefsParam prefs)
                 {
-                    var prefsElement = prefs.CreateElement();
+                    var prefsElement = prefs.CreateElement().Close();
 
                     return _objCheckExtension == null
                         ? prefsElement
@@ -281,13 +289,13 @@ namespace PrefsGUI.RosettaUI.Editor
                     {
                         UI.Space().SetWidth(20f),
                         UI.Field(
-                            UI.Label("KeyPrefix").SetWidth(100f),
+                            UI.Label("KeyPrefix").SetWidth(60f),
                             () => prefsList
                                 .Select(prefs => prefs.key)
                                 .Select(PrefsKeyUtility.GetPrefix)
                                 .FirstOrDefault(s => !string.IsNullOrEmpty(s)),
                             prefixNew => PrefsGUIEditorUtility.UpdateKeyPrefix(prefixNew, obj, prefsList)
-                        ).SetWidth(300f)
+                        ).SetWidth(250f)
                     });
 
 
