@@ -43,7 +43,7 @@ namespace PrefsGUI.RosettaUI.Editor
                     () => UI.Column(
                         CreatePrefsListCheckElement(GetPrefsNonDefaults().ToList()),
                         PrefsGUIEditorRosettaUIComponent.CreateLineElement(),
-                        UI.ScrollViewVertical(PrefsGUIEditorWindowRosettaUI.scrollViewHeight,
+                        UI.ScrollViewVertical(/*PrefsGUIEditorWindowRosettaUI.scrollViewHeight*/null,
                             CreateObjectPrefsElements()
                         )
                     )
@@ -104,10 +104,8 @@ namespace PrefsGUI.RosettaUI.Editor
                 return new Element[]
                 {
                     UI.Row(
-                        PrefsGUIEditorRosettaUIComponent.CreateObjectFieldWithAssetMarkParts(objPrefs.obj)
-                            .Prepend(
-                                CreatePrefsListCheckElement(prefsList)
-                            )
+                        CreatePrefsListCheckElement(prefsList),
+                        PrefsGUIEditorRosettaUIComponent.CreateObjectField(objPrefs.obj)
                     ),
                     UI.Indent(
                         prefsList.Select(prefs => UI.Row(
