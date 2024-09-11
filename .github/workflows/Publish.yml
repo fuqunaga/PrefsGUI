@@ -16,7 +16,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        pkg_root: [./Packages/ga.fuquna.prefsgui, ./Packages/ga.fuquna.prefsgui.rosettaui, ./Packages/ga.fuquna/prefsgui.rapidgui,]
+        pkg_root: [./Packages/ga.fuquna.prefsgui, ./Packages/ga.fuquna.prefsgui.rosettaui, ./Packages/ga.fuquna.prefsgui.rapidgui,]
 
     steps:
     - name: Checkout
