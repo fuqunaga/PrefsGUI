@@ -25,7 +25,7 @@ namespace PrefsGUI.RosettaUI.Editor
         [UnityEditor.MenuItem("Window/PrefsGUI")]
         public static void ShowWindow() => GetWindow<PrefsGUIEditorWindowRosettaUI>("PrefsGUI");
 
-        public static Color NonDefaultPrefsBackgroundColor = new(0.5f, 0.2f, 0.2f, 0.8f);
+        public static Color nonDefaultPrefsBackgroundColor = new(0.5f, 0.2f, 0.2f, 0.8f);
 
         private static string searchWord = "";
         private static Order order;
@@ -68,7 +68,7 @@ namespace PrefsGUI.RosettaUI.Editor
                             new FieldOption() { delayInput = true }
                             ).SetMinWidth(300f),
                         PrefsGUIEditorRosettaUIComponent.SpaceRowGap(),
-                        UI.Field(UI.Label("Order").SetWidth(40f), () => order).SetWidth(130f),
+                        UI.Field(UI.Label("Order").SetWidth(40f), () => order).SetWidth(154f),
                         // UI.Field("Include assets", () => includeAssets),
                         PrefsGUIEditorRosettaUIComponent.SpaceRowGap(),
                         UI.DynamicElementIf(
@@ -96,35 +96,7 @@ namespace PrefsGUI.RosettaUI.Editor
                 ).SetFlexShrink(1f)
             ).SetFlexShrink(1f);
 
-            Element CreatePrefsUIAtoZ(string word)
-            {
-                var prefsObjAll = PrefsAssetUtility.GetPrefsObjEnumerable(includeAssets)
-                    .Where(po => IsContainWord(po.prefs.key, word))
-                    .OrderBy(po => po.prefs.key)
-                    .ToList();
-
-                return UI.List(null,
-                    () => prefsObjAll,
-                    (binder, index) =>
-                    {
-                        var (prefs, obj) = ((IBinder<(PrefsParam, Object)>)binder).Get();
-
-                        var prefsElement = new[]
-                        {
-                            PrefsGUIEditorRosettaUIComponent.CreateObjectField(obj),
-                            prefs.CreateElement().Close()
-                        };
-
-                        return _objCheckExtension != null
-                            ? UI.Row(
-                                _objCheckExtension.PrefsLeft(prefs),
-                                UI.Indent(UI.Row(prefsElement))
-                            )
-                            : UI.Indent(UI.Row(prefsElement));
-                    },
-                    new ListViewOption(false, true, false)
-                );
-            }
+  
         }
 
         private static bool IsContainWord(string word, string searchWordLower) => word.ToLower().Contains(searchWordLower);
@@ -149,6 +121,8 @@ namespace PrefsGUI.RosettaUI.Editor
                         })
                     }
                 ),
+                UI.Space().SetWidth(20f),
+                UI.FieldReadOnly("Total Prefs Key Count", () => PrefsParam.allDic.Count),
                 UI.Space(),
                 UI.Button("Open Set Current To Default Window",
                     () =>
@@ -166,6 +140,45 @@ namespace PrefsGUI.RosettaUI.Editor
         }
 
 
+        private static Element CreatePrefsUIAtoZ(string word)
+        {
+            var prefsObjAll = PrefsAssetUtility.GetPrefsObjEnumerable(includeAssets)
+                .Where(po => IsContainWord(po.prefs.key, word))
+                .OrderBy(po => po.prefs.key)
+                .ToList();
+
+            return UI.List(null,
+                () => prefsObjAll,
+                (binder, index) =>
+                {
+                    var (prefs, obj) = ((IBinder<(PrefsParam, Object)>)binder).Get();
+
+                    var prefsElement = new[]
+                    {
+                        UI.Indent(
+                            prefs.CreateElement().Close()
+                        ),
+                        PrefsGUIEditorRosettaUIComponent.CreateObjectField(obj)
+                    };
+
+                    return _objCheckExtension != null
+                        ? UI.Row(
+                            _objCheckExtension.PrefsLeft(prefs),
+                            UI.Row(prefsElement)
+                        )
+                        : UI.Row(prefsElement);
+                },
+                new ListViewOption(false, true, false)
+                {
+                    reorderable = false,
+                    fixedSize = true,
+                    header = false,
+                    suppressAutoIndent = true
+                }
+            );
+        }
+        
+        
         private static Element CreatePrefsGameObject(string word)
         {
             var objPrefsList = PrefsAssetUtility.GetObjPrefsList(includeAssets)
@@ -188,7 +201,13 @@ namespace PrefsGUI.RosettaUI.Editor
                     var typedBinder = (IBinder<PrefsAssetUtility.ObjPrefs>)binder;
                     return CreateObjPrefsElement(typedBinder.Get());
                 },
-                new ListViewOption(false, true, false)
+                new ListViewOption()
+                {
+                    reorderable = false,
+                    fixedSize = true,
+                    header = false,
+                    suppressAutoIndent = _objCheckExtension != null
+                }
             );
 
             Element CreateObjPrefsElement(PrefsAssetUtility.ObjPrefs objPrefs)
@@ -210,13 +229,14 @@ namespace PrefsGUI.RosettaUI.Editor
                         : FilterPrefs(objPrefs.PrefsAll)
                     ).ToList();
 
+                
+                // Show component: off
                 if (!showComponent)
-                    return UI.Column(
-                        CreateObjFieldAndPrefsListElement(objPrefs.obj, prefsListForObj, 2)
-                    );
+                {
+                    return CreateObjFieldAndPrefsListElement(objPrefs.obj, prefsListForObj);
+                }
 
-
-                // Show component style
+                // Show component: on
                 return UI.Column(
                     UI.Row(
                         _objCheckExtension?.PrefsSetLeft(prefsListForObj),
@@ -234,7 +254,8 @@ namespace PrefsGUI.RosettaUI.Editor
                                 ).ToList();
 
                             return CreateObjFieldAndPrefsListElement(holder.component, prefsList);
-                        })
+                        }),
+                        2
                     )
                 );
             }
@@ -244,17 +265,25 @@ namespace PrefsGUI.RosettaUI.Editor
 
             Element CreateObjFieldAndPrefsListElement(Object obj, IReadOnlyCollection<PrefsParam> prefsList, int indentLevel = 1)
             {
-                return UI.Fold(
-                    CreateObjectFieldAndEditKeyPrefix(obj, prefsList),
-                    new[]
-                    {
-                        UI.Indent(
-                            prefsList.Select(CreatePrefsElement),
-                            indentLevel
-                        )
-                    }
+                if (_objCheckExtension == null)
+                {
+                    return UI.Fold(
+                        CreateObjectFieldAndEditKeyPrefix(obj, prefsList),
+                        prefsList.Select(CreatePrefsElement)
+                    );
+                }
+
+                return UI.Row(
+                    UI.Column(
+                        _objCheckExtension?.PrefsSetLeft(prefsList),
+                        UI.Space()
+                    ).SetFlexGrow(0),
+                    // UI.Fold()で自動的に付くIndentを避けるため new FoldElement() する
+                    new FoldElement(
+                        CreateObjectFieldAndEditKeyPrefix(obj, prefsList),
+                        prefsList.Select(CreatePrefsElement)
+                    )
                 );
-                
 
                 Element CreatePrefsElement(PrefsParam prefs)
                 {
@@ -274,7 +303,6 @@ namespace PrefsGUI.RosettaUI.Editor
             Element CreateObjectFieldAndEditKeyPrefix(Object obj, IReadOnlyCollection<PrefsParam> prefsList)
             {
                 return UI.Row(
-                    _objCheckExtension?.PrefsSetLeft(prefsList),
                     PrefsGUIEditorRosettaUIComponent.CreateObjectField(obj),
                     PrefsGUIEditorRosettaUIComponent.SpaceRowGap(),
                     UI.Field(
@@ -288,7 +316,7 @@ namespace PrefsGUI.RosettaUI.Editor
                 ).RegisterUpdateCallback(row =>
                 {
                     var hasNonDefaultValue = prefsList.Any(p => !p.IsDefault);
-                    row.SetBackgroundColor(hasNonDefaultValue ? NonDefaultPrefsBackgroundColor : null);
+                    row.SetBackgroundColor(hasNonDefaultValue ? nonDefaultPrefsBackgroundColor : null);
                 });
             }
         }
