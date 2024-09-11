@@ -79,7 +79,7 @@ namespace PrefsGUI.Kvs
                 .Replace("%dataPath%", Application.dataPath)
                 .Replace("%companyName%", Application.companyName)
                 .Replace("%productName%", Application.productName)
-                .Replace("%currentDir%", Path.GetFileName(Directory.GetCurrentDirectory()));
+                .Replace("%currentDir%", System.IO.Path.GetFileName(Directory.GetCurrentDirectory()));
 
             var matches = Regex.Matches(ret, @"%\w+?%").Cast<Match>();
 
@@ -105,10 +105,10 @@ you can use magic path
         [SerializeField]
         protected string _path = "%dataPath%/../../%productName%Prefs";
         
-        public string path => IsPlatformActive(platform)
-                ? pathWithoutPlatformCheck
+        public string Path => IsPlatformActive(platform)
+                ? PathWithoutPlatformCheck
                 : null;
 
-        public string pathWithoutPlatformCheck => ReplaceMagicWord(_path);
+        public string PathWithoutPlatformCheck => ReplaceMagicWord(_path);
     }
 }

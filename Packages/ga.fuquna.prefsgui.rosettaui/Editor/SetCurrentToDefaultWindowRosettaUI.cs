@@ -10,14 +10,14 @@ namespace PrefsGUI.RosettaUI.Editor
 {
     public class SetCurrentToDefaultWindowRosettaUI : RosettaUIEditorWindowUIToolkit
     {
-        private static readonly Dictionary<PrefsParam, bool> prefsCheckTable = new();
+        private static readonly Dictionary<PrefsParam, bool> PrefsCheckTable = new();
         public bool includeAssets;
-        
-        static bool IsChecked(PrefsParam prefs)
+
+        private static bool IsChecked(PrefsParam prefs)
         {
-            if (!prefsCheckTable.TryGetValue(prefs, out var ret))
+            if (!PrefsCheckTable.TryGetValue(prefs, out var ret))
             {
-                prefsCheckTable[prefs] = ret = true;
+                PrefsCheckTable[prefs] = ret = false;
             }
 
             return ret;
@@ -26,29 +26,31 @@ namespace PrefsGUI.RosettaUI.Editor
         protected override Element CreateElement()
         {
             var lastPrefsSetHash = 0;
-            
+
             return UI.Column(
-                UI.HelpBox("\nSelect Prefs to change Default.\n", HelpBoxType.Info),
-                UI.Space().SetHeight(5f),
-                UI.Row(
-                    UI.Space(),
-                    UI.Button("Set Current To Default", () =>
-                    {
-                        SetCurrentToDefault();
-                        Close();
-                    }).SetWidth(220f)
-                    ),
+                UI.Column(
+                    UI.HelpBox("\nSelect Prefs to change Default value.\n", HelpBoxType.Info),
+                    UI.Space().SetHeight(5f),
+                    UI.Row(
+                        UI.Space(),
+                        UI.Button("Set Current To Default", () =>
+                        {
+                            SetCurrentToDefault();
+                            Close();
+                        }).SetWidth(220f)
+                    )
+                ).SetFlexGrow(0),
                 UI.DynamicElementOnTrigger(
                     _ => CheckPrefsNonDefaultChanged(),
                     () => UI.Column(
                         CreatePrefsListCheckElement(GetPrefsNonDefaults().ToList()),
                         PrefsGUIEditorRosettaUIComponent.CreateLineElement(),
-                        UI.ScrollViewVertical(PrefsGUIEditorRosettaUI.scrollViewHeight,
+                        UI.ScrollViewVertical(/*PrefsGUIEditorWindowRosettaUI.scrollViewHeight*/null,
                             CreateObjectPrefsElements()
                         )
-                    )
-                )
-            );
+                    ).SetFlexShrink(1)
+                ).SetFlexShrink(1)
+            ).SetFlexShrink(1);
             
             bool CheckPrefsNonDefaultChanged()
             {
@@ -71,7 +73,7 @@ namespace PrefsGUI.RosettaUI.Editor
             }
         }
 
-        void SetCurrentToDefault()
+        private void SetCurrentToDefault()
         {
             var holders = PrefsAssetUtility.GetObjPrefsList(includeAssets).SelectMany(objPrefs => objPrefs.holders);
 
@@ -104,10 +106,8 @@ namespace PrefsGUI.RosettaUI.Editor
                 return new Element[]
                 {
                     UI.Row(
-                        PrefsGUIEditorRosettaUIComponent.CreateObjectFieldWithAssetMarkParts(objPrefs.obj)
-                            .Prepend(
-                                CreatePrefsListCheckElement(prefsList)
-                            )
+                        CreatePrefsListCheckElement(prefsList),
+                        PrefsGUIEditorRosettaUIComponent.CreateObjectField(objPrefs.obj)
                     ),
                     UI.Indent(
                         prefsList.Select(prefs => UI.Row(
@@ -125,7 +125,7 @@ namespace PrefsGUI.RosettaUI.Editor
             Element CreatePrefsCheckElement(PrefsParam prefs)
                 => UI.Toggle(null,
                     () => IsChecked(prefs),
-                    flag => prefsCheckTable[prefs] = flag
+                    flag => PrefsCheckTable[prefs] = flag
                 ).SetHeight(28f);
         }
 
@@ -137,7 +137,7 @@ namespace PrefsGUI.RosettaUI.Editor
                 {
                     foreach (var prefs in prefsSet)
                     {
-                        prefsCheckTable[prefs] = flag;
+                        PrefsCheckTable[prefs] = flag;
                     }
                 }
             );

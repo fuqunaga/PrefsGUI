@@ -113,20 +113,18 @@
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui": {
-      "version": "1.7.4",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://registry.npmjs.com"
+      "version": "file:C:/unity/RosettaUI/Packages/ga.fuquna.rosettaui",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
     },
     "ga.fuquna.rosettaui.uitoolkit": {
-      "version": "1.6.1",
-      "depth": 1,
-      "source": "registry",
+      "version": "file:C:/unity/RosettaUI/Packages/ga.fuquna.rosettaui.uitoolkit",
+      "depth": 0,
+      "source": "local",
       "dependencies": {
         "ga.fuquna.rosettaui": "1.7.0"
-      },
-      "url": "https://registry.npmjs.com"
+      }
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

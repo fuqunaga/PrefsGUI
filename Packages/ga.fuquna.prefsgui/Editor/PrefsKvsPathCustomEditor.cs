@@ -35,7 +35,7 @@ namespace PrefsGUI.Kvs.Editor
             }
             
             GUI.enabled = false;
-            GUILayout.TextField(pathCustom.pathWithoutPlatformCheck);
+            GUILayout.TextField(pathCustom.PathWithoutPlatformCheck);
 
             if (GUI.changed)
             {
