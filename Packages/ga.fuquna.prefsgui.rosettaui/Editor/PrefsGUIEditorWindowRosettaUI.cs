@@ -5,12 +5,8 @@ using PrefsGUI.Editor;
 using PrefsGUI.Kvs;
 using RosettaUI;
 using RosettaUI.UIToolkit.Editor;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
-using MenuItem = RosettaUI.MenuItem;
 using Object = UnityEngine.Object;
-using PopupWindow = UnityEditor.PopupWindow;
 
 namespace PrefsGUI.RosettaUI.Editor
 {
@@ -149,7 +145,7 @@ namespace PrefsGUI.RosettaUI.Editor
 
             return UI.List(null,
                 () => prefsObjAll,
-                (binder, index) =>
+                (binder, _) =>
                 {
                     var (prefs, obj) = ((IBinder<(PrefsParam, Object)>)binder).Get();
 
@@ -274,10 +270,7 @@ namespace PrefsGUI.RosettaUI.Editor
                 }
 
                 return UI.Row(
-                    UI.Column(
-                        _objCheckExtension?.PrefsSetLeft(prefsList),
-                        UI.Space()
-                    ).SetFlexGrow(0),
+                    _objCheckExtension?.PrefsSetLeft(prefsList),
                     // UI.Fold()で自動的に付くIndentを避けるため new FoldElement() する
                     new FoldElement(
                         CreateObjectFieldAndEditKeyPrefix(obj, prefsList),
