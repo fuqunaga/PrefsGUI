@@ -100,9 +100,9 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "ga.fuquna.prefsgui": "3.3.0",
-        "ga.fuquna.rosettaui": "1.7.4",
-        "ga.fuquna.rosettaui.uitoolkit": "1.6.1"
+        "ga.fuquna.prefsgui": "3.4.3",
+        "ga.fuquna.rosettaui": "1.8.0",
+        "ga.fuquna.rosettaui.uitoolkit": "1.7.0"
       }
     },
     "ga.fuquna.rapidgui": {
@@ -113,18 +113,20 @@
       "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui": {
-      "version": "file:C:/unity/RosettaUI/Packages/ga.fuquna.rosettaui",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "version": "1.8.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://registry.npmjs.com"
     },
     "ga.fuquna.rosettaui.uitoolkit": {
-      "version": "file:C:/unity/RosettaUI/Packages/ga.fuquna.rosettaui.uitoolkit",
-      "depth": 0,
-      "source": "local",
+      "version": "1.7.0",
+      "depth": 1,
+      "source": "registry",
       "dependencies": {
         "ga.fuquna.rosettaui": "1.7.0"
-      }
+      },
+      "url": "https://registry.npmjs.com"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
