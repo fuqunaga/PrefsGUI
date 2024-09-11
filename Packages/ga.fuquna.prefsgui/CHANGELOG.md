@@ -1,3 +1,16 @@
+# [ga.fuquna.prefsgui-v3.5.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.3...ga.fuquna.prefsgui-v3.5.0) (2024-09-11)
+
+
+### Bug Fixes
+
+* Error in copy and paste menu when right-clicking on PrefsList ([3daad89](https://github.com/fuqunaga/PrefsGUI/commit/3daad892673c4807f551cb73dd791f54da9f4fc3))
+* PrefsList and PrefsDictionary: When the default button of an element is pressed, the element with defaultValue is referred to. ([c2891fc](https://github.com/fuqunaga/PrefsGUI/commit/c2891fc8b27faa54758aadd55a14b7e9e4a2bbe4))
+
+
+### Features
+
+* add PrefsIPAddressAndPort. PrefsIPEndPoint is now obsolete. ([2c8b203](https://github.com/fuqunaga/PrefsGUI/commit/2c8b2039b41fc03ed29444e2181a9c70715a197b))
+
 # [ga.fuquna.prefsgui-v3.4.3](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.2...ga.fuquna.prefsgui-v3.4.3) (2024-04-24)
 
 
