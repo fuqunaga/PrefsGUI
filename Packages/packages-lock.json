@@ -100,7 +100,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "ga.fuquna.prefsgui": "3.4.3",
+        "ga.fuquna.prefsgui": "3.5.0",
         "ga.fuquna.rosettaui": "1.8.0",
         "ga.fuquna.rosettaui.uitoolkit": "1.7.0"
       }
