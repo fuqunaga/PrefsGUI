@@ -1,3 +1,21 @@
+# [ga.fuquna.prefsgui.rosettaui-v1.3.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.2.0...ga.fuquna.prefsgui.rosettaui-v1.3.0) (2024-09-11)
+
+
+### Features
+
+* add PrefsIPAddressAndPort. PrefsIPEndPoint is now obsolete. ([2c8b203](https://github.com/fuqunaga/PrefsGUI/commit/2c8b2039b41fc03ed29444e2181a9c70715a197b))
+
+
+### Performance Improvements
+
+* refine PrefsGUIEditorWindowRosettaUI ([7e6bb83](https://github.com/fuqunaga/PrefsGUI/commit/7e6bb834bb434812cdb32b52cf4d415175604530))
+* refine SetCurrentToDefaultWindowRosettaUI ([c301514](https://github.com/fuqunaga/PrefsGUI/commit/c30151439e20ddf55d9005df0e2444b6b3f503a8))
+
+
+### Reverts
+
+* Revert "refs local rosettaui package for test" ([ca2fafd](https://github.com/fuqunaga/PrefsGUI/commit/ca2fafd55c60b22d80d4b34a216392d7d3d5d1bf))
+
 # [ga.fuquna.prefsgui.rosettaui-v1.2.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.1.0...ga.fuquna.prefsgui.rosettaui-v1.2.0) (2024-01-15)
 
 
