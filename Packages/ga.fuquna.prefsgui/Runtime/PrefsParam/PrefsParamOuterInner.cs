@@ -133,11 +133,12 @@ namespace PrefsGUI
         
         protected override void OnKeyChanged(string oldKey, string newKey)
         {
-            base.OnKeyChanged(oldKey, newKey);
             if (!keyToCache.TryGetValue(newKey, out _cache))
             {
                 keyToCache[newKey] = _cache = new ();
             }
+            
+            base.OnKeyChanged(oldKey, newKey);
         }
 
         public override void OnAfterDeserialize()

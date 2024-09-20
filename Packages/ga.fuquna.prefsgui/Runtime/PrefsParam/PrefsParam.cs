@@ -15,14 +15,15 @@ namespace PrefsGUI
     {
         #region Static
         
-        public static IReadOnlyCollection<PrefsParam> all => All;
-        public static IReadOnlyDictionary<string, PrefsParam> allDic => AllDic;
-        
         private static readonly HashSet<PrefsParam> All = new();
         private static readonly Dictionary<string, PrefsParam> AllDic = new();
-        
         private static readonly Dictionary<string, Action> KeyToOnValueChangedCallback = new();
+
         
+        public static event Action<PrefsParam> onRegisterPrefsParam;
+        
+        public static IReadOnlyCollection<PrefsParam> all => All;
+        public static IReadOnlyDictionary<string, PrefsParam> allDic => AllDic;
         
         #endregion
         
@@ -119,27 +120,28 @@ namespace PrefsGUI
 
         private void Register()
         {
-            if (!string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key)) return;
+            
+            if (AllDic.TryGetValue(key, out var prev))
             {
-                if (AllDic.TryGetValue(key, out var prev))
-                {
-                    All.Remove(prev);
-                }
-
-                var alreadyExist = !All.Add(this);
-                if (alreadyExist)
-                {
-                    using var _ = ListPool<string>.Get(out var keys);
-                    keys.AddRange(AllDic.Where(pair => pair.Value == this).Select(pair => pair.Key));
-
-                    foreach(var removeKey in keys)
-                    {
-                        AllDic.Remove(removeKey);
-                    }
-                }
-
-                AllDic[key] = this;
+                All.Remove(prev);
             }
+
+            var alreadyExist = !All.Add(this);
+            if (alreadyExist)
+            {
+                using var _ = ListPool<string>.Get(out var keys);
+                keys.AddRange(AllDic.Where(pair => pair.Value == this).Select(pair => pair.Key));
+
+                foreach(var removeKey in keys)
+                {
+                    AllDic.Remove(removeKey);
+                }
+            }
+
+            AllDic[key] = this;
+            
+            onRegisterPrefsParam?.Invoke(this);
         }
 
         #endregion
