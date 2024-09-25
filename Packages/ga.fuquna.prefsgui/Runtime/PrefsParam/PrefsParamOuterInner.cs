@@ -195,10 +195,19 @@ namespace PrefsGUI
         public class PrefsInnerAccessor : IPrefsInnerAccessor<TInner>
         {
             private readonly PrefsParamOuterInner<TOuter, TInner> _prefs;
+            private bool _hasSyncedValue;
+            private TInner _syncedValue;
 
             public PrefsInnerAccessor(PrefsParamOuterInner<TOuter, TInner> prefs)
             {
                 _prefs = prefs;
+                _prefs.RegisterValueChangedCallback(OnValueChanged);
+            }
+
+            private void OnValueChanged()
+            {
+                if (!_hasSyncedValue) return;
+                _prefs.Synced = Equals(_syncedValue, Get());
             }
 
             #region IPrefsInnerAccessor
@@ -210,19 +219,12 @@ namespace PrefsGUI
 
             public bool SetSyncedValue(TInner value)
             {
-                _prefs.UnregisterValueChangedCallback(UpdateSyncedFlag);
-                
                 var ret =  _prefs.SetInner(value);
                 _prefs.Synced = true;
+                _syncedValue = value;
+                _hasSyncedValue = true;
                 
-                _prefs.RegisterValueChangedCallback(UpdateSyncedFlag);
-
                 return ret;
-
-                void UpdateSyncedFlag()
-                {
-                    _prefs.Synced = Equals(value, Get());
-                }
             }
 
             public bool Equals(TInner lhs, TInner rhs) => _prefs.Equals(lhs, rhs);
