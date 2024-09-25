@@ -1,3 +1,20 @@
+# [ga.fuquna.prefsgui-v3.6.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.5.0...ga.fuquna.prefsgui-v3.6.0) (2024-09-25)
+
+
+### Bug Fixes
+
+* Temporary variables in Prefs are reset when the Editor's PlayModeState changes. ([6b14d9c](https://github.com/fuqunaga/PrefsGUI/commit/6b14d9c00bc26de6d932599b2eb367f93787fc89))
+
+
+### Features
+
+* add PrefsParam.onRegisterPrefsParam event ([d91a48d](https://github.com/fuqunaga/PrefsGUI/commit/d91a48d17033be8f3fb46122695846b820bedffa))
+
+
+### Performance Improvements
+
+* Improved multicast delegate allocation for sync ([1622127](https://github.com/fuqunaga/PrefsGUI/commit/1622127d9116e23f662d1304aaa2583a0e12c5cf))
+
 # [ga.fuquna.prefsgui-v3.5.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.4.3...ga.fuquna.prefsgui-v3.5.0) (2024-09-11)
 
 
