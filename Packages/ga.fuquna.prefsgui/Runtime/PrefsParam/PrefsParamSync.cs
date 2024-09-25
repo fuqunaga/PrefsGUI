@@ -21,5 +21,11 @@ namespace PrefsGUI
                 }
             }
         }
+        
+        private void ClearSync()
+        {
+            Synced = false;
+            onSyncedChanged = null;
+        }
     }
 }

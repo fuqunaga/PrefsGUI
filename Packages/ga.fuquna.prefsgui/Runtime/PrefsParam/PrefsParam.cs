@@ -55,6 +55,14 @@ namespace PrefsGUI
             PrefsKvs.DeleteKey(key);
         }
 
+        // 保持している一時変数などを初期化する
+        // EditorのPlayModeが変化したときに呼ばれる
+        public virtual void Reset()
+        {
+            ClearSync();
+            ClearCache();
+        }
+
         public virtual void ClearCache()
         {
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PrefsGUI.Kvs;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI
@@ -15,19 +16,19 @@ namespace PrefsGUI
         
         public class CachedValue<T>
         {
-            private T value;
+            private T _value;
 
             public bool HasValue { get; private set; }
 
             public bool TryGet(out T v)
             {
-                v = value;
+                v = _value;
                 return HasValue;
             }
 
             public void Set(T v)
             {
-                value = v;
+                _value = v;
                 HasValue = true;
             }
 
@@ -49,7 +50,7 @@ namespace PrefsGUI
         #endregion
         
 
-        private static readonly Dictionary<string, OuterInnerCache> keyToCache = new();
+        private static readonly Dictionary<string, OuterInnerCache> KeyToCache = new();
         
 
         private CachedValue<TInner> _defaultValueInnerCache = new();
@@ -124,7 +125,14 @@ namespace PrefsGUI
 
 
         #region override
-        
+
+        public override void Reset()
+        {
+            base.Reset();
+            _defaultValueInnerCache.Clear();
+            _prefsInnerAccessor = null;
+        }
+
         public override void ClearCache()
         {
             base.ClearCache();
@@ -133,9 +141,9 @@ namespace PrefsGUI
         
         protected override void OnKeyChanged(string oldKey, string newKey)
         {
-            if (!keyToCache.TryGetValue(newKey, out _cache))
+            if (!KeyToCache.TryGetValue(newKey, out _cache))
             {
-                keyToCache[newKey] = _cache = new ();
+                KeyToCache[newKey] = _cache = new ();
             }
             
             base.OnKeyChanged(oldKey, newKey);
@@ -207,6 +215,7 @@ namespace PrefsGUI
             private void OnValueChanged()
             {
                 if (!_hasSyncedValue) return;
+                Debug.Log($"{Time.realtimeSinceStartup} {_prefs.key} {_prefs.Get()}");
                 _prefs.Synced = Equals(_syncedValue, Get());
             }
 
