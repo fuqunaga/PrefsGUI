@@ -215,7 +215,6 @@ namespace PrefsGUI
             private void OnValueChanged()
             {
                 if (!_hasSyncedValue) return;
-                Debug.Log($"{Time.realtimeSinceStartup} {_prefs.key} {_prefs.Get()}");
                 _prefs.Synced = Equals(_syncedValue, Get());
             }
 
