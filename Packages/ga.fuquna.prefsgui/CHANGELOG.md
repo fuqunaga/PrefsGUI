@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.6.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.6.0...ga.fuquna.prefsgui-v3.6.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* Deleted Debug.Log() from development because it was still there. ([77b3102](https://github.com/fuqunaga/PrefsGUI/commit/77b31026e0fc2942aa999db2b2f038633c6467c7))
+
 # [ga.fuquna.prefsgui-v3.6.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.5.0...ga.fuquna.prefsgui-v3.6.0) (2024-09-25)
 
 
