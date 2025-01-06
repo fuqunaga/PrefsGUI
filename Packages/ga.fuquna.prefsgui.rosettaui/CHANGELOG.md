@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui.rosettaui-v1.3.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.3.0...ga.fuquna.prefsgui.rosettaui-v1.3.1) (2025-01-06)
+
+
+### Bug Fixes
+
+* **package:** prefsgui 3.6.1 ([7483960](https://github.com/fuqunaga/PrefsGUI/commit/74839606f813f9c66d114aeafa021cc2c058466b))
+
 # [ga.fuquna.prefsgui.rosettaui-v1.3.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.2.0...ga.fuquna.prefsgui.rosettaui-v1.3.0) (2024-09-11)
 
 
