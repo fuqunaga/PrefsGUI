@@ -9,7 +9,7 @@
   "dependencies": {
     "ga.fuquna.prefsgui": "3.6.0",
     "ga.fuquna.rosettaui": "1.8.0",
-    "ga.fuquna.rosettaui.uitoolkit": "1.7.0"
+    "ga.fuquna.rosettaui.uitoolkit": "1.7.3"
   },
   "keywords": [
     "unity",
