@@ -15,7 +15,8 @@
     "unity",
     "gui",
     "prefsgui",
-    "rosettaui"
+    "rosettaui",
+    "ga.fuquna"
   ],
   "author": {
     "name": "fuqunaga",
