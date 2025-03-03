@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.6.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.6.1...ga.fuquna.prefsgui-v3.6.2) (2025-03-03)
+
+
+### Bug Fixes
+
+* Add keywords to package.json to get hits in npmjs search ([d5fbdbb](https://github.com/fuqunaga/PrefsGUI/commit/d5fbdbb4ee5311d55333ef5ab7b070795e95048b))
+
 # [ga.fuquna.prefsgui-v3.6.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.6.0...ga.fuquna.prefsgui-v3.6.1) (2025-01-06)
 
 
