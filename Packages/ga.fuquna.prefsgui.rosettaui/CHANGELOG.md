@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui.rosettaui-v1.3.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.3.1...ga.fuquna.prefsgui.rosettaui-v1.3.2) (2025-03-03)
+
+
+### Bug Fixes
+
+* Add keywords to package.json to get hits in npmjs search ([4008619](https://github.com/fuqunaga/PrefsGUI/commit/40086197cbde7df024cb74d8c1809adaf92c2f78))
+
 # [ga.fuquna.prefsgui.rosettaui-v1.3.1](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui.rosettaui-v1.3.0...ga.fuquna.prefsgui.rosettaui-v1.3.1) (2025-01-06)
 
 
