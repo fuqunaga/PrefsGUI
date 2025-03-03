@@ -1,4 +1,8 @@
 # PrefsGUI
+
+[![npm version](https://badge.fury.io/js/ga.fuquna.prefsgui.svg)](https://badge.fury.io/js/ga.fuquna.prefsgui)
+[![openupm](https://img.shields.io/npm/v/ga.fuquna.prefsgui?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/ga.fuquna.prefsgui/)
+
 Accessors and GUIs for persistent preference values using a JSON file
 
 ![](Documentation~/PrefsGUI.gif)
