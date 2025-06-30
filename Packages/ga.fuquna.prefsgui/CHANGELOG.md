@@ -1,3 +1,10 @@
+# [ga.fuquna.prefsgui-v3.7.0](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.6.2...ga.fuquna.prefsgui-v3.7.0) (2025-06-30)
+
+
+### Features
+
+* -prefsgui-file-name, -prefsgui-folder-path arguments to change file path ([b53c33a](https://github.com/fuqunaga/PrefsGUI/commit/b53c33a677a5508174f8ebd6e74e2d336ba1e391))
+
 # [ga.fuquna.prefsgui-v3.6.2](https://github.com/fuqunaga/PrefsGUI/compare/ga.fuquna.prefsgui-v3.6.1...ga.fuquna.prefsgui-v3.6.2) (2025-03-03)
 
 
