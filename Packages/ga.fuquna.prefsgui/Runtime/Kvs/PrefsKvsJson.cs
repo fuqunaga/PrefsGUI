@@ -24,15 +24,18 @@ namespace PrefsGUI.Kvs.Json
         }
 
         #endregion
-
+        
+        private static string Path => System.IO.Path.Combine(PrefsKvsPathSelector.Path,
+            string.IsNullOrEmpty(PrefsArguments.FileName)
+                ? "Prefs.json"
+                : PrefsArguments.FileName);
+        
         
         public event Action<string, Type, string, Exception> onJsonParseFailed;
         
         private readonly KvsCache _kvsCache = new();
         private Dictionary<string, string> _jsonDic = new();
-        
-        private string Path => PrefsKvsPathSelector.Path + "/Prefs.json";
-        
+
 
         public PrefsKvsJson()
         {
@@ -53,6 +56,11 @@ namespace PrefsGUI.Kvs.Json
 
             var p = Path;
             var dir = System.IO.Path.GetDirectoryName(p);
+            if (dir == null)
+            {
+                Debug.LogWarning($"PrefsKvsJson: Directory is null for path [{p}]");
+                return;
+            }
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
             File.WriteAllText(p, str);
         }

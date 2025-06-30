@@ -30,10 +30,17 @@ namespace PrefsGUI.Kvs
                 if (_first)
                 {
                     _first = false;
-                    _path = Resources
-                        .FindObjectsOfTypeAll<GameObject>()
-                        .SelectMany(go => go.GetComponents<IPrefsKvsPath>().Select(kvsPath => kvsPath.Path))
-                        .FirstOrDefault(str => str != null);
+                    if (!string.IsNullOrEmpty(PrefsArguments.FolderPath))
+                    {
+                        _path = PrefsArguments.FolderPath;
+                    }
+                    else
+                    {
+                        _path = Resources
+                            .FindObjectsOfTypeAll<GameObject>()
+                            .SelectMany(go => go.GetComponents<IPrefsKvsPath>().Select(kvsPath => kvsPath.Path))
+                            .FirstOrDefault(str => str != null);
+                    }
                 }
                 return _path ?? Application.persistentDataPath;
             }
