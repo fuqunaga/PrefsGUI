@@ -72,12 +72,14 @@ namespace PrefsGUI.RosettaUI
         {
             var prefsDictionaryData = new PrefsDictionaryData<TKey, TValue>(prefs);
 
-            return prefs.CreateElement(label, option, (binder, index) => CreateDictionaryItemDefault(
-                    prefsDictionaryData,
-                    (IBinder<SerializableDictionary<TKey, TValue>.KeyValue>)binder,
-                    index
-                )
+            var optionNotNull = option ?? ListViewOption.Default;
+            optionNotNull.createItemElementFunc ??= (binder, index) => CreateDictionaryItemDefault(
+                prefsDictionaryData,
+                (IBinder<SerializableDictionary<TKey, TValue>.KeyValue>)binder,
+                index
             );
+            
+            return PrefsGUIExtensionListBase.CreateElement(prefs, label, optionNotNull);
         }
 
         /// <summary>

@@ -17,13 +17,15 @@ namespace PrefsGUI.RosettaUI
                             () => ps.SearchWord,
                             _ => UI.List(
                                 () => ps.PrefsList,
-                                (binder, idx) => UI.Field(null, binder),
                                 new ListViewOption(false, true, false)
+                                {
+                                    createItemElementFunc = (binder, _) => UI.Field(null, binder)
+                                }
                             )
                         )
                         // ここで高さ制限しないとUIToolkitのListView初期化がうまくいかない@Unity2021.3
                         // 本来はUIToolkit側修正すべきだが大変そうなので暫定対処
-                    ).SetMinWidth(850f).SetMaxHeight(1000f) 
+                    ).SetMinWidth(850f).SetMaxHeight(1000f)
                 )
             );
         }

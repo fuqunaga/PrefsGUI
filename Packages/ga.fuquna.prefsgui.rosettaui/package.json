@@ -8,8 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "ga.fuquna.prefsgui": "3.6.1",
-    "ga.fuquna.rosettaui": "1.8.0",
-    "ga.fuquna.rosettaui.uitoolkit": "1.7.3"
+    "ga.fuquna.rosettaui": "2.0.0"
   },
   "keywords": [
     "unity",
