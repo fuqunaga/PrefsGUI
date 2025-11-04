@@ -12,7 +12,7 @@ on:
       package_folder:
         description: 'Package folder path'
         required: true
-        default: './Packages/ga.fuquna.rosettaui'
+        default: './Packages/ga.fuquna.prefsgui'
         type: string
 
 
