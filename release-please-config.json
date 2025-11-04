@@ -1,0 +1,7 @@
+{
+  "packages": {
+    "Packages/ga.fuquna.prefsgui": {},
+    "Packages/ga.fuquna.prefsgui.rosettaui": {},
+    "Packages/ga.fuquna.prefsgui.rapidgui": {}
+  }
+}
