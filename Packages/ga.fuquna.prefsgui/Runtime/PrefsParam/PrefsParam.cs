@@ -102,7 +102,7 @@ namespace PrefsGUI
         public abstract Type GetInnerType();
         public abstract bool IsDefault { get; }
         public abstract void SetCurrentToDefault();
-        public abstract void ResetToDefault();
+        public abstract bool ResetToDefault();
         public abstract IPrefsInnerAccessor<T> GetInnerAccessor<T>();
 
         #endregion

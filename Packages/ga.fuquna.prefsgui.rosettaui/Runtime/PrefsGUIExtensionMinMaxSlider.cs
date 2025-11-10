@@ -55,7 +55,7 @@ namespace PrefsGUI.RosettaUI
             );
         }
 
-        static Element AddDefaultButtonAndSyncSubscription(PrefsParam prefs, Element element)
+        private static Element AddDefaultButtonAndSyncSubscription<T>(PrefsMinMax<T> prefs, Element element)
         {
             var ret = UI.Row(element, prefs.CreateDefaultButtonElement());
             PrefsGUIExtension.SubscribeSyncedFlag(prefs, ret);

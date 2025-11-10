@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RosettaUI;
+using RosettaUI.UndoSystem;
 using UnityEngine.Assertions;
 
 namespace PrefsGUI.RosettaUI
@@ -22,9 +23,28 @@ namespace PrefsGUI.RosettaUI
             return func?.Invoke(prefs, label);
         }
 
-        public static ButtonElement CreateDefaultButtonElement(this PrefsParam prefs)
+        public static ButtonElement CreateDefaultButtonElement<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs)
         {
-            return PrefsGUIElement.CreateDefaultButtonElement(prefs.ResetToDefault, () => prefs.IsDefault);
+            ButtonElement buttonElement = null;
+            buttonElement = PrefsGUIElement.CreateDefaultButtonElement(OnClick, () => prefs.IsDefault);
+            return buttonElement;
+
+            void OnClick()
+            {
+                var innerAccessor = prefs.GetInnerAccessor();
+                var before = innerAccessor.Get();
+                var changed = prefs.ResetToDefault();
+                
+                if (changed)
+                {
+                    var after = innerAccessor.Get();
+
+                    Undo.RecordValueChange($"{prefs.key} Reset to Default",
+                        before, after,
+                        v => innerAccessor.Set(v)
+                    ).AvailableWhileElementEnabled(buttonElement);
+                }
+            }
         }
         
         public static void SubscribeSyncedFlag(PrefsParam prefs, Element element)
@@ -95,7 +115,7 @@ namespace PrefsGUI.RosettaUI
                 return _listCreateElementMethodInfo;
             }
 
-            if (definitionType == typeof(PrefsParamOuter<>))
+            if (definitionType == typeof(PrefsParamOuterInner<,>))
             {
                 _fieldCreateElementMethodInfo ??= GetCreateElementMethodInfo(typeof(PrefsGUIExtensionField), definitionType);
                 return _fieldCreateElementMethodInfo;

@@ -4,7 +4,7 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionField
     {
-        public static Element CreateElement<T>(this PrefsParamOuter<T> prefs, LabelElement label = null)
+        public static Element CreateElement<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, LabelElement label = null)
         {
             var element = UI.Row(
                 prefs.CreateFieldRaw(label ?? UI.Label(() => prefs.key)),

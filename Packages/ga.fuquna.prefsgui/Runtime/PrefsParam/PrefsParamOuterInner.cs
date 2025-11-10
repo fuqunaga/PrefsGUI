@@ -197,8 +197,10 @@ namespace PrefsGUI
 
         #endregion
 
-
+        
         #region InnerAccessor
+        
+        public IPrefsInnerAccessor<TInner> GetInnerAccessor() => GetInnerAccessor<TInner>();
 
         public class PrefsInnerAccessor : IPrefsInnerAccessor<TInner>
         {
@@ -224,6 +226,7 @@ namespace PrefsGUI
 
             public bool IsAlreadyGet => _prefs._cache.outer.HasValue || _prefs._cache.inner.HasValue;
             public TInner Get() => _prefs.GetInner();
+            public bool Set(TInner value) => _prefs.SetInner(value);
 
             public bool SetSyncedValue(TInner value)
             {
