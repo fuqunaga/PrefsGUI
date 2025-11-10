@@ -68,7 +68,7 @@ namespace PrefsGUI.RosettaUI
             IEnumerable<Element> CreateElements<T>(IEnumerable<PrefsParamOuter<T>> prefsSet) 
                  => prefsSet.Select(prefs => prefs.CreateElement(KeyToLabelString(prefs.key)));
 
-            Element CreateFloatElement(PrefsParamOuter<float> prefs)
+            Element CreateFloatElement(PrefsParam<float> prefs)
             {
                 var propertyName = menu.KeyToPropertyName(prefs.key);
                 var shader = menu._material.shader;
@@ -83,7 +83,7 @@ namespace PrefsGUI.RosettaUI
                 return prefs.CreateElement(KeyToLabelString(prefs.key));
             }
      
-             Element CreateEnumBlendModeElement(PrefsParamOuter<float> prefs)
+             Element CreateEnumBlendModeElement(PrefsParam<float> prefs)
              {
                  return UI.Row(
                      UI.Field(KeyToLabelString(prefs.key),

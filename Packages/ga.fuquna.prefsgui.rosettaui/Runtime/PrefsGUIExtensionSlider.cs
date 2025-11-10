@@ -4,11 +4,11 @@ namespace PrefsGUI.RosettaUI
 {
     public static class PrefsGUIExtensionSlider
     {
-        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label = null)
+        public static Element CreateSlider<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, LabelElement label = null)
         {
-            IGetter<T> minGetter = null;
-            IGetter<T> maxGetter = null;
-            if (prefs is IPrefsSlider<T> prefsSlider)
+            IGetter<TOuter> minGetter = null;
+            IGetter<TOuter> maxGetter = null;
+            if (prefs is IPrefsSlider<TOuter> prefsSlider)
             {
                 minGetter = ConstGetter.Create(prefsSlider.defaultMin);
                 maxGetter = ConstGetter.Create(prefsSlider.defaultMax);
@@ -17,27 +17,27 @@ namespace PrefsGUI.RosettaUI
             return CreateSlider(prefs, label, minGetter, maxGetter);
         }
 
-        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, T max)
+        public static Element CreateSlider<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, TOuter max)
         {
-            return CreateSlider<T>(prefs, null, default, max);
+            return CreateSlider(prefs, null, default, max);
         }
         
-        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, T min, T max)
+        public static Element CreateSlider<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, TOuter min, TOuter max)
         {
             return CreateSlider(prefs, null, min, max);
         }
         
-        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label, T max)
+        public static Element CreateSlider<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, LabelElement label, TOuter max)
         {
             return CreateSlider(prefs, label, default, max);
         }
 
-        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label, T min, T max)
+        public static Element CreateSlider<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, LabelElement label, TOuter min, TOuter max)
         {
             return CreateSlider(prefs, label, ConstGetter.Create(min), ConstGetter.Create(max));
         }
 
-        public static Element CreateSlider<T>(this PrefsParamOuter<T> prefs, LabelElement label, IGetter<T> minGetter, IGetter<T> maxGetter)
+        public static Element CreateSlider<TOuter, TInner>(this PrefsParamOuterInner<TOuter, TInner> prefs, LabelElement label, IGetter<TOuter> minGetter, IGetter<TOuter> maxGetter)
         {
             var element = UI.Row(
                 CreateSliderRaw(prefs, label ?? UI.Label(() => prefs.key), minGetter, maxGetter),
