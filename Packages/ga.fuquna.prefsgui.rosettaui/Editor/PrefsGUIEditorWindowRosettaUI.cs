@@ -145,31 +145,32 @@ namespace PrefsGUI.RosettaUI.Editor
 
             return UI.List(null,
                 () => prefsObjAll,
-                (binder, _) =>
-                {
-                    var (prefs, obj) = ((IBinder<(PrefsParam, Object)>)binder).Get();
-
-                    var prefsElement = new[]
-                    {
-                        UI.Indent(
-                            prefs.CreateElement().Close()
-                        ),
-                        PrefsGUIEditorRosettaUIComponent.CreateObjectField(obj)
-                    };
-
-                    return _objCheckExtension != null
-                        ? UI.Row(
-                            _objCheckExtension.PrefsLeft(prefs),
-                            UI.Row(prefsElement)
-                        )
-                        : UI.Row(prefsElement);
-                },
+        
                 new ListViewOption(false, true, false)
                 {
                     reorderable = false,
                     fixedSize = true,
                     header = false,
-                    suppressAutoIndent = true
+                    suppressAutoIndent = true,
+                    createItemElementFunc = (binder, _) =>
+                    {
+                        var (prefs, obj) = ((IBinder<(PrefsParam, Object)>)binder).Get();
+
+                        var prefsElement = new[]
+                        {
+                            UI.Indent(
+                                prefs.CreateElement().Close()
+                            ),
+                            PrefsGUIEditorRosettaUIComponent.CreateObjectField(obj)
+                        };
+
+                        return _objCheckExtension != null
+                            ? UI.Row(
+                                _objCheckExtension.PrefsLeft(prefs),
+                                UI.Row(prefsElement)
+                            )
+                            : UI.Row(prefsElement);
+                    }
                 }
             );
         }
@@ -192,17 +193,18 @@ namespace PrefsGUI.RosettaUI.Editor
                 .ToList();
 
             return UI.List(null,
-                () => objPrefsList, (binder, idx) =>
-                {
-                    var typedBinder = (IBinder<PrefsAssetUtility.ObjPrefs>)binder;
-                    return CreateObjPrefsElement(typedBinder.Get());
-                },
-                new ListViewOption()
+                () => objPrefsList,
+                new ListViewOption
                 {
                     reorderable = false,
                     fixedSize = true,
                     header = false,
-                    suppressAutoIndent = _objCheckExtension != null
+                    suppressAutoIndent = _objCheckExtension != null,
+                    createItemElementFunc =  (binder, _) =>
+                    {
+                        var typedBinder = (IBinder<PrefsAssetUtility.ObjPrefs>)binder;
+                        return CreateObjPrefsElement(typedBinder.Get());
+                    },
                 }
             );
 
