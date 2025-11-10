@@ -6,6 +6,7 @@
         PrefsParam Prefs { get; }
         bool IsAlreadyGet { get; }
         T Get();
+        bool Set(T value);
         bool SetSyncedValue(T value);
         bool Equals(T lhs, T rhs);
         
