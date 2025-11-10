@@ -197,8 +197,10 @@ namespace PrefsGUI
 
         #endregion
 
-
+        
         #region InnerAccessor
+        
+        public IPrefsInnerAccessor<TInner> GetInnerAccessor() => GetInnerAccessor<TInner>();
 
         public class PrefsInnerAccessor : IPrefsInnerAccessor<TInner>
         {
