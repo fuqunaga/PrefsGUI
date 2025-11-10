@@ -35,7 +35,7 @@ namespace PrefsGUI
 
         #region override
 
-        public override void ResetToDefault() => Set(DefaultValue);
+        public override bool ResetToDefault() => Set(DefaultValue);
 
         #endregion
     }
